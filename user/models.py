@@ -16,6 +16,7 @@ class Favourite(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     device = models.ManyToManyField("device.Device")
     room = models.ManyToManyField("room.Room")
+    camera = models.ManyToManyField("camera.Camera")
 
     def __str__(self):
         return self.user.username

@@ -39,6 +39,8 @@ class MessageEvent(str, Enum):
     CAMERA_ANSWER = "camera_answer"
     CAMERA_DISCONNECT = "camera_disconnect"
     CAMERA_ERROR = "camera_error"
+    CAMERA_START = "camera_start"
+    CAMERA_STOP = "camera_stop"
 
     # Measurement events
     ON_MEASURE_TEMPERATURE = "on_measure_temperature"

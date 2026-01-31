@@ -137,11 +137,15 @@ class FavouriteView(APIView):
 
     def get(self, request, *args, **kwargs):
         favourite, _ = Favourite.objects.prefetch_related(
-            "device", "room"
+            "device", "room", "camera"
         ).get_or_create(user=request.user)
         rooms = [room.id for room in favourite.room.all()]
         devices = [device.id for device in favourite.device.all()]
-        return Response({"rooms": rooms, "devices": devices}, status=status.HTTP_200_OK)
+        cameras = [camera.id for camera in favourite.camera.all()]
+        return Response(
+            {"rooms": rooms, "devices": devices, "cameras": cameras},
+            status=status.HTTP_200_OK,
+        )
 
     def put(self, request, *args, **kwargs):
         user = request.user

@@ -40,6 +40,8 @@ PAYLOAD_MAPPING: dict[MessageEvent, Tuple[Type[BaseModel], Type[BaseModel]]] = {
     MessageEvent.CAMERA_ANSWER: (EmptyRequest, CameraAnswerResponse),
     MessageEvent.CAMERA_DISCONNECT: (CameraDisconnectPayload, BasicResponse),
     MessageEvent.CAMERA_ERROR: (CameraError, CameraError),
+    MessageEvent.CAMERA_STOP: (SerializerDataResponse, BasicResponse),
+    MessageEvent.CAMERA_START: (SerializerDataResponse, BasicResponse),
     MessageEvent.ON_MEASURE_TEMPERATURE: (TemperatureRequest, SerializerDataResponse),
     MessageEvent.ON_MEASURE_HUMIDITY: (HumidityRequest, SerializerDataResponse),
     MessageEvent.ON_MEASUREMENT_TEMP_HUM: (TempHumRequest, SerializerDataResponse),
