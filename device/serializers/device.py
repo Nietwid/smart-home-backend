@@ -14,7 +14,7 @@ class DeviceSerializer(ModelSerializer):
     class Meta:
         model = Device
         exclude = ["mac"]
-        read_only_fields = ["last_seen"]
+        read_only_fields = ["last_seen", "fun"]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

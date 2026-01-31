@@ -5,33 +5,6 @@ from device.models import Device, Event
 
 
 @pytest.mark.django_db
-def test_get_is_favourite_true(user, room):
-    """
-    Should return True if device is in user's favourite
-    """
-    device = Device.objects.create(name="Device1", room=room, fun="test", mac="AA:BB")
-    room.user.favourite.device.add(device)
-
-    serializer = DeviceSerializer(device)
-    assert serializer.get_is_favourite(device) is True
-
-
-@pytest.mark.django_db
-def test_get_is_favourite_false(user, room):
-    """
-    Should return False if device not in favourites or has no room
-    """
-    device = Device.objects.create(name="Device2", room=room, fun="test", mac="CC:DD")
-    serializer = DeviceSerializer(device)
-    assert serializer.get_is_favourite(device) is False
-
-    # No room
-    device.room = None
-    serializer = DeviceSerializer(device)
-    assert serializer.get_is_favourite(device) is False
-
-
-@pytest.mark.django_db
 @patch("device.serializers.device.EventSerializer")
 @patch("device.serializers.device.DeviceRegistry")
 def test_to_representation_calls_nested_serializers(

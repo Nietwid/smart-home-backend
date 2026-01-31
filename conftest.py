@@ -56,7 +56,7 @@ def aquarium(room, home):
 @pytest.fixture
 def button(room, home):
     return Button.objects.create(
-        name="TestButton", mac="11:22:33", fun="button", room=room, home=home
+        name="TestButton", mac="00:11:22:33:44:55", fun="button", room=room, home=home
     )
 
 

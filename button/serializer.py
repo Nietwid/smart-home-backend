@@ -11,12 +11,8 @@ class ButtonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Button
+        read_only_fields = ["fun"]
         exclude = ["mac"]
-
-    def validate_button_type(self, value):
-        if value not in [ButtonType.MONOSTABLE, ButtonType.BISTABLE]:
-            raise serializers.ValidationError("Wrong button type")
-        return value
 
     def update(self, instance: Button, validated_data: dict):
         if "button_type" in validated_data:

@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     "sunblind",
     "light",
     "event",
+    "firmware",
+    "ai_assistance",
 ]
 
 MIDDLEWARE = [

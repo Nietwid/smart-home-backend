@@ -7,3 +7,4 @@ venv
 *.sqlite3
 .coverage
 ai_assistance/models
+htmlcov

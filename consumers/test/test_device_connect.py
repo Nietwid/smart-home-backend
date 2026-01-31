@@ -16,8 +16,7 @@ class TestDeviceConnectEvent:
             device_id="00:11:22:34:44:55",
             payload={
                 "fun": "aquarium",
-                "ip": "1.1.1.1",
-                "port": "1234",
+                "firmware_version": 1.0,
                 "wifi_strength": "-50",
             },
             message_id="12345",

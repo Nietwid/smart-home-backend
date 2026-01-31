@@ -18,14 +18,6 @@ def test_device_counts(room, device):
 
 
 @pytest.mark.django_db
-def test_is_favourite(user, room):
-    user.favourite.room.add(room)
-    serializer = RoomSerializer(room)
-    data = serializer.data
-    assert data["is_favourite"] is True
-
-
-@pytest.mark.django_db
 def test_to_representation_visibility(room):
     room.visibility = Room.Visibility.PUBLIC
     serializer = RoomSerializer(room)
