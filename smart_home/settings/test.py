@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = False
 ALLOWED_HOSTS = ["*"]
-SECRET_KEY = "PxnYV_PyxyJNbp7pODS2CjXe1CL0j-YcN0E5KWk5HUQ6-Us37MIm4U12QnbqXNpMHe0"
+SECRET_KEY = "" "-YcN0E5KWk5HUQ6-Us37MIm4U12QnbqXNpMHe0"
 
 
 INSTALLED_APPS = [

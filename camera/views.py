@@ -1,10 +1,8 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from camera.serializer import CameraReadSerializer, CameraWriteSerializer
 from .models import Camera
-
-from django.shortcuts import get_list_or_404
 
 
 class ListCreateCameraView(ListCreateAPIView):
@@ -21,3 +19,11 @@ class ListCreateCameraView(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         request.data["home"] = request.user.home.first().id
         return super().create(request, *args, **kwargs)
+
+
+class RetrieveUpdateDestroyCameraView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CameraReadSerializer
+
+    def get_queryset(self):
+        return Camera.objects.filter(home__users=self.request.user)
