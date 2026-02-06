@@ -14,6 +14,15 @@ import os
 from pathlib import Path
 from celery.schedules import crontab
 
+DEBUG = os.getenv("DEBUG").lower() == "true"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SITE_DOMAIN = os.getenv("SITE_DOMAIN")
+FIRMWARE_DEVICE_ENDPOINT = os.getenv("FIRMWARE_DEVICE_ENDPOINT")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS").lower() == "true"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
