@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.shortcuts import get_object_or_404, render
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from camera.models import Camera
 from room.models import Room
 from device.models import Device
 from django.conf import settings
@@ -164,6 +165,13 @@ class FavouriteView(APIView):
                 user.favourite.device.remove(obj)
                 if action
                 else user.favourite.device.add(obj)
+            )
+        elif request.data["type"] == "camera":
+            obj = get_object_or_404(Camera, pk=request.data["id"])
+            (
+                user.favourite.camera.remove(obj)
+                if action
+                else user.favourite.camera.add(obj)
             )
         else:
             return Response(
