@@ -5,22 +5,6 @@ from room.models import Room
 from user.models import Home
 
 
-class DeviceType(models.TextChoices):
-    ESP32 = "ESP32", "esp32"
-    ESP8266 = "ESP8266", "esp8266"
-    ESP8266_01 = "ESP8266_01", "esp8266_01"
-
-
-class DeviceSettings(models.Model):
-    fun = models.CharField(max_length=100, default="")
-    message = models.CharField(max_length=100, default="")
-    answer = models.CharField(max_length=100, default="")
-    port = models.IntegerField()
-
-    def __str__(self) -> str:
-        return self.fun
-
-
 class Router(models.Model):
     ip = models.CharField(max_length=100, default="")
     mac = models.CharField(max_length=100)
@@ -33,6 +17,12 @@ class Router(models.Model):
         return self.mac
 
 
+class DeviceType(models.TextChoices):
+    ESP32 = "ESP32", "esp32"
+    ESP8266 = "ESP8266", "esp8266"
+    ESP8266_01 = "ESP8266_01", "esp8266_01"
+
+
 class Device(models.Model):
     room = models.ForeignKey(
         Room, on_delete=models.SET_NULL, related_name="devices", null=True, default=None
@@ -40,8 +30,7 @@ class Device(models.Model):
     home = models.ForeignKey(
         Home, on_delete=models.CASCADE, related_name="devices", null=True
     )
-    name = models.CharField(max_length=100, default="Nieznane")
-    fun = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default="Unknown")
     last_seen = models.DateTimeField(auto_now_add=True, auto_created=True)
     mac = models.CharField(max_length=100)
     wifi_strength = models.IntegerField(default=0)
