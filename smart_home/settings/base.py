@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     "firmware",
     "ai_assistance",
     "consumers",
+    "peripherals",
+    "hardware",
 ]
 
 MIDDLEWARE = [

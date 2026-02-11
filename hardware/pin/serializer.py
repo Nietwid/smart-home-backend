@@ -1,0 +1,13 @@
+from rest_framework.serializers import Serializer
+
+
+class PinOutputConfigSerializer(Serializer): ...
+
+
+class PinOutputStateSerializer(Serializer): ...
+
+
+class PinInputConfigSerializer(Serializer): ...
+
+
+class PinInputStateSerializer(Serializer): ...

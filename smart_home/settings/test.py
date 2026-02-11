@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     "event",
     "firmware",
     "ai_assistance",
+    "peripherals",
+    "hardware",
 ]
 
 MIDDLEWARE = [

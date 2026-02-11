@@ -12,6 +12,8 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from camera.models import Camera
+from peripherals.registry import PERIPHERAL_REGISTRY
+from peripherals.schemas.light import RGBStripDefinition
 from room.models import Room
 from device.models import Device
 from django.conf import settings

@@ -17,7 +17,7 @@ from consumers.frontend_message.frontend_message_type import FrontendMessageType
 from consumers.frontend_message.messenger import FrontendMessenger
 
 
-class RouterConsumer(AsyncWebsocketConsumer):
+class DeviceConsumer(AsyncWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)

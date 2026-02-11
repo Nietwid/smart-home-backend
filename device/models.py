@@ -17,7 +17,7 @@ class Router(models.Model):
         return self.mac
 
 
-class DeviceType(models.TextChoices):
+class ChipType(models.TextChoices):
     ESP32 = "ESP32", "esp32"
     ESP8266 = "ESP8266", "esp8266"
     ESP8266_01 = "ESP8266_01", "esp8266_01"
@@ -38,7 +38,7 @@ class Device(models.Model):
     is_online = models.BooleanField(default=False)
     firmware_version = models.FloatField(default=1.0)
     chip_type = models.CharField(
-        max_length=100, choices=DeviceType, default=DeviceType.ESP32
+        max_length=100, choices=ChipType, default=ChipType.ESP32
     )
 
     def __str__(self):
@@ -49,12 +49,6 @@ class Device(models.Model):
 
     def get_router_mac(self):
         return Router.objects.filter(home=self.home).only("mac").first()
-
-    def available_events(self):
-        return []
-
-    def available_actions(self):
-        return []
 
     def extra_settings(self):
         return {}
