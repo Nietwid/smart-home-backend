@@ -1,9 +1,11 @@
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from consumers.frontend_message.messenger import FrontendMessenger
 from device_registry import DeviceRegistry
 from event.serializer import EventSerializer
+from peripherals.serializers import PeripheralsSerializer
 
 from ..models import (
     Device,
@@ -11,20 +13,17 @@ from ..models import (
 
 
 class DeviceSerializer(ModelSerializer):
+    peripherals = PeripheralsSerializer(many=True, read_only=True)
+
     class Meta:
         model = Device
         exclude = ["mac"]
-        read_only_fields = ["last_seen", "fun"]
+        read_only_fields = ["last_seen"]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        model_class, serializer_class = self._get_device_serializer(instance)
-        serializer = serializer_class(
-            model_class.objects.get(pk=instance.id), context=self.context
-        )
-        data = serializer.data
-        data["events"] = EventSerializer(instance.events.all(), many=True).data
-        representation.update(data)
+        data = EventSerializer(instance.events.all(), many=True).data
+        representation["events"] = data
         return representation
 
     def update(self, instance, validated_data):

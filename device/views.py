@@ -12,6 +12,7 @@ from device.models import Device, Router
 from device_registry import DeviceRegistry
 from room.models import Room
 from utils.get_available_for_user_device import get_available_for_user_device
+from .repository.device_repository import DeviceRepository
 from .serializers.device import DeviceSerializer
 from .serializers.router import RouterSerializer
 
@@ -34,19 +35,8 @@ class ListCreateDevice(ListCreateAPIView):
 
     def get_queryset(self):
         if self.request.query_params.get("unassigned", False):
-            return get_list_or_404(
-                Device, home__users=self.request.user, room__isnull=True
-            )
-        elif "function" in self.request.query_params:
-            fun = self.request.query_params.get("function")
-            register = DeviceRegistry()
-            model = register.get_model(fun.lower())
-            if not model:
-                return Device.objects.none()
-            return get_list_or_404(
-                model, home__users=self.request.user, room__isnull=False
-            )
-        return get_available_for_user_device(Device, self.request.user)
+            return DeviceRepository.get_unassigned(self.request.user)
+        return DeviceRepository.get_available_for_user(self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data

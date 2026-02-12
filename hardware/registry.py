@@ -23,7 +23,6 @@ HARDWARE_REGISTRY: dict[str, RegistryInstance] = {}
 
 def hardware_registry(name: str):
     def wrapper(cls):
-        print(getattr(cls, "chip_support"))
         HARDWARE_REGISTRY[name] = RegistryInstance(
             config_model=getattr(cls, "config_model"),
             state_model=getattr(cls, "state_model"),
