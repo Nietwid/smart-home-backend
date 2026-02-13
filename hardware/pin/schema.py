@@ -1,9 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Literal
 
 
 class PinOutputConfig(BaseModel):
-    pin: int
+    pin: int = Field(
+        ...,
+        title="GPIO Pin",
+        description="Number of the GPIO pin used as output",
+        ge=0,
+        le=40,
+        examples=[13],
+    )
 
 
 class PinOutputState(BaseModel):

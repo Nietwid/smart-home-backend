@@ -5,7 +5,7 @@ from rest_framework.serializers import ModelSerializer
 from consumers.frontend_message.messenger import FrontendMessenger
 from device_registry import DeviceRegistry
 from event.serializer import EventSerializer
-from peripherals.serializers import PeripheralsSerializer
+from peripherals.serializers import PeripheralSerializer
 
 from ..models import (
     Device,
@@ -13,7 +13,7 @@ from ..models import (
 
 
 class DeviceSerializer(ModelSerializer):
-    peripherals = PeripheralsSerializer(many=True, read_only=True)
+    peripherals = PeripheralSerializer(many=True, read_only=True)
 
     class Meta:
         model = Device
