@@ -11,6 +11,7 @@ class DeviceMessage(BaseModel):
     message_type: MessageType
     message_event: MessageEvent
     device_id: str
+    peripheral_id: int
     message_id: str
     payload: Any
 

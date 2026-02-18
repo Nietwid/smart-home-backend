@@ -1,6 +1,6 @@
 import asyncio
+import logging
 from datetime import datetime
-from pydantic import ValidationError
 from django.db.models import QuerySet
 from django.utils import timezone
 from channels.db import database_sync_to_async
@@ -8,13 +8,14 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 
 from consumers.router_message.builders.basic import get_connected_devices_request
-from consumers.router_message.device_message import DeviceMessage
-from consumers.events.event_manager import EventManager
 from device.models import Router, Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 from consumers.frontend_message.frontend_message_type import FrontendMessageType
 from consumers.frontend_message.messenger import FrontendMessenger
+from device_consumer.tasks import handle_device_message_task
+
+logger = logging.getLogger(__name__)
 
 
 class DeviceConsumer(AsyncWebsocketConsumer):
@@ -24,7 +25,6 @@ class DeviceConsumer(AsyncWebsocketConsumer):
         self.queue = None
         self.mac = None
         self.router: Router = None
-        self.event_manager = EventManager(self)
         self.home = None
         self.counter = 0
 
@@ -67,14 +67,9 @@ class DeviceConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
-            data = DeviceMessage.model_validate_json(text_data)
-            asyncio.create_task(self.event_manager.handle_event(data))
-        except ValidationError as e:
-            print("Error in message", e)
-            return
+            handle_device_message_task.delay(text_data)
         except Exception as e:
-            print("Error in message", e)
-            return
+            logger.error(f"Could not push task to RabbitMQ: {e}")
 
     async def router_send(self, event):
         if not isinstance(event, str):
