@@ -1,10 +1,11 @@
-from hardware.base import RequestResponseInterface
+from consumers.router_message.device_message import DeviceMessage
+from hardware.base import ActionHandler
 
 
-class TurnOff(RequestResponseInterface):
-
-    @classmethod
-    def request(cls) -> None: ...
+class TurnOff(ActionHandler):
 
     @classmethod
-    def response(cls) -> None: ...
+    def handle_action(cls) -> None: ...
+
+    @classmethod
+    def handle_response(cls, message: DeviceMessage) -> None: ...

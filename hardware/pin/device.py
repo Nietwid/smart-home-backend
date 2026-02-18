@@ -1,3 +1,4 @@
+from consumers.router_message.message_event import MessageEvent
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used
@@ -20,7 +21,7 @@ class PinInputHardware(BaseHardware):
     state_model = PinOutputState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = {"set_value": OutputSetValue}
+    actions = {MessageEvent.SET_VALUE: OutputSetValue}
     events = {}
 
     @classmethod
@@ -39,7 +40,7 @@ class PinInputHardware(BaseHardware):
 class PinOutputHardware(BaseHardware):
     config_model = PinInputConfig
     state_model = PinInputState
-    actions = {"set_value": SetValue}
+    actions = {MessageEvent.SET_VALUE: SetValue}
     events = {}
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."

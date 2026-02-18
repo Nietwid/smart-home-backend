@@ -2,19 +2,28 @@ from abc import ABC, abstractmethod
 from typing import Type
 from pydantic import BaseModel
 
+from consumers.router_message.device_message import DeviceMessage
+from consumers.router_message.message_event import MessageEvent
 from device.models import Device
 
 
-class RequestResponseInterface(ABC):
+class EventHandler(ABC):
+    @classmethod
+    @abstractmethod
+    def handle_event(cls, message: DeviceMessage) -> None:
+        raise NotImplementedError()
+
+class ActionHandler(ABC):
 
     @classmethod
     @abstractmethod
-    def request(cls) -> None: ...
+    def handle_action(cls) -> None:
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
-    def response(cls) -> None: ...
-
+    def handle_response(cls, message: DeviceMessage) -> None:
+        raise NotImplementedError()
 
 class BaseHardware(ABC):
     config_model = None
@@ -23,8 +32,8 @@ class BaseHardware(ABC):
     description: str = ""
     hardware_type: str = ""
     chip_support: list[str] = []
-    actions: dict[str, type[RequestResponseInterface]] = []
-    events: dict[str, type[RequestResponseInterface]] = []
+    actions: dict[MessageEvent, type[ActionHandler]] = []
+    events: dict[MessageEvent, type[EventHandler]] = []
 
     @classmethod
     def parse_config(cls, data: dict)->Type[BaseModel]:
@@ -37,12 +46,12 @@ class BaseHardware(ABC):
     @classmethod
     @abstractmethod
     def validate_config(cls, config:Type[BaseModel], device:Device)->None:
-        pass
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
     def validate_state(cls, state:Type[BaseModel], device:Device)->None:
-        pass
+        raise NotImplementedError()
 
 class HardwareValidationError(Exception):
     def __init__(self, errors: dict):

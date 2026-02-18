@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class MessageEvent(str, Enum):
+class MessageEvent(StrEnum):
     # Basic events
     GET_CONNECTED_DEVICES = "get_connected_devices"
     DEVICE_CONNECT = "device_connect"
@@ -13,6 +13,10 @@ class MessageEvent(str, Enum):
     UPDATE_FIRMWARE = "update_firmware"
     UPDATE_FIRMWARE_ERROR = "update_firmware_error"
     UPDATE_CONFIG = "update_config"
+    SET_VALUE = "set_value"
+    SET_COLOR = "set_color"
+    TURN_ON = "turn_on"
+    TURN_OFF = "turn_off"
 
     # Button events
     ON_CLICK = "on_click"

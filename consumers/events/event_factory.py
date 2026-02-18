@@ -10,11 +10,9 @@ from consumers.events.access_granted import AccessGrantedEvent
 from consumers.events.add_tag import AddTagEvent
 from consumers.events.blink import BlinkEvent
 from consumers.events.camera_answer_event import CameraAnswerEvent
-from consumers.events.device_connect import DeviceConnectEvent
-from consumers.events.device_disconnect import DeviceDisconnectEvent
+from hardware.device.events_handlers.device_connect import DeviceConnectEvent
+from hardware.device.events_handlers.device_disconnect import DeviceDisconnectEvent
 from consumers.events.healt_check import HealthCheckEvent
-from consumers.events.on_click import OnClickEvent
-from consumers.events.on_hold import OnHoldEvent
 from consumers.events.on_read import OnReadEvent
 from consumers.events.camera_error_event import CameraErrorEvent
 from consumers.events.set_settings import SetSettings

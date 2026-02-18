@@ -7,20 +7,20 @@ from consumers.router_message.builders.basic import basic_response
 from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.messenger import DeviceMessenger
 from consumers.router_message.payload.basic import DeviceConnectRequest
-from consumers.events.base_event import BaseEventRequest
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 from device_registry import DeviceRegistry
+from hardware.base import EventHandler
 from room.serializer import RoomSerializer
 
 from user.models import Home
 from device.models import Device
 
 
-class DeviceConnectEvent(BaseEventRequest):
+class DeviceConnectEvent(EventHandler):
     """Handles device connection events by updating or creating device records."""
 
-    def handle_request(self, consumer, message: DeviceMessage):
+    def handle_event(self, message: DeviceMessage):
         device = self._get_device(message.device_id)
         if not device:
             device = self._create_new_device(

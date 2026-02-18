@@ -1,3 +1,4 @@
+from consumers.router_message.message_event import MessageEvent
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used
@@ -12,7 +13,7 @@ class PinPwm(BaseHardware):
     description = "Single-channel PWM controller"
     config_model = PwmConfig
     state_model = PwmState
-    actions = {"set_value": SetValue}
+    actions = {MessageEvent.SET_VALUE: SetValue}
     events = {}
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]

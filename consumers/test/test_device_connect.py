@@ -2,7 +2,7 @@ import pytest
 from aquarium.models import Aquarium
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.message_type import MessageType
-from consumers.events.device_connect import DeviceConnectEvent
+from hardware.device.events_handlers.device_connect import DeviceConnectEvent
 from consumers.router_message.device_message import DeviceMessage
 
 
