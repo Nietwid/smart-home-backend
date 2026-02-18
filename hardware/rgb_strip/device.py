@@ -1,4 +1,6 @@
-from device.models import ChipType
+from device.models import ChipType, Device
+from hardware.base import BaseHardware, HardwareValidationError
+from hardware.helpers.extract_field import extract_field
 from hardware.rgb_strip.action_handlers.set_color import SetColor
 from hardware.rgb_strip.action_handlers.turn_off import TurnOff
 from hardware.rgb_strip.action_handlers.turn_on import TurnOn
@@ -6,25 +8,36 @@ from hardware.rgb_strip.schema import (
     RGBStripState,
     RGBStripConfig,
 )
-from hardware.rgb_strip.serializer import (
-    RGBStripConfigSerializer,
-    RGBStripStateSerializer,
-)
-
 from hardware.registry import hardware_registry
 from hardware.types import HardwareTypes
 
 
-@hardware_registry(
-    name="rgb_strip",
-)
-class RGBStrip:
-    hardware_type = HardwareTypes.LIGHT
+@hardware_registry(name="rgb_strip")
+class RGBStripHardware(BaseHardware):
+    description = "RGB LED strip controller with three independent PWM outputs (R, G, B channels)."
     config_model = RGBStripConfig
     state_model = RGBStripState
-    config_serializer = RGBStripConfigSerializer
-    state_serializer = RGBStripStateSerializer
+    hardware_type = HardwareTypes.LIGHT
+    chip_support = [name.value for name in ChipType]
     actions = {"set_color": SetColor, "turn_on": TurnOn, "turn_off": TurnOff}
     events = {}
-    description = "RGB LED strip controller with three independent PWM outputs (R, G, B channels)."
-    chip_support = [name.value for name in ChipType]
+
+    @classmethod
+    def validate_config(cls, config: RGBStripConfig, device: Device) -> None:
+        occupied_pins = []
+        for peripheral in device.peripherals.all():
+            occupied_pins.extend(extract_field(peripheral.config, "pin"))
+
+        errors = {}
+
+        for color in ["r_pin", "g_pin", "b_pin"]:
+            pin_value = getattr(config, color).pin
+            if pin_value in occupied_pins:
+                errors.setdefault(color, {})["__errors"] = ["This pin is already used"]
+
+        if errors:
+            raise HardwareValidationError(errors)
+
+    @classmethod
+    def validate_state(cls, state: RGBStripState, device: Device) -> None:
+        pass

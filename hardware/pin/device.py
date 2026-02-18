@@ -1,4 +1,6 @@
-from device.models import ChipType
+from device.models import ChipType, Device
+from hardware.base import BaseHardware, HardwareValidationError
+from hardware.helpers.is_used import is_used
 from hardware.pin.action_handlers.output_set_value import OutputSetValue
 from hardware.pin.action_handlers.set_value import SetValue
 from hardware.registry import hardware_registry
@@ -9,35 +11,44 @@ from hardware.pin.schema import (
     PinOutputState,
     PinInputConfig,
 )
-from hardware.pin.serializer import (
-    PinInputStateSerializer,
-    PinInputConfigSerializer,
-    PinOutputConfigSerializer,
-    PinOutputStateSerializer,
-)
 
 
 @hardware_registry(name="pin_output")
-class PinOutput:
+class PinInputHardware(BaseHardware):
+    description = "Digital output pin."
     config_model = PinOutputConfig
     state_model = PinOutputState
-    config_serializer = PinOutputConfigSerializer
-    state_serializer = PinOutputStateSerializer
+    hardware_type = HardwareTypes.OUTPUT
+    chip_support = [name.value for name in ChipType]
     actions = {"set_value": OutputSetValue}
     events = {}
-    hardware_type = HardwareTypes.OUTPUT
-    description = "Digital output pin."
-    chip_support = [name.value for name in ChipType]
+
+    @classmethod
+    def validate_config(cls, config: PinOutputConfig, device: Device) -> None:
+        if is_used(device.peripherals.all(), "pin", [config.pin]):
+            raise HardwareValidationError(
+                {"pin": {"__errors": ["This pin is already used"]}}
+            )
+
+    @classmethod
+    def validate_state(cls, state: PinOutputState, device: Device) -> None:
+        pass
 
 
 @hardware_registry(name="pin_input")
-class PinOutput:
+class PinOutputHardware(BaseHardware):
     config_model = PinInputConfig
     state_model = PinInputState
-    config_serializer = PinInputConfigSerializer
-    state_serializer = PinInputStateSerializer
     actions = {"set_value": SetValue}
     events = {}
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
+
+    @classmethod
+    def validate_config(cls, config: PinInputConfig, device: Device) -> None:
+        pass
+
+    @classmethod
+    def validate_state(cls, state: PinInputState, device: Device) -> None:
+        pass

@@ -1,0 +1,3 @@
+class DeviceHardware:
+    actions = {}
+    events = {}

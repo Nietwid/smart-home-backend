@@ -1,13 +1,4 @@
-from enum import StrEnum
-
 from pydantic import BaseModel
-
-
-class PwmAction(StrEnum):
-    SET_VALUE = "set_value"
-
-
-class PwmEvent(StrEnum): ...
 
 
 class PwmConfig(BaseModel):

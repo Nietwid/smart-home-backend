@@ -1,5 +1,7 @@
 from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
+
+from consumers.router_message.messenger import DeviceMessenger
 from peripherals.serializers import PeripheralSerializer
 
 

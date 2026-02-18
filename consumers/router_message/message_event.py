@@ -12,6 +12,7 @@ class MessageEvent(str, Enum):
     STATE_CHANGE = "state_change"
     UPDATE_FIRMWARE = "update_firmware"
     UPDATE_FIRMWARE_ERROR = "update_firmware_error"
+    UPDATE_CONFIG = "update_config"
 
     # Button events
     ON_CLICK = "on_click"
