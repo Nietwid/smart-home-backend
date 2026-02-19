@@ -2,28 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Type
 from pydantic import BaseModel
 
-from consumers.router_message.device_message import DeviceMessage
-from consumers.router_message.message_event import MessageEvent
 from device.models import Device
-
-
-class EventHandler(ABC):
-    @classmethod
-    @abstractmethod
-    def handle_event(cls, message: DeviceMessage) -> None:
-        raise NotImplementedError()
-
-class ActionHandler(ABC):
-
-    @classmethod
-    @abstractmethod
-    def handle_action(cls) -> None:
-        raise NotImplementedError()
-
-    @classmethod
-    @abstractmethod
-    def handle_response(cls, message: DeviceMessage) -> None:
-        raise NotImplementedError()
 
 class BaseHardware(ABC):
     config_model = None
@@ -31,9 +10,9 @@ class BaseHardware(ABC):
 
     description: str = ""
     hardware_type: str = ""
-    chip_support: list[str] = []
-    actions: dict[MessageEvent, type[ActionHandler]] = []
-    events: dict[MessageEvent, type[EventHandler]] = []
+    chip_support: tuple[str] = []
+    actions: tuple[str] = []
+    events: tuple[str] = []
 
     @classmethod
     def parse_config(cls, data: dict)->Type[BaseModel]:

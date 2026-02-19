@@ -5,8 +5,6 @@ from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth.models import User
 from channels.db import database_sync_to_async
 
-from consumers.router_message.device_message import DeviceMessage
-
 
 @database_sync_to_async
 def validate_user(token):

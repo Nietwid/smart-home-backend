@@ -7,4 +7,5 @@ def hardware_registry(name: str):
     def wrapper(cls):
         HARDWARE_REGISTRY[name] = cls
         return cls
+
     return wrapper

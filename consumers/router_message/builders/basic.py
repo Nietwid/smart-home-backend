@@ -2,9 +2,9 @@ import time
 from typing import Literal
 
 from consumers.router_message.builders.base import build_response, build_request
-from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
 from device.models import Event
+from dispatcher.messages.device_message import DeviceMessage
 
 
 def basic_response(

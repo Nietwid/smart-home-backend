@@ -13,9 +13,6 @@ from consumers.router_message.messenger import DeviceMessenger
 from device.serializers.device import DeviceSerializer
 from .serializer import CardSerializer
 from .models import Card, Rfid
-from utils.shared_task import check_add_card_request
-from settings import Settings
-from enums.settings import TimeSettingKey
 
 
 class RfidListCreate(ListCreateAPIView):
@@ -70,8 +67,8 @@ class CardListCreate(ListCreateAPIView):
         request = add_tag_request(rfid.mac, validated_data["name"])
         DeviceMessenger().send(rfid.get_router_mac(), request)
 
-        settings = Settings()
-        check_add_card_request.apply_async(
-            (rfid.id,), countdown=settings.get(TimeSettingKey.ADD_TAG_WAIT, 20)
-        )
+        # settings = Settings()
+        # check_add_card_request.apply_async(
+        #     (rfid.id,), countdown=settings.get(TimeSettingKey.ADD_TAG_WAIT, 20)
+        # )
         return Response(serializer_data, 200)

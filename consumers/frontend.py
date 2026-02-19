@@ -4,11 +4,11 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from uuid import uuid4
 from ai_assistance.tasks import ai_test
-from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.message_type import MessageType
 from consumers.router_message.messenger import DeviceMessenger
 from consumers.utils import validate_user
+from dispatcher.messages.device_message import DeviceMessage
 
 
 class UserConsumer(AsyncWebsocketConsumer):

@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from datetime import datetime
 from django.db.models import QuerySet
@@ -13,7 +12,7 @@ from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 from consumers.frontend_message.frontend_message_type import FrontendMessageType
 from consumers.frontend_message.messenger import FrontendMessenger
-from device_consumer.tasks import handle_device_message_task
+from dispatcher.tasks import handle_device_message_task
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +66,7 @@ class DeviceConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
-            handle_device_message_task.delay(text_data)
+            handle_device_message_task.delay(text_data, self.home.pk, self.router.mac)
         except Exception as e:
             logger.error(f"Could not push task to RabbitMQ: {e}")
 

@@ -3,14 +3,17 @@ import logging
 from celery import shared_task
 from pydantic import ValidationError
 
-from consumers.router_message.device_message import DeviceMessage
-from device_consumer.services.process_device_message import process_device_message
+from dispatcher.messages.device_message import DeviceMessage
+from dispatcher.context.builder import context_builder
+from dispatcher.dispatchers.device_dispatcher import device_dispatcher
 
 logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=3)
-def handle_device_message_task(self, raw_json: str):
+def handle_device_message_task(
+    self, raw_json: str, home_id: int, router_mac: str
+) -> None:
     """
     Asynchronously processes incoming hardware events from the message broker.
 
@@ -20,7 +23,8 @@ def handle_device_message_task(self, raw_json: str):
 
     Args:
         raw_json (str): The raw JSON string received from the device.
-
+        home_id (int):
+        router_mac (str):
     Returns:
         None
 
@@ -30,7 +34,8 @@ def handle_device_message_task(self, raw_json: str):
     """
     try:
         message = DeviceMessage.model_validate_json(raw_json)
-        process_device_message(message)
+        context = context_builder.build(message, home_id, router_mac)
+        device_dispatcher.dispatch(message, context)
     except ValidationError:
         logger.error(f"Payload validation failed for message: {raw_json}")
         return

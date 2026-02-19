@@ -2,15 +2,12 @@ from consumers.router_message.message_event import MessageEvent
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.extract_field import extract_field
-from hardware.rgb_strip.action_handlers.set_color import SetColor
-from hardware.rgb_strip.action_handlers.turn_off import TurnOff
-from hardware.rgb_strip.action_handlers.turn_on import TurnOn
 from hardware.rgb_strip.schema import (
     RGBStripState,
     RGBStripConfig,
 )
 from hardware.registry import hardware_registry
-from hardware.types import HardwareTypes
+from hardware.enums import HardwareTypes
 
 
 @hardware_registry(name="rgb_strip")
@@ -20,12 +17,12 @@ class RGBStripHardware(BaseHardware):
     state_model = RGBStripState
     hardware_type = HardwareTypes.LIGHT
     chip_support = [name.value for name in ChipType]
-    actions = {
-        MessageEvent.SET_COLOR: SetColor,
-        MessageEvent.TURN_ON: TurnOn,
-        MessageEvent.TURN_OFF: TurnOff,
-    }
-    events = {}
+    actions = (
+        MessageEvent.SET_COLOR,
+        MessageEvent.TURN_ON,
+        MessageEvent.TURN_OFF,
+    )
+    events = ()
 
     @classmethod
     def validate_config(cls, config: RGBStripConfig, device: Device) -> None:

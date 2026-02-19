@@ -34,14 +34,7 @@ class BasicResponse(BaseModel):
 
 class DeviceConnectRequest(BaseModel):
     wifi_strength: int
-    fun: str
     firmware_version: float
-
-    @field_validator("fun")
-    def validate_fun(cls, value):
-        if value not in DeviceRegistry().devices:
-            raise ValueError(f"Invalid device fun: {value}")
-        return value
 
 
 class DeviceDisconnectRequest(BaseModel):

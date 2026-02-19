@@ -2,10 +2,8 @@ from consumers.router_message.message_event import MessageEvent
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used
-from hardware.pin.action_handlers.output_set_value import OutputSetValue
-from hardware.pin.action_handlers.set_value import SetValue
 from hardware.registry import hardware_registry
-from hardware.types import HardwareTypes
+from hardware.enums import HardwareTypes
 from hardware.pin.schema import (
     PinOutputConfig,
     PinInputState,
@@ -21,8 +19,8 @@ class PinInputHardware(BaseHardware):
     state_model = PinOutputState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = {MessageEvent.SET_VALUE: OutputSetValue}
-    events = {}
+    actions = (MessageEvent.SET_VALUE,)
+    events = ()
 
     @classmethod
     def validate_config(cls, config: PinOutputConfig, device: Device) -> None:
@@ -40,15 +38,18 @@ class PinInputHardware(BaseHardware):
 class PinOutputHardware(BaseHardware):
     config_model = PinInputConfig
     state_model = PinInputState
-    actions = {MessageEvent.SET_VALUE: SetValue}
-    events = {}
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
+    actions = (MessageEvent.SET_VALUE,)
+    events = ()
 
     @classmethod
     def validate_config(cls, config: PinInputConfig, device: Device) -> None:
-        pass
+        if is_used(device.peripherals.all(), "pin", [config.pin]):
+            raise HardwareValidationError(
+                {"pin": {"__errors": ["This pin is already used"]}}
+            )
 
     @classmethod
     def validate_state(cls, state: PinInputState, device: Device) -> None:
