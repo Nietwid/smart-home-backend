@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional, Any
 
 from pydantic import BaseModel, Field
 
@@ -15,7 +15,7 @@ class CommandMessage(BaseModel):
     message_event: MessageEvent
     home_id: int
     router_mac: str
-    payload: Type[BaseModel]
+    payload: Any
     message_id: Optional[str] = Field(default=None)
     device: Optional[Device] = Field(default=None)
     peripheral: Optional[Peripherals] = Field(default=None)

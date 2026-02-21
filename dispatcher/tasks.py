@@ -3,12 +3,10 @@ import logging
 from celery import shared_task
 from pydantic import ValidationError
 
-from device.repository.device_repository import device_repository
 from device_consumer.device_message import DeviceMessage
-from dispatcher.command_message import CommandMessage
+from dispatcher.command_message_factory import command_message_factory
 from dispatcher.dispatcher import device_dispatcher
-from dispatcher.enums import Scope
-from peripherals.repository import peripheral_repository
+from notifier.notifier import notifier
 
 logger = logging.getLogger(__name__)
 
@@ -37,33 +35,14 @@ def handle_device_message_task(
     """
     try:
         message = DeviceMessage.model_validate_json(raw_json)
-        device = None
-        peripheral = None
-
-        if message.scope == Scope.CPU:
-            device = device_repository.get_device_by_mac(message.device_id)
-        elif message.scope == Scope.PERIPHERAL:
-            peripheral = peripheral_repository.get_by_id_with_device(
-                message.peripheral_id
-            )
-
-        command_message = CommandMessage(
-            scope=message.scope,
-            message_type=message.message_type,
-            direction=message.direction,
-            message_event=message.message_event,
-            payload=message.payload,
-            message_id=message.message_id,
-            device=device,
-            peripheral=peripheral,
-            home_id=home_id,
-            router_mac=router_mac,
-        )
-
-        device_dispatcher.dispatch(command_message)
+        command_message = command_message_factory(message, home_id, router_mac)
     except ValidationError:
         logger.error(f"Payload validation failed for message: {raw_json}")
         return
     except Exception as exc:
+        logger.error(f"Error processing message. exc: {exc}")
         # Necessary to trigger the 'auto retry_for' logic
         raise exc
+
+    messages = device_dispatcher.dispatch(command_message)
+    notifier.notify(messages)

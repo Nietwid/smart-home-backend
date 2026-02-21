@@ -4,32 +4,28 @@ from consumers.frontend_message.frontend_message import FrontendMessage
 from consumers.frontend_message.frontend_message_type import FrontendMessageType
 from consumers.frontend_message.messenger import FrontendMessenger
 from consumers.router_message.builders.basic import basic_response
-from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.messenger import DeviceMessenger
 from consumers.router_message.payload.basic import DeviceConnectRequest
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
-from device_registry import DeviceRegistry
-from hardware.base import EventHandler, DeviceContext
+from dispatcher.base import ActionEventBaseHandler
+from dispatcher.command_message import CommandMessage
 from room.serializer import RoomSerializer
 
-from user.models import Home
 from device.models import Device
 
 
-class DeviceConnectEvent(EventHandler):
+class DeviceConnectEvent(ActionEventBaseHandler):
     """Handles device connection events by updating or creating device records."""
 
-    def handle_event(self, message: DeviceMessage, context: DeviceContext) -> None:
-        device = context.device
-        if not device:
-            device = self._create_new_device(
-                message.device_id, message.payload, context.home_id
-            )
+    def __call__(self, message: CommandMessage) -> None:
+        device = message.device
+        payload: DeviceConnectRequest = message.payload
+
         device.last_seen = datetime.now()
         device.is_online = True
         device.pending = []
-        device.firmware_version = message.payload.firmware_version
+        device.firmware_version = payload.firmware_version
         device.save(
             update_fields=["last_seen", "is_online", "pending", "firmware_version"]
         )
