@@ -1,18 +1,9 @@
-from typing import Type
 from abc import ABC, abstractmethod
-from pydantic import BaseModel
 
-from dispatcher.messages.device_message import DeviceMessage
-from dispatcher.messages.frontend_message import FrontendActionMessage
+from dispatcher.command_message import CommandMessage
 
 
-class DeviceBaseHandler(ABC):
+class ActionEventBaseHandler(ABC):
     @abstractmethod
-    def __call__(self, message: DeviceMessage, context: Type[BaseModel]):
-        raise NotImplementedError()
-
-
-class FrontendBaseHandler(ABC):
-    @abstractmethod
-    def __call__(self, message: FrontendActionMessage, context: Type[BaseModel]):
+    def __call__(self, message: CommandMessage):
         raise NotImplementedError()

@@ -8,7 +8,7 @@ from device.models import Device
 
 
 class FrontendMessenger:
-    """Singleton class for sending messages to the frontend via Django Channels."""
+    """Singleton class for sending command to the frontend via Django Channels."""
 
     _instance = None
     _initialized = False

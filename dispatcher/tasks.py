@@ -3,9 +3,12 @@ import logging
 from celery import shared_task
 from pydantic import ValidationError
 
-from dispatcher.messages.device_message import DeviceMessage
-from dispatcher.context.builder import context_builder
-from dispatcher.dispatchers.device_dispatcher import device_dispatcher
+from device.repository.device_repository import device_repository
+from device_consumer.device_message import DeviceMessage
+from dispatcher.command_message import CommandMessage
+from dispatcher.dispatcher import device_dispatcher
+from dispatcher.enums import Scope
+from peripherals.repository import peripheral_repository
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +37,30 @@ def handle_device_message_task(
     """
     try:
         message = DeviceMessage.model_validate_json(raw_json)
-        context = context_builder.build(message, home_id, router_mac)
-        device_dispatcher.dispatch(message, context)
+        device = None
+        peripheral = None
+
+        if message.scope == Scope.CPU:
+            device = device_repository.get_device_by_mac(message.device_id)
+        elif message.scope == Scope.PERIPHERAL:
+            peripheral = peripheral_repository.get_by_id_with_device(
+                message.peripheral_id
+            )
+
+        command_message = CommandMessage(
+            scope=message.scope,
+            message_type=message.message_type,
+            direction=message.direction,
+            message_event=message.message_event,
+            payload=message.payload,
+            message_id=message.message_id,
+            device=device,
+            peripheral=peripheral,
+            home_id=home_id,
+            router_mac=router_mac,
+        )
+
+        device_dispatcher.dispatch(command_message)
     except ValidationError:
         logger.error(f"Payload validation failed for message: {raw_json}")
         return
