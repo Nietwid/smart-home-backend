@@ -1,8 +1,7 @@
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.device_message import DeviceMessage
 from consumers.events.base_event import BaseEventResponse
 from device.serializers.device import DeviceSerializer
-from device_registry import DeviceRegistry
 
 
 class SetSettings(BaseEventResponse):

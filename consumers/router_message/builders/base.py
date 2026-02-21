@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.message_type import MessageType
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages import DeviceMessage
 
 
 def build_request(event: MessageEvent, device_id: str, payload: dict) -> DeviceMessage:

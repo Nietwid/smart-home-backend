@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.message_event import MessageEvent
 from device.serializers.device import DeviceSerializer
 from rfid.models import Rfid

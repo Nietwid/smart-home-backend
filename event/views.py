@@ -4,7 +4,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.builders.basic import get_event_request
 from consumers.router_message.messenger import DeviceMessenger
 from device.models import Device, Event

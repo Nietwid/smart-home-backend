@@ -1,6 +1,6 @@
 from consumers.router_message.builders.base import build_request
 from consumers.router_message.message_event import MessageEvent
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages import DeviceMessage
 
 
 def add_tag_request(mac: str, name: str) -> DeviceMessage:

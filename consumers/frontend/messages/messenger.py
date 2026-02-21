@@ -2,9 +2,10 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from threading import Lock
 
-from consumers.frontend_message.frontend_message import FrontendMessage
-from consumers.frontend_message.frontend_message_type import FrontendMessageType
-from device.models import Device
+from consumers.frontend.messages.message import FrontendMessage
+from consumers.frontend.messages.types import (
+    FrontendMessageType,
+)
 
 
 class FrontendMessenger:

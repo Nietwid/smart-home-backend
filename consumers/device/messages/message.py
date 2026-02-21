@@ -11,8 +11,8 @@ from dispatcher.enums import MessageType, MessageDirection, Scope
 
 class DeviceMessage(BaseModel):
     direction: MessageDirection
-    message_event: MessageEvent
-    message_type: MessageType
+    event: MessageEvent
+    type: MessageType
     scope: Scope
     device_id: str
     peripheral_id: int
@@ -28,14 +28,14 @@ class DeviceMessage(BaseModel):
 
     @model_validator(mode="after")
     def validate_payload(self):
-        payload_type = PAYLOAD_MAPPING.get(self.message_event, None)
+        payload_type = PAYLOAD_MAPPING.get(self.event, None)
         if payload_type is None:
             raise ValueError(
-                f"Unsupported payload type. Did you forget to register {self.message_event}?",
+                f"Unsupported payload type. Did you forget to register {self.event}?",
             )
         model = (
             payload_type[0]
-            if self.message_direction == MessageDirection.INTENT
+            if self.direction == MessageDirection.INTENT
             else payload_type[1]
         )
         if model is SerializerDataResponse and isinstance(self.payload, dict):

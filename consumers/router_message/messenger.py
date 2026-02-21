@@ -2,7 +2,7 @@ from threading import Lock
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages import DeviceMessage
 
 
 class DeviceMessenger:

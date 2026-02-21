@@ -3,7 +3,7 @@ import logging
 from celery import shared_task
 from pydantic import ValidationError
 
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages import DeviceMessage
 from dispatcher.command_message_factory import command_message_factory
 from dispatcher.dispatcher import device_dispatcher
 from notifier.notifier import notifier

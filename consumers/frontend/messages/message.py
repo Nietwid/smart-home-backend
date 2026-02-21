@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 
-from consumers.frontend_message.frontend_message_type import FrontendMessageType
+from consumers.frontend.messages.types import (
+    FrontendMessageType,
+)
 
 
 class FrontendMessage(BaseModel):

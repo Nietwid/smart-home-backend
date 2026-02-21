@@ -10,9 +10,9 @@ from peripherals.models import Peripherals
 
 class CommandMessage(BaseModel):
     scope: Scope
-    message_type: MessageType
+    type: MessageType
     direction: MessageDirection
-    message_event: MessageEvent
+    event: MessageEvent
     home_id: int
     router_mac: str
     payload: Any

@@ -3,9 +3,11 @@ from django.db.models import QuerySet
 
 from ai_assistance.device_model import DeviceModel
 from ai_assistance.intent_model import IntentModel
-from consumers.frontend_message.frontend_message import FrontendMessage
-from consumers.frontend_message.frontend_message_type import FrontendMessageType
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.message import FrontendMessage
+from consumers.frontend.messages.types import (
+    FrontendMessageType,
+)
+from consumers.frontend.messages.messenger import FrontendMessenger
 from device_registry import DeviceRegistry
 from utils.get_available_for_user_device import get_all_available_for_user_device
 from utils.get_available_intents import get_available_intent

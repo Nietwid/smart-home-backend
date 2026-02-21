@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from consumers.frontend_message.frontend_message import FrontendMessage
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages.message import DeviceMessage
+from consumers.frontend.messages.message import FrontendMessage
 from notifier.enum import Destinations
 
 
@@ -9,9 +9,11 @@ class NotifierMessage(BaseModel):
     destination:Destinations
 
 class DeviceNotifierData(NotifierMessage):
+    destination = Destinations.DEVICE
     router_mac:str
-    data:DeviceMessage
+    data: DeviceMessage
 
 class FrontendNotifierData(NotifierMessage):
-    router_mac:str
-    data:FrontendMessage
+    destination = Destinations.FRONTEND
+    home_id: int
+    data: FrontendMessage

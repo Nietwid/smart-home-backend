@@ -1,4 +1,4 @@
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
 from consumers.events.base_event import BaseEventResponse

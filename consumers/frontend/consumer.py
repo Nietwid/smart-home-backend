@@ -8,7 +8,7 @@ from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.message_type import MessageType
 from consumers.router_message.messenger import DeviceMessenger
 from consumers.utils import validate_user
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages.message import DeviceMessage
 
 
 class UserConsumer(AsyncWebsocketConsumer):

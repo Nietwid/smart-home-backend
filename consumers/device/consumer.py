@@ -10,8 +10,10 @@ from consumers.router_message.builders.basic import get_connected_devices_reques
 from device.models import Router, Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
-from consumers.frontend_message.frontend_message_type import FrontendMessageType
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.types import (
+    FrontendMessageType,
+)
+from consumers.frontend.messages.messenger import FrontendMessenger
 from dispatcher.tasks import handle_device_message_task
 
 logger = logging.getLogger(__name__)

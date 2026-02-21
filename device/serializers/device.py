@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.messenger import FrontendMessenger
 from device_registry import DeviceRegistry
 from event.serializer import EventSerializer
 from peripherals.serializers import PeripheralSerializer

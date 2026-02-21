@@ -1,9 +1,11 @@
 from celery import shared_task
 
 from ai_assistance.ai_assistance import AiAssistance
-from consumers.frontend_message.frontend_message import FrontendMessage
-from consumers.frontend_message.frontend_message_type import FrontendMessageType
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.message import FrontendMessage
+from consumers.frontend.messages.types import (
+    FrontendMessageType,
+)
+from consumers.frontend.messages.messenger import FrontendMessenger
 
 
 @shared_task

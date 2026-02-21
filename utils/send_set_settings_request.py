@@ -1,7 +1,7 @@
 from consumers.router_message.messenger import DeviceMessenger
 from device_registry import DeviceRegistry
 from consumers.router_message.builders.basic import set_settings_request
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages import DeviceMessage
 
 
 def send_set_settings_request(instance):

@@ -1,5 +1,5 @@
 from consumers.events.base_event import BaseEventRequest
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.microservice_message.on_state_change import on_state_change
 from consumers.rabbitmq_publisher import get_publisher, QueueNames
 from consumers.router_message.device_message import DeviceMessage

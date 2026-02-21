@@ -1,5 +1,5 @@
 from consumers.router_message.message_event import MessageEvent
-from device_consumer.device_message import DeviceMessage
+from consumers.device.messages import DeviceMessage
 from dispatcher.enums import Scope
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
