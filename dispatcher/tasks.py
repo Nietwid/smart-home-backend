@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 from consumers.device.messages.message import DeviceMessage
 from dispatcher.action_event_command_processor import action_event_command_processor
-from dispatcher.command_message_factory import command_message_factory
+from dispatcher.command_message.factory import command_message_factory
 
 logger = logging.getLogger(__name__)
 

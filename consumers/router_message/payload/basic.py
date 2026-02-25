@@ -1,9 +1,9 @@
 from typing import Literal
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 from consumers.router_message.device_state import DeviceState
-from device_registry import DeviceRegistry
+from device.models import ChipType
 
 
 class EmptyRequest(BaseModel):
@@ -35,6 +35,7 @@ class BasicResponse(BaseModel):
 class DeviceConnectRequest(BaseModel):
     wifi_strength: int
     firmware_version: float
+    chip_type: ChipType
 
 
 class DeviceDisconnectRequest(BaseModel):

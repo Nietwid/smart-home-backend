@@ -1,6 +1,6 @@
-from datetime import datetime
-
+from django.utils import timezone
 from consumers.device.messages.builder import device_message_builder
+from consumers.device.messages.enum import MessageEvent
 from consumers.frontend.messages.builder import frontend_message_builder
 from consumers.frontend.messages.types import (
     FrontendMessageType,
@@ -10,14 +10,22 @@ from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 
 from dispatcher.base import ActionEventBaseHandler
-from dispatcher.command_message import CommandMessage
+from dispatcher.command_message.message import CommandMessage
+from dispatcher.device_registry import register_device_handler
 from dispatcher.dispatch_result import DispatchResult
+from dispatcher.enums import Scope, MessageType, MessageDirection
 from notifier.message import DeviceNotifierData, FrontendNotifierData
 from room.serializer import RoomSerializer
 
 from device.models import Device
 
 
+@register_device_handler(
+    scope=Scope.CPU,
+    message_type=MessageType.EVENT,
+    direction=MessageDirection.INTENT,
+    handler_name=MessageEvent.DEVICE_CONNECT,
+)
 class DeviceConnectEvent(ActionEventBaseHandler):
     """Handles device connection events by updating or creating device records."""
 
@@ -26,14 +34,13 @@ class DeviceConnectEvent(ActionEventBaseHandler):
         payload: DeviceConnectRequest = message.payload
         home_id = device.home.id
         notifier_message = []
-        device.last_seen = datetime.now()
+        device.last_seen = timezone.now()
         device.is_online = True
         device.pending = []
         device.firmware_version = payload.firmware_version
         device.save(
             update_fields=["last_seen", "is_online", "pending", "firmware_version"]
         )
-
         notifier_message.append(
             DeviceNotifierData(
                 router_mac=device.get_router_mac(),

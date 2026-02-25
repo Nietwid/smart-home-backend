@@ -58,7 +58,9 @@ class Device(models.Model):
         return Router.objects.get(home=self.home)
 
     def get_router_mac(self):
-        return Router.objects.filter(home=self.home).only("mac").first()
+        return (
+            Router.objects.filter(home=self.home).values_list("mac", flat=True).first()
+        )
 
     def extra_settings(self):
         return {}

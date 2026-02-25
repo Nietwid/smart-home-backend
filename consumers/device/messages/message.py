@@ -39,6 +39,8 @@ class DeviceMessage(BaseModel):
             if self.direction == MessageDirection.INTENT
             else payload_type[1]
         )
+        if isinstance(self.payload, model):
+            return self
         if model is SerializerDataResponse and isinstance(self.payload, dict):
             return self
         self.payload = model(**self.payload)

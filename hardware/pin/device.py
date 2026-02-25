@@ -1,4 +1,4 @@
-from consumers.router_message.message_event import MessageEvent
+from consumers.device.messages.enum import MessageEvent
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used

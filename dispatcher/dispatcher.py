@@ -2,10 +2,11 @@ import logging
 
 from consumers.router_message.message_event import MessageEvent
 from dispatcher.base import ActionEventBaseHandler
-from dispatcher.command_message import CommandMessage
+from dispatcher.command_message.message import CommandMessage
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.enums import Scope, MessageType, MessageDirection
 from dispatcher.device_registry import DISPATCH_DICT
+from notifier.message import NotifierMessage
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class ActionEventDispatcher:
     ):
         self.repository = registry
 
-    def dispatch(self, message: CommandMessage) -> DispatchResult:
+    def dispatch(self, message: CommandMessage) -> list[NotifierMessage]:
         # Build a key from the message metadata to find the correct handler
         key = (
             message.scope,
@@ -28,7 +29,6 @@ class ActionEventDispatcher:
             message.direction,
             message.command,
         )
-
         try:
             # Look up the handler for this specific message type
             handler = self.repository[key]
@@ -36,14 +36,13 @@ class ActionEventDispatcher:
             # If no handler is registered for this key, log an error
             # and return an empty DispatchResult (no notifications, no commands)
             logger.error(f"No handler registered for {key}")
-            return DispatchResult()
+            return []
 
         # Call the handler with the message
         # Handler should return a DispatchResult with:
         # - notifications: NotifierMessages to be sent
         # - commands: additional CommandMessages to be dispatched
         result = handler(message)
-
         notifications = result.notifications
         commands = result.commands
 
@@ -55,7 +54,7 @@ class ActionEventDispatcher:
 
         # Return the original DispatchResult, now including notifications
         # from any nested commands
-        return result
+        return notifications
 
 
 action_event_dispatcher = ActionEventDispatcher(DISPATCH_DICT)

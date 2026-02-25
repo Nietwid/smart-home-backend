@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from dispatcher.command_message import CommandMessage
+from dispatcher.command_message.message import CommandMessage
 
 
 class ActionEventBaseHandler(ABC):
