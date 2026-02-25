@@ -2,6 +2,7 @@ from typing import Optional, Any
 
 from pydantic import BaseModel, Field
 
+from consumers.device.messages.enum import MessageAction
 from consumers.router_message.message_event import MessageEvent
 from device.models import Device
 from dispatcher.enums import MessageType, Scope, MessageDirection
@@ -12,7 +13,7 @@ class CommandMessage(BaseModel):
     scope: Scope
     type: MessageType
     direction: MessageDirection
-    event: MessageEvent
+    command: MessageEvent | MessageAction
     home_id: int
     router_mac: str
     payload: Any

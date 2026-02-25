@@ -3,7 +3,7 @@ import logging
 from celery import shared_task
 from pydantic import ValidationError
 
-from consumers.device.messages import DeviceMessage
+from consumers.device.messages.message import DeviceMessage
 from dispatcher.command_message_factory import command_message_factory
 from dispatcher.dispatcher import device_dispatcher
 from notifier.notifier import notifier
@@ -44,5 +44,5 @@ def handle_device_message_task(
         # Necessary to trigger the 'auto retry_for' logic
         raise exc
 
-    messages = device_dispatcher.dispatch(command_message)
-    notifier.notify(messages)
+    result = device_dispatcher.dispatch(command_message)
+    notifier.notify(result.notifications)

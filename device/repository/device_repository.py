@@ -21,8 +21,8 @@ class DeviceRepository:
     def get_by_id(self, device_id: int) -> Optional[Device]:
         return Device.objects.filter(id=device_id).first()
 
-    def get_by_mac(self, mac: str) -> Optional[Device]:
-        return Device.objects.filter(mac=mac).first()
+    def get_by_mac(self, mac: str) -> Device:
+        return Device.objects.select_related("home").get(mac=mac)
 
     def create(self, home_id: int, mac: str, chip_type: ChipType) -> Device:
         return Device.objects.create(home=home_id, mac=mac, chip_type=chip_type)

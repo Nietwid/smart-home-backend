@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "event",
     "firmware",
     "ai_assistance",
+    "consumers",
     "peripherals",
     "hardware",
 ]

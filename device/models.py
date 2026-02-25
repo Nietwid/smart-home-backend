@@ -1,6 +1,8 @@
 from django.db.models import JSONField
 from django.db import models
 
+from consumers.router_message.message_event import MessageEvent
+from dispatcher.command_message import CommandMessage
 from room.models import Room
 from user.models import Home
 
@@ -44,6 +46,10 @@ class Device(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_event_request(self, event_type: MessageEvent) -> list[CommandMessage]:
+        events = Event.objects.filter(device=self, event=event_type.value)
+        return []
 
     def get_router(self):
         return Router.objects.get(home=self.home)

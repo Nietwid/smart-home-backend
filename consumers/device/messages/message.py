@@ -3,6 +3,7 @@ from typing import Any
 
 from pydantic import BaseModel, field_validator, model_validator
 
+from consumers.device.messages.enum import MessageAction
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.payload.basic import SerializerDataResponse
 from consumers.router_message.payload.payload_mapper import PAYLOAD_MAPPING
@@ -11,7 +12,7 @@ from dispatcher.enums import MessageType, MessageDirection, Scope
 
 class DeviceMessage(BaseModel):
     direction: MessageDirection
-    event: MessageEvent
+    command: MessageEvent | MessageAction
     type: MessageType
     scope: Scope
     device_id: str

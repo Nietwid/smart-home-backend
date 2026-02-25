@@ -11,6 +11,7 @@ from device.serializers.router import RouterSerializer
 
 from dispatcher.base import ActionEventBaseHandler
 from dispatcher.command_message import CommandMessage
+from dispatcher.dispatch_result import DispatchResult
 from notifier.message import DeviceNotifierData, FrontendNotifierData
 from room.serializer import RoomSerializer
 
@@ -20,7 +21,7 @@ from device.models import Device
 class DeviceConnectEvent(ActionEventBaseHandler):
     """Handles device connection events by updating or creating device records."""
 
-    def __call__(self, message: CommandMessage) -> None:
+    def __call__(self, message: CommandMessage) -> DispatchResult:
         device: Device = message.device
         payload: DeviceConnectRequest = message.payload
         home_id = device.home.id
@@ -68,3 +69,4 @@ class DeviceConnectEvent(ActionEventBaseHandler):
                 ),
             ),
         )
+        return DispatchResult(notifications=notifier_message)

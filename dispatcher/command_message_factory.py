@@ -1,5 +1,5 @@
+from consumers.device.messages.message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
-from consumers.device.messages import DeviceMessage
 from dispatcher.enums import Scope
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
@@ -23,7 +23,7 @@ class CommandMessageFactory:
         peripheral = None
 
         if message.scope == Scope.CPU:
-            if message.message_event == MessageEvent.DEVICE_CONNECT:
+            if message.command == MessageEvent.DEVICE_CONNECT:
                 device = device_repository.get_by_mac_or_create(
                     home_id=home_id,
                     mac=message.device_id,
@@ -38,9 +38,9 @@ class CommandMessageFactory:
 
         return CommandMessage(
             scope=message.scope,
-            message_type=message.message_type,
+            type=message.type,
             direction=message.direction,
-            message_event=message.message_event,
+            command=message.command,
             payload=message.payload,
             message_id=message.message_id,
             device=device,

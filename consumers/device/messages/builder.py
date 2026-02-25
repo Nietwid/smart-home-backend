@@ -19,7 +19,7 @@ class DeviceMessageBuilder:
         peripheral_id = message.peripheral.pk if message.peripheral else 0
         return DeviceMessage(
             direction=MessageDirection.RESULT,
-            event=message.event,
+            event=message.command,
             type=message.type,
             scope=message.scope,
             device_id=message.device.mac,
