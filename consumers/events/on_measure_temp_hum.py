@@ -1,22 +1,17 @@
 from consumers.events.base_event import BaseEventRequest
-from consumers.microservice_message.microservice_message import MicroserviceMessage
 from consumers.microservice_message.on_measurement import on_measurement
-from consumers.rabbitmq_publisher import RabbitMQPublisher, QueueNames, get_publisher
+from consumers.rabbitmq_publisher import QueueNames, get_publisher
 from consumers.router_message.builders.measurements import (
     measurements_sleeping_time_response,
 )
 from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.payload.measurement import (
-    TemperatureRequest,
-    HumidityRequest,
-)
 from utils.waiting_time import waiting_time
 from temperature.models import TempHum
 
 
 class OnMeasureTempHum(BaseEventRequest):
-    from consumers.router_message.messenger import DeviceMessenger
+    from consumers.device.messenger import DeviceMessenger
 
     device_messanger = DeviceMessenger()
 

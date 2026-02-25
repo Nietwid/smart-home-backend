@@ -4,14 +4,13 @@ from consumers.frontend.messages.message import FrontendMessage
 from consumers.frontend.messages.types import (
     FrontendMessageType,
 )
-from consumers.frontend.messages.messenger import FrontendMessenger
 from device.models import Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
-from dispatcher.base import ActionEventBaseHandler
+from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.command_message import CommandMessage
 from dispatcher.dispatch_result import DispatchResult
-from notifier.message import FrontendNotifierData, NotifierMessage
+from notifier.message import FrontendNotifierData
 from room.serializer import RoomSerializer
 
 

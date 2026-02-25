@@ -6,7 +6,7 @@ from uuid import uuid4
 from ai_assistance.tasks import ai_test
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.message_type import MessageType
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from consumers.utils import validate_user
 from consumers.device.messages.message import DeviceMessage
 

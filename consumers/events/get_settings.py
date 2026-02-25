@@ -1,7 +1,7 @@
 from consumers.events.base_event import BaseEventRequest, BaseEventResponse
 from consumers.router_message.builders.basic import data_response
 from consumers.router_message.device_message import DeviceMessage
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from device_registry import DeviceRegistry
 
 

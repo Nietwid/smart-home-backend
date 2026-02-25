@@ -1,6 +1,4 @@
 from django.http import FileResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
@@ -9,7 +7,7 @@ from rest_framework.generics import ListAPIView, get_object_or_404
 
 from consumers.router_message.builders.basic import update_firmware_request
 from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from device.serializers.device import DeviceSerializer
 from firmware.models import FirmwareDevice
 from firmware.serializers import FirmwareDeviceSerializer
@@ -17,8 +15,6 @@ from device.models import Device
 from uuid import uuid4
 from django.core.cache import cache
 from django.conf import settings
-
-from smart_home.celery import initialize_ai_on_startup
 
 
 class FirmwareView(APIView):

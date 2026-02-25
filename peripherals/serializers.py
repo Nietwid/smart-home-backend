@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from consumers.router_message.builders.base import build_request
 from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
 from peripherals.models import Peripherals

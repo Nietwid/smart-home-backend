@@ -2,7 +2,7 @@ from aquarium.models import Aquarium
 from aquarium.serializer import AquariumSerializerDevice
 from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.builders.basic import set_settings_request
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from device.serializers.device import DeviceSerializer
 from utils.check_hour_in_range import check_hour_in_range
 from celery import shared_task

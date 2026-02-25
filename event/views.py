@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.builders.basic import get_event_request
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from device.models import Device, Event
 from device.serializers.device import DeviceSerializer
 from device_registry import DeviceRegistry

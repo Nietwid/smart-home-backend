@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from consumers.router_message.builders.basic import set_settings_request
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from utils.waiting_time import waiting_time
 from .models import TempHum
 

@@ -1,11 +1,10 @@
 import logging
 
-from consumers.router_message.message_event import MessageEvent
-from dispatcher.base import ActionEventBaseHandler
+from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.dispatch_result import DispatchResult
-from dispatcher.enums import Scope, MessageType, MessageDirection
-from dispatcher.device_registry import DISPATCH_DICT
+from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
+from consumers.device.messages.enum import MessageCommand
+from dispatcher.handlers.registry import DISPATCH_DICT
 from notifier.message import NotifierMessage
 
 logger = logging.getLogger(__name__)
@@ -15,7 +14,7 @@ class ActionEventDispatcher:
     def __init__(
         self,
         registry: dict[
-            tuple[Scope, MessageType, MessageDirection, MessageEvent],
+            tuple[Scope, MessageType, MessageDirection, MessageCommand],
             ActionEventBaseHandler,
         ],
     ):

@@ -1,6 +1,6 @@
 from consumers.device.messages.message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
-from dispatcher.enums import Scope
+from dispatcher.handlers.enums import Scope
 from dispatcher.command_message.message import CommandMessage
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
@@ -8,7 +8,7 @@ from device.repository.device_repository import device_repository
 
 class CommandMessageFactory:
 
-    def resolve(
+    def __call__(
         self, message: DeviceMessage, home_id: int, router_mac: str
     ) -> CommandMessage:
         """

@@ -2,7 +2,7 @@ from consumers.device.messages.enum import MessageEvent
 from dispatcher.dispatcher import ActionEventDispatcher
 from unittest.mock import Mock
 
-from dispatcher.enums import Scope, MessageType, MessageDirection
+from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 
 
 class FakeResult:

@@ -7,7 +7,7 @@ from consumers.device.messages.enum import MessageAction
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.payload.basic import SerializerDataResponse
 from consumers.router_message.payload.payload_mapper import PAYLOAD_MAPPING
-from dispatcher.enums import MessageType, MessageDirection, Scope
+from dispatcher.handlers.enums import MessageType, MessageDirection, Scope
 
 
 class DeviceMessage(BaseModel):

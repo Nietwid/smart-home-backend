@@ -1,6 +1,6 @@
 from consumers.device.messages.message import DeviceMessage
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.enums import MessageDirection
+from dispatcher.handlers.enums import MessageDirection
 from time import time
 
 

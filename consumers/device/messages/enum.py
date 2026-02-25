@@ -1,4 +1,5 @@
 from enum import StrEnum
+from typing import Union
 
 class MessageEvent(StrEnum):
     # Basic events
@@ -59,3 +60,5 @@ class MessageAction(StrEnum):
     ON_READ_FAILURE = "on_read_failure"
     ACCESS_GRANTED = "access_granted"
     ACCESS_DENIED = "access_denied"
+
+MessageCommand = Union[MessageEvent, MessageAction]

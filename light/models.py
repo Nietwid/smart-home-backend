@@ -2,7 +2,7 @@ from django.db import models
 from button.models import ButtonType, MonostableButtonEvent, BistableButtonEvent
 from consumers.router_message.builders.basic import get_intent_request
 from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from device.models import Device
 
 

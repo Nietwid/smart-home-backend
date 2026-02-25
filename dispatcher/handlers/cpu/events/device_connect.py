@@ -9,18 +9,18 @@ from consumers.router_message.payload.basic import DeviceConnectRequest
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 
-from dispatcher.base import ActionEventBaseHandler
+from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.device_registry import register_device_handler
+from dispatcher.handlers.registry import register_action_event
 from dispatcher.dispatch_result import DispatchResult
-from dispatcher.enums import Scope, MessageType, MessageDirection
+from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 from notifier.message import DeviceNotifierData, FrontendNotifierData
 from room.serializer import RoomSerializer
 
 from device.models import Device
 
 
-@register_device_handler(
+@register_action_event(
     scope=Scope.CPU,
     message_type=MessageType.EVENT,
     direction=MessageDirection.INTENT,

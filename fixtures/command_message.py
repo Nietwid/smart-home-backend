@@ -4,7 +4,7 @@ from consumers.device.messages.enum import MessageEvent
 from consumers.router_message.payload.basic import DeviceConnectRequest
 from device.models import ChipType
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.enums import Scope, MessageType, MessageDirection
+from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 
 
 @pytest.fixture

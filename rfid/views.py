@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.builders.rfid import add_tag_request
 from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.messenger import DeviceMessenger
+from consumers.device.messenger import DeviceMessenger
 from device.serializers.device import DeviceSerializer
 from .serializer import CardSerializer
 from .models import Card, Rfid
