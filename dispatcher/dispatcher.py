@@ -58,4 +58,4 @@ class ActionEventDispatcher:
         return result
 
 
-device_dispatcher = ActionEventDispatcher(DISPATCH_DICT)
+action_event_dispatcher = ActionEventDispatcher(DISPATCH_DICT)

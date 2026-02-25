@@ -1,6 +1,6 @@
 from typing import Optional, Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from consumers.device.messages.enum import MessageAction
 from consumers.router_message.message_event import MessageEvent
@@ -10,6 +10,8 @@ from peripherals.models import Peripherals
 
 
 class CommandMessage(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     scope: Scope
     type: MessageType
     direction: MessageDirection

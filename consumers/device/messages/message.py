@@ -29,10 +29,10 @@ class DeviceMessage(BaseModel):
 
     @model_validator(mode="after")
     def validate_payload(self):
-        payload_type = PAYLOAD_MAPPING.get(self.event, None)
+        payload_type = PAYLOAD_MAPPING.get(self.command, None)
         if payload_type is None:
             raise ValueError(
-                f"Unsupported payload type. Did you forget to register {self.event}?",
+                f"Unsupported payload type. Did you forget to register {self.command}?",
             )
         model = (
             payload_type[0]

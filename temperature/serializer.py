@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from consumers.router_message.builders.basic import set_settings_request
 from consumers.router_message.messenger import DeviceMessenger
-from consumers.device.messages import DeviceMessage
 from utils.waiting_time import waiting_time
 from .models import TempHum
 
@@ -17,7 +16,7 @@ class TempHumSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         super().update(instance, validated_data)
-        request: DeviceMessage = set_settings_request(instance.mac, validated_data)
+        request = set_settings_request(instance.mac, validated_data)
         DeviceMessenger().send(instance.get_router_mac(), request)
         return instance
 
