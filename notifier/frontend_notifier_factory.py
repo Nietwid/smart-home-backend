@@ -25,5 +25,15 @@ class FrontendNotifierFactory:
                 )
             )
 
+    def display_toaster(self, home_id:int, message:str):
+        return FrontendNotifierData(
+            home_id=home_id,
+            data=FrontendMessage(
+                action=FrontendMessageType.DISPLAY_TOASTER, data={
+                    message:message
+                }
+            )
+        )
+
 frontend_notifier_factory = FrontendNotifierFactory()
 

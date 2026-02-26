@@ -12,6 +12,8 @@ from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.router_notifier_factory import router_notifier_factory
 from peripherals.serializers import PeripheralSerializer
 from redis_cache import redis_cache
+from dispatcher.tasks import check_command_timeout
+from django.core.cache import cache
 
 
 @register_action_event(
@@ -50,6 +52,10 @@ class SetValueActionIntent(ActionEventBaseHandler):
                 peripheral_id=message.peripheral.pk,
             ),
         ]
+        check_command_timeout.apply_async(
+            args=(device_message.message_id,), queue="default"
+        )
+        print(f"{cache.keys("*")=}")
         return DispatchResult(
             notifications=notifications,
         )
@@ -71,6 +77,7 @@ class SetValueActionResult(ActionEventBaseHandler):
         device_message = redis_cache.get_device_message_and_delete(message.message_id)
         if not device_message:
             return DispatchResult()
+
         message.peripheral.state.update(device_message.payload)
         message.peripheral.state.save(update_fields=["state"])
         pending = redis_cache.delete_peripheral_pending(message.peripheral.pk)

@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field
 from typing import Literal
 
+from hardware.base import BaseHardwareSchema
 
-class PinOutputConfig(BaseModel):
+
+class PinOutputConfig(BaseHardwareSchema):
     pin: int = Field(
         ...,
         title="GPIO Pin",

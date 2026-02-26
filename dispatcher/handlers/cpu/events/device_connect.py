@@ -4,14 +4,8 @@ from consumers.device.messages.builder.action_event_request import (
     action_event_response_builder,
 )
 from consumers.device.messages.enum import MessageEvent
-from consumers.frontend.messages.builder import frontend_message_builder
-from consumers.frontend.messages.types import (
-    FrontendMessageType,
-)
 from consumers.router.message.message import DeviceRouterMessage
 from consumers.device.messages.payload.basic import DeviceConnectRequest
-from device.serializers.device import DeviceSerializer
-from device.serializers.router import RouterSerializer
 
 from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.command_message.message import CommandMessage
@@ -57,29 +51,29 @@ class DeviceConnectEvent(ActionEventBaseHandler):
         if device.room is not None:
             notifier_message.extend(
                 [
-                    FrontendNotifierData(
-                        home_id=home_id,
-                        data=frontend_message_builder.build(
-                            action=FrontendMessageType.UPDATE_DEVICE,
-                            data=DeviceSerializer(device).data,
-                        ),
-                    ),
-                    FrontendNotifierData(
-                        home_id=home_id,
-                        data=frontend_message_builder.build(
-                            action=FrontendMessageType.UPDATE_ROOM,
-                            data=RoomSerializer(device.room).data,
-                        ),
-                    ),
+                    # FrontendNotifierData(
+                    #     home_id=home_id,
+                    #     data=frontend_message_builder.build(
+                    #         action=FrontendMessageType.UPDATE_DEVICE,
+                    #         data=DeviceSerializer(device).data,
+                    #     ),
+                    # ),
+                    # FrontendNotifierData(
+                    #     home_id=home_id,
+                    #     data=frontend_message_builder.build(
+                    #         action=FrontendMessageType.UPDATE_ROOM,
+                    #         data=RoomSerializer(device.room).data,
+                    #     ),
+                    # ),
                 ]
             )
-        notifier_message.append(
-            FrontendNotifierData(
-                home_id=home_id,
-                data=frontend_message_builder.build(
-                    action=FrontendMessageType.UPDATE_ROUTER,
-                    data=RouterSerializer(device.home.router).data,
-                ),
-            ),
-        )
+        # notifier_message.append(
+        # FrontendNotifierData(
+        #     home_id=home_id,
+        #     data=frontend_message_builder.build(
+        #         action=FrontendMessageType.UPDATE_ROUTER,
+        #         data=RouterSerializer(device.home.router).data,
+        #     ),
+        # ),
+        # )
         return DispatchResult(notifications=notifier_message)

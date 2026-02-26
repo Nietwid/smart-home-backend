@@ -19,6 +19,5 @@ class ActionEventFrontendMessage(BaseModel):
         if self.scope == Scope.PERIPHERAL and not self.peripheral_id:
             raise ValueError("peripheral_id is required when scope is 'peripheral'")
         if self.scope == Scope.CPU and not self.device_id:
-            print("cpu error")
             raise ValueError("device_id is required when scope is 'cpu'")
         return data

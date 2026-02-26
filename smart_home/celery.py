@@ -20,7 +20,6 @@ def initialize_ai_on_startup():
     try:
         intent_model = IntentModel()
         device_model = DeviceModel()
-        # Ważne: Zapisz instancję i upewnij się, że inicjalizacja się udała
         AiAssistance.initialize(intent_model, device_model)
         print("AI models ready!")
     except Exception as e:

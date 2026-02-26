@@ -4,7 +4,7 @@ from enum import Enum
 class FrontendMessageType(Enum):
     UPDATE_PERIPHERAL_STATE = "update_peripheral_state"
     UPDATE_PERIPHERAL_PENDING = "update_peripheral_pending"
-
+    DISPLAY_TOASTER = "display_toaster"
 
     UPDATE_ROUTER = "update_router"
     UPDATE_DEVICE = "update_device"
