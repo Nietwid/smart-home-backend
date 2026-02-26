@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from utils.check_hour_in_range import check_hour_in_range
-from utils.send_set_settings_request import send_set_settings_request
 from .models import Aquarium
 
 
@@ -43,10 +42,10 @@ class AquariumSerializer(serializers.ModelSerializer):
         self.instance.led_mode = led_mode
         return data
 
-    def update(self, instance, validated_data):
-        super().update(instance, validated_data)
-        send_set_settings_request(instance)
-        return instance
+    # def update(self, instance, validated_data):
+    #     super().update(instance, validated_data)
+    #     send_set_settings_request(instance)
+    #     return instance
 
 
 class AquariumSerializerDevice(serializers.ModelSerializer):

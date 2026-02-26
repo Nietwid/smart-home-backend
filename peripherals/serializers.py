@@ -1,21 +1,29 @@
+from django.core.cache import cache
 from rest_framework import serializers
 
-from consumers.router_message.builders.base import build_request
-from consumers.router_message.message_event import MessageEvent
-from consumers.device.messenger import DeviceMessenger
 from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
 from peripherals.models import Peripherals
 from pydantic import ValidationError
 
+from cache_key import CacheKey
+
 
 class PeripheralSerializer(serializers.ModelSerializer):
+    pending = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Peripherals
-        fields = ["id", "name", "device", "config", "state"]
+        fields = ["id", "name", "device", "config", "state", "pending"]
+        read_only_fields = ["pending"]
+
+    def get_pending(self, obj: Peripherals) -> list[str]:
+        pending = cache.get(CacheKey.peripheral_pending(obj.pk))
+        if not pending:
+            return []
+        return pending
 
     def validate(self, data):
-        Peripherals.objects.all().delete()
         name = data.get("name")
         hardware_cls = HARDWARE_REGISTRY.get(name)
         errors = {}
@@ -33,29 +41,31 @@ class PeripheralSerializer(serializers.ModelSerializer):
             except HardwareValidationError as e:
                 errors.update(e.errors)
 
-        #
-        # if "state" in data:
-        #     try:
-        #         registry.state_model(**data["state"])
-        #     except ValidationError as e:
-        #         for err in e.errors():
-        #             path = ".".join(str(x) for x in err["loc"])
-        #             errors[f"state.{path}"] = err["msg"]
-        #     serializer = registry.state_serializer(data=data["state"])
-        #     serializer.is_valid(raise_exception=True)
-
+        if "state" in data:
+            try:
+                state_cls = hardware_cls.state_model(**data["state"])
+                hardware_cls.validate_state(state_cls, data["device"])
+                print(hardware_cls)
+            except ValidationError as e:
+                for err in e.errors():
+                    path = ".".join(str(x) for x in err["loc"])
+                    errors[f"state.{path}"] = err["msg"]
+            except HardwareValidationError as e:
+                errors.update(e.errors)
+        elif self.instance is None:
+            data["state"] = hardware_cls.state_model().model_dump()
         if errors:
             raise serializers.ValidationError(errors)
         return data
 
     def create(self, validated_data):
         peripheral: Peripherals = super().create(validated_data)
-        DeviceMessenger().send(
-            "1234",
-            build_request(
-                MessageEvent.UPDATE_CONFIG,
-                peripheral.device.mac,
-                {peripheral.pk: {"name": peripheral.name, "config": peripheral.config}},
-            ),
-        )
+        # DeviceMessenger().send(
+        #     "1234",
+        #     build_request(
+        #         MessageEvent.UPDATE_CONFIG,
+        #         peripheral.device.mac,
+        #         {peripheral.pk: {"name": peripheral.name, "config": peripheral.config}},
+        #     ),
+        # )
         return peripheral

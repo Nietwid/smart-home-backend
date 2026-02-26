@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "consumers",
     "peripherals",
     "hardware",
+    "dispatcher",
 ]
 
 MIDDLEWARE = [

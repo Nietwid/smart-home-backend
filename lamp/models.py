@@ -1,7 +1,6 @@
 import datetime
 from django.db import models
 
-from consumers.router_message.message_event import MessageEvent
 from device.models import Device
 from enum import Enum
 
@@ -20,10 +19,10 @@ class Lamp(Device):
 
     def available_actions(self):
         return [
-            MessageEvent.ON.value,
-            MessageEvent.OFF.value,
-            MessageEvent.TOGGLE.value,
-            MessageEvent.BLINK.value,
+            # MessageEvent.ON.value,
+            # MessageEvent.OFF.value,
+            # MessageEvent.TOGGLE.value,
+            # MessageEvent.BLINK.value,
         ]
 
     def extra_settings(self):

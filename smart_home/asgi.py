@@ -15,14 +15,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "smart_home.settings")
 
 application = get_asgi_application()
 import consumers.routing
-import device_consumer.routing
 
 application = ProtocolTypeRouter(
     {
         "http": application,
-        "websocket": URLRouter(
-            consumers.routing.websocket_urlpatterns
-            + device_consumer.routing.websocket_urlpatterns
-        ),
+        "websocket": URLRouter(consumers.routing.websocket_urlpatterns),
     }
 )

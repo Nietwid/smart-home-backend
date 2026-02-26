@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from asgiref.sync import async_to_sync
 
-from consumers.router_message.builders.basic import get_event_request
+from consumers.device.messages.builders import get_event_request
 from consumers.router_message.device_message import DeviceMessage
 from consumers.router_message.message_event import MessageEvent
 

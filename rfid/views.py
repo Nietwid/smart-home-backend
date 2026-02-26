@@ -7,9 +7,6 @@ from rest_framework.generics import (
 from rest_framework.response import Response
 
 from consumers.frontend.messages.messenger import FrontendMessenger
-from consumers.router_message.builders.rfid import add_tag_request
-from consumers.router_message.message_event import MessageEvent
-from consumers.device.messenger import DeviceMessenger
 from device.serializers.device import DeviceSerializer
 from .serializer import CardSerializer
 from .models import Card, Rfid
@@ -54,21 +51,22 @@ class CardListCreate(ListCreateAPIView):
         return rfid
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=self.request.data)
-        serializer.is_valid(raise_exception=True)
-        validated_data = serializer.validated_data
-        rfid = validated_data["rfid"]
-
-        if not MessageEvent.ADD_TAG.value in rfid.pending:
-            rfid.pending.append(MessageEvent.ADD_TAG.value)
-            rfid.save()
-
-        serializer_data = DeviceSerializer(rfid).data
-        request = add_tag_request(rfid.mac, validated_data["name"])
-        DeviceMessenger().send(rfid.get_router_mac(), request)
+        # serializer = self.get_serializer(data=self.request.data)
+        # serializer.is_valid(raise_exception=True)
+        # validated_data = serializer.validated_data
+        # rfid = validated_data["rfid"]
+        #
+        # if not MessageEvent.ADD_TAG.value in rfid.pending:
+        #     rfid.pending.append(MessageEvent.ADD_TAG.value)
+        #     rfid.save()
+        #
+        # serializer_data = DeviceSerializer(rfid).data
+        # request = add_tag_request(rfid.mac, validated_data["name"])
+        # DeviceMessenger().send(rfid.get_router_mac(), request)
 
         # settings = Settings()
         # check_add_card_request.apply_async(
         #     (rfid.id,), countdown=settings.get(TimeSettingKey.ADD_TAG_WAIT, 20)
         # )
-        return Response(serializer_data, 200)
+        # return Response(serializer_data, 200)
+        return Response({}, 200)

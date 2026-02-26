@@ -3,7 +3,7 @@ import logging
 from celery import shared_task
 from pydantic import ValidationError
 
-from consumers.device.messages.message import DeviceMessage
+from consumers.device.messages.device_message import DeviceMessage
 from dispatcher.processor.action_event_command import action_event_command_processor
 from dispatcher.command_message.factory import command_message_factory
 
@@ -34,7 +34,9 @@ def handle_device_message_task(
     """
     try:
         message = DeviceMessage.model_validate_json(raw_json)
-        command_message = command_message_factory(message, home_id, router_mac)
+        command_message = command_message_factory.from_device_message(
+            message, home_id, router_mac
+        )
     except ValidationError:
         logger.error(f"Payload validation failed for message: {raw_json}")
         return

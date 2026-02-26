@@ -1,7 +1,7 @@
 from consumers.events.base_event import BaseEventRequest
 from consumers.microservice_message.on_measurement import on_measurement
 from consumers.rabbitmq_publisher import QueueNames, get_publisher
-from consumers.router_message.builders.measurements import (
+from consumers.device.messages.builders import (
     measurements_sleeping_time_response,
 )
 from consumers.router_message.device_message import DeviceMessage
@@ -11,7 +11,7 @@ from temperature.models import TempHum
 
 
 class OnMeasureTempHum(BaseEventRequest):
-    from consumers.device.messenger import DeviceMessenger
+    from consumers.router.messenger import DeviceMessenger
 
     device_messanger = DeviceMessenger()
 

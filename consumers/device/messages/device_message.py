@@ -1,23 +1,25 @@
 import re
 from typing import Any
+from uuid import uuid4
+from pydantic import BaseModel, field_validator, model_validator, Field
 
-from pydantic import BaseModel, field_validator, model_validator
-
-from consumers.device.messages.enum import MessageAction
-from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.payload.basic import SerializerDataResponse
-from consumers.router_message.payload.payload_mapper import PAYLOAD_MAPPING
+from consumers.device.messages.enum import MessageCommand
+from consumers.device.messages.payload.basic import SerializerDataResponse
+from consumers.device.messages.payload_mapper import PAYLOAD_MAPPING
 from dispatcher.handlers.enums import MessageType, MessageDirection, Scope
 
 
+def get_message_id():
+    return uuid4().hex
+
 class DeviceMessage(BaseModel):
     direction: MessageDirection
-    command: MessageEvent | MessageAction
+    command: MessageCommand
     type: MessageType
     scope: Scope
     device_id: str
     peripheral_id: int
-    message_id: str
+    message_id: str = Field(default_factory=get_message_id)
     payload: Any
 
     @field_validator("device_id", mode="after")

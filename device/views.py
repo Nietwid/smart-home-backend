@@ -9,10 +9,9 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticated
 
 from device.models import Device, Router
-from device_registry import DeviceRegistry
 from room.models import Room
 from utils.get_available_for_user_device import get_available_for_user_device
-from .repository.device_repository import DeviceRepository
+from .repository.device_repository import DeviceRepository, device_repository
 from .serializers.device import DeviceSerializer
 from .serializers.router import RouterSerializer
 
@@ -35,8 +34,8 @@ class ListCreateDevice(ListCreateAPIView):
 
     def get_queryset(self):
         if self.request.query_params.get("unassigned", False):
-            return DeviceRepository.get_unassigned(self.request.user)
-        return DeviceRepository.get_available_for_user(self.request.user)
+            return device_repository.get_unassigned(self.request.user)
+        return device_repository.get_available_for_user(self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data

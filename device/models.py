@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from django.db.models import JSONField
 from django.db import models
 
-from consumers.router_message.message_event import MessageEvent
+from consumers.device.messages.enum import MessageEvent
 from room.models import Room
 from user.models import Home
 

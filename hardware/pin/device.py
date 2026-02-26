@@ -1,4 +1,4 @@
-from consumers.device.messages.enum import MessageEvent
+from consumers.device.messages.enum import MessageAction
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used
@@ -19,7 +19,7 @@ class PinInputHardware(BaseHardware):
     state_model = PinOutputState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageEvent.SET_VALUE,)
+    actions = (MessageAction.SET_VALUE,)
     events = ()
 
     @classmethod
@@ -31,7 +31,8 @@ class PinInputHardware(BaseHardware):
 
     @classmethod
     def validate_state(cls, state: PinOutputState, device: Device) -> None:
-        pass
+        if not isinstance(state.value, bool):
+            raise HardwareValidationError({"value": {"__errors": ["Invalid value"]}})
 
 
 @hardware_registry(name="pin_input")
@@ -41,7 +42,7 @@ class PinOutputHardware(BaseHardware):
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
-    actions = (MessageEvent.SET_VALUE,)
+    actions = (MessageAction.SET_VALUE,)
     events = ()
 
     @classmethod

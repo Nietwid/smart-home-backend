@@ -3,7 +3,7 @@ import pytest
 
 from consumers.events.state_change import StateChange, light_state_change
 from consumers.router_message.device_message import DeviceMessage
-from consumers.router_message.device_state import DeviceState
+from consumers.device.messages.device_state import DeviceState
 from consumers.router_message.message_event import MessageEvent
 from consumers.router_message.message_type import MessageType
 from consumers.rabbitmq_publisher import QueueNames

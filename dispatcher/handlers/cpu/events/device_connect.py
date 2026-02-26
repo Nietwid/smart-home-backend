@@ -1,11 +1,15 @@
 from django.utils import timezone
-from consumers.device.messages.builder import device_message_builder
+
+from consumers.device.messages.builder.action_event_intent import (
+    action_event_response_builder,
+)
 from consumers.device.messages.enum import MessageEvent
 from consumers.frontend.messages.builder import frontend_message_builder
 from consumers.frontend.messages.types import (
     FrontendMessageType,
 )
-from consumers.router_message.payload.basic import DeviceConnectRequest
+from consumers.router.message.message import DeviceRouterMessage
+from consumers.device.messages.payload.basic import DeviceConnectRequest
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 
@@ -14,7 +18,7 @@ from dispatcher.command_message.message import CommandMessage
 from dispatcher.handlers.registry import register_action_event
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
-from notifier.message import DeviceNotifierData, FrontendNotifierData
+from notifier.message import RouterNotifierData, FrontendNotifierData
 from room.serializer import RoomSerializer
 
 from device.models import Device
@@ -42,9 +46,11 @@ class DeviceConnectEvent(ActionEventBaseHandler):
             update_fields=["last_seen", "is_online", "pending", "firmware_version"]
         )
         notifier_message.append(
-            DeviceNotifierData(
+            RouterNotifierData(
                 router_mac=device.get_router_mac(),
-                data=device_message_builder.accept_response(message),
+                data=DeviceRouterMessage(
+                    payload=action_event_response_builder.accept_response(message),
+                ),
             )
         )
 

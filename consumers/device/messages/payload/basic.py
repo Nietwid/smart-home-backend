@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from consumers.router_message.device_state import DeviceState
+from consumers.device.messages.device_state import DeviceState
 from device.models import ChipType
 
 

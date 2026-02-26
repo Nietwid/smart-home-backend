@@ -5,9 +5,10 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, get_object_or_404
 
-from consumers.router_message.builders.basic import update_firmware_request
-from consumers.router_message.message_event import MessageEvent
-from consumers.device.messenger import DeviceMessenger
+from consumers.device.messages.enum import MessageEvent
+
+# from consumers.device.messages.builders import update_firmware_request
+from consumers.router.messenger import DeviceMessenger
 from device.serializers.device import DeviceSerializer
 from firmware.models import FirmwareDevice
 from firmware.serializers import FirmwareDeviceSerializer
@@ -69,7 +70,7 @@ class FirmwareUpdate(APIView):
             "version": firmware.version,
             "to_device": firmware_name,
         }
-        message = update_firmware_request(device.mac, payload)
+        # message = update_firmware_request(device.mac, payload)
         DeviceMessenger().send(device.get_router_mac(), message)
         device.pending.append(MessageEvent.UPDATE_FIRMWARE.value)
         device.save(update_fields=["pending"])

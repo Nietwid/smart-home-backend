@@ -1,17 +1,17 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 
-from consumers.device.messages.message import DeviceMessage
 from consumers.frontend.messages.message import FrontendMessage
+from consumers.router.message.message import RouterMessage
 from notifier.enum import Destinations
 
 
 class NotifierMessage(BaseModel):
     destination:Destinations
 
-class DeviceNotifierData(NotifierMessage):
-    destination:Destinations = Field(default=Destinations.DEVICE)
+class RouterNotifierData(NotifierMessage):
+    destination:Destinations = Field(default=Destinations.ROUTER)
     router_mac:str
-    data: DeviceMessage
+    data: RouterMessage
 
 class FrontendNotifierData(NotifierMessage):
     destination:Destinations = Field(default=Destinations.FRONTEND)

@@ -1,4 +1,4 @@
-from consumers.router_message.message_event import MessageEvent
+from consumers.device.messages.enum import MessageEvent, MessageAction
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.extract_field import extract_field
@@ -18,7 +18,7 @@ class RGBStripHardware(BaseHardware):
     hardware_type = HardwareTypes.LIGHT
     chip_support = [name.value for name in ChipType]
     actions = (
-        MessageEvent.SET_COLOR,
+        MessageAction.SET_COLOR,
         MessageEvent.TURN_ON,
         MessageEvent.TURN_OFF,
     )

@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from consumers.router_message.payload.basic import (
+from consumers.device.messages.payload.basic import (
     DeviceConnectRequest,
 )
 

@@ -14,7 +14,7 @@ class PinOutputConfig(BaseModel):
 
 
 class PinOutputState(BaseModel):
-    value: int
+    value: bool = Field(default=False)
 
 
 class PinInputConfig(BaseModel):

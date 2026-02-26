@@ -1,6 +1,5 @@
 from consumers.microservice_message.microservice_message import MicroserviceMessage
 from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.payload.measurement import TemperatureRequest
 from utils.round_timestamp_to_nearest_hour import round_timestamp_to_nearest_hour
 
 

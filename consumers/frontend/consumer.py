@@ -4,11 +4,11 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from uuid import uuid4
 from ai_assistance.tasks import ai_test
-from consumers.router_message.message_event import MessageEvent
-from consumers.router_message.message_type import MessageType
-from consumers.device.messenger import DeviceMessenger
+from consumers.device.messages.enum import MessageEvent
+from consumers.router.messenger import DeviceMessenger
 from consumers.utils import validate_user
-from consumers.device.messages.message import DeviceMessage
+from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.handlers.enums import MessageType
 
 
 class UserConsumer(AsyncWebsocketConsumer):
@@ -71,8 +71,8 @@ class UserConsumer(AsyncWebsocketConsumer):
         if not camera.exists():
             return None
         return DeviceMessage(
-            message_type=MessageType.REQUEST,
-            message_event=MessageEvent.CAMERA_START,
+            type=MessageType.ACTION,
+            command=MessageEvent.CAMERA_START,
             device_id="camera",
             payload={
                 "id": pk,

@@ -6,7 +6,7 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 
-from consumers.router_message.builders.basic import get_connected_devices_request
+from consumers.device.messages.builders.basic import get_connected_devices_request
 from device.models import Router, Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
@@ -19,7 +19,7 @@ from dispatcher.tasks import handle_device_message_task
 logger = logging.getLogger(__name__)
 
 
-class DeviceConsumer(AsyncWebsocketConsumer):
+class RouterConsumer(AsyncWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)

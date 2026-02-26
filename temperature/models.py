@@ -1,6 +1,5 @@
 from django.db import models
 
-from consumers.router_message.message_event import MessageEvent
 from device.models import Device
 from django.utils import timezone
 
@@ -18,9 +17,9 @@ class TempHum(Device):
 
     def available_events(self):
         return [
-            MessageEvent.ON_MEASUREMENT_TEMP_HUM.value,
-            MessageEvent.ON_TEMPERATURE_ABOVE.value,
-            MessageEvent.ON_TEMPERATURE_BELOW.value,
-            MessageEvent.ON_HUMIDITY_ABOVE.value,
-            MessageEvent.ON_HUMIDITY_BELOW.value,
+            # MessageEvent.ON_MEASUREMENT_TEMP_HUM.value,
+            # MessageEvent.ON_TEMPERATURE_ABOVE.value,
+            # MessageEvent.ON_TEMPERATURE_BELOW.value,
+            # MessageEvent.ON_HUMIDITY_ABOVE.value,
+            # MessageEvent.ON_HUMIDITY_BELOW.value,
         ]

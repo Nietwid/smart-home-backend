@@ -13,8 +13,6 @@ class MessageEvent(StrEnum):
     UPDATE_FIRMWARE = "update_firmware"
     UPDATE_FIRMWARE_ERROR = "update_firmware_error"
     UPDATE_CONFIG = "update_config"
-    SET_VALUE = "set_value"
-    SET_COLOR = "set_color"
     TURN_ON = "turn_on"
     TURN_OFF = "turn_off"
 
@@ -60,5 +58,8 @@ class MessageAction(StrEnum):
     ON_READ_FAILURE = "on_read_failure"
     ACCESS_GRANTED = "access_granted"
     ACCESS_DENIED = "access_denied"
+
+    SET_VALUE = "set_value"
+    SET_COLOR = "set_color"
 
 MessageCommand = Union[MessageEvent, MessageAction]
