@@ -13,12 +13,16 @@ class FrontendNotifierFactory:
                 )
         )
 
-    def update_peripheral_pending(self,home_id:int, pending:list[str])->FrontendNotifierData:
+    def update_peripheral_pending(self, home_id:int, device_id:int, peripheral_id:int, pending:list[str])->FrontendNotifierData:
         return FrontendNotifierData(
                 home_id=home_id,
                 data=FrontendMessage(
-                    action=FrontendMessageType.UPDATE_PERIPHERAL_PENDING, data=pending
-                ),
+                    action=FrontendMessageType.UPDATE_PERIPHERAL_PENDING, data={
+                        "pending":pending,
+                        "device_id":device_id,
+                        "peripheral_id":peripheral_id
+                    }
+                )
             )
 
 frontend_notifier_factory = FrontendNotifierFactory()

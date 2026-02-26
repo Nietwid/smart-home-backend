@@ -3,15 +3,12 @@ from consumers.device.messages.builder.action_event_intent import (
 )
 from consumers.device.messages.enum import MessageAction
 from consumers.device.messages.payload.basic import BasicResponse
-from consumers.frontend.messages.message import FrontendMessage
-from consumers.frontend.messages.types import FrontendMessageType
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
 from notifier.frontend_notifier_factory import frontend_notifier_factory
-from notifier.message import RouterNotifierData, FrontendNotifierData
 from notifier.router_notifier_factory import router_notifier_factory
 from peripherals.serializers import PeripheralSerializer
 from redis_cache import redis_cache
@@ -47,7 +44,10 @@ class SetValueActionIntent(ActionEventBaseHandler):
                 message=device_message,
             ),
             frontend_notifier_factory.update_peripheral_pending(
-                home_id=message.peripheral.device.home.id, pending=pending
+                home_id=message.peripheral.device.home.id,
+                pending=pending,
+                device_id=message.peripheral.device.pk,
+                peripheral_id=message.peripheral.pk,
             ),
         ]
         return DispatchResult(
@@ -80,7 +80,10 @@ class SetValueActionResult(ActionEventBaseHandler):
                 home_id=home_id, state=message.peripheral.state
             ),
             frontend_notifier_factory.update_peripheral_pending(
-                home_id=home_id, pending=pending
+                home_id=message.peripheral.device.home.id,
+                pending=pending,
+                device_id=message.peripheral.device.pk,
+                peripheral_id=message.peripheral.pk,
             ),
         ]
 

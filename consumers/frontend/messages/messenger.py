@@ -56,7 +56,7 @@ class FrontendMessenger:
             f"home_{home_id}",
             {
                 "type": "send_to_frontend",
-                "data": message.model_dump_json(),
+                "data": message.data.model_dump_json(),
             },
         )
 
@@ -75,7 +75,7 @@ class FrontendMessenger:
     async def send_to_channel_async(self, channel_name: str, message: FrontendMessage):
         await self.channel_layer.send(
             channel_name,
-            {"type": "send_to_frontend", "data": message.model_dump_json()},
+            {"type": "send_to_frontend", "data": message.data.model_dump_json()},
         )
 
 
