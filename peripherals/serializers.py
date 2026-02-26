@@ -1,4 +1,3 @@
-from django.core.cache import cache
 from rest_framework import serializers
 
 from hardware.base import HardwareValidationError
@@ -6,7 +5,7 @@ from hardware.registry import HARDWARE_REGISTRY
 from peripherals.models import Peripherals
 from pydantic import ValidationError
 
-from cache_key import CacheKey
+from redis_cache import redis_cache
 
 
 class PeripheralSerializer(serializers.ModelSerializer):
@@ -18,7 +17,7 @@ class PeripheralSerializer(serializers.ModelSerializer):
         read_only_fields = ["pending"]
 
     def get_pending(self, obj: Peripherals) -> list[str]:
-        pending = cache.get(CacheKey.peripheral_pending(obj.pk))
+        pending = redis_cache.get_peripherals_pending(obj.pk)
         if not pending:
             return []
         return pending

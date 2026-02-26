@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from consumers.frontend.messages.messenger import FrontendMessenger
 
 # from consumers.device.messages.builders import get_event_request
-from consumers.router.messenger import DeviceMessenger
 from device.models import Device, Event
 from device.serializers.device import DeviceSerializer
 from device_registry import DeviceRegistry
@@ -106,7 +105,7 @@ class TriggerEvent(APIView):
         events = device.events.filter(event=event_type)
         if not events:
             return Response({}, HTTP_200_OK)
-        dm = DeviceMessenger()
+        # dm = DeviceMessenger()
         # for event in events:
         #     dm.send(device.get_router_mac(), get_event_request(event))
         return Response({}, HTTP_200_OK)

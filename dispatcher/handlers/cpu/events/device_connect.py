@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from consumers.device.messages.builder.action_event_intent import (
+from consumers.device.messages.builder.action_event_request import (
     action_event_response_builder,
 )
 from consumers.device.messages.enum import MessageEvent

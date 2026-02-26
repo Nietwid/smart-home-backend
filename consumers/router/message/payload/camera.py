@@ -1,6 +1,8 @@
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class CameraRouterMessagePayload(BaseModel):
     id: int
-    rtsp: str
+    rtsp: Optional[str] = Field(default=None)

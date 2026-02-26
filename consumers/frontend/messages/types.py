@@ -3,6 +3,7 @@ from enum import Enum
 
 class FrontendMessageType(Enum):
     UPDATE_PERIPHERAL_STATE = "update_peripheral_state"
+    UPDATE_PERIPHERAL_PENDING = "update_peripheral_pending"
 
 
     UPDATE_ROUTER = "update_router"

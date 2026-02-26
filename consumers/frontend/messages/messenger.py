@@ -1,6 +1,5 @@
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from threading import Lock
 
 from consumers.frontend.messages.message import FrontendMessage
 from consumers.frontend.messages.types import (
@@ -11,23 +10,9 @@ from consumers.frontend.messages.types import (
 class FrontendMessenger:
     """Singleton class for sending command to the frontend via Django Channels."""
 
-    _instance = None
-    _initialized = False
-    _lock = Lock()
-
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:
-                    cls._instance = super().__new__(cls)
-        return cls._instance
-
     def __init__(self):
         """Initialize the Channels layer."""
-        if self._initialized:
-            return
         self.channel_layer = get_channel_layer()
-        self._initialized = True
 
     def update_frontend(
         self,
@@ -92,3 +77,6 @@ class FrontendMessenger:
             channel_name,
             {"type": "send_to_frontend", "data": message.model_dump_json()},
         )
+
+
+frontend_messenger = FrontendMessenger()

@@ -1,4 +1,4 @@
-from consumers.device.messages.enum import MessageAction, MessageEvent
+from consumers.device.messages.enum import MessageAction, MessageEvent, CameraCommand
 from consumers.device.messages.payload.camera import *
 from consumers.device.messages.payload.basic import *
 from consumers.device.messages.payload.measurement import *
@@ -28,12 +28,12 @@ PAYLOAD_MAPPING: dict = {
     MessageAction.TOGGLE: (SerializerDataResponse, BasicResponse),
     MessageAction.ACCESS_GRANTED: (AccessGrantedPayload, BasicResponse),
     MessageAction.ACCESS_DENIED: (AccessDeniedPayload, BasicResponse),
-    MessageEvent.CAMERA_OFFER: (CameraOfferRequest, BasicResponse),
-    MessageEvent.CAMERA_ANSWER: (EmptyRequest, CameraAnswerResponse),
-    MessageEvent.CAMERA_DISCONNECT: (CameraDisconnectPayload, BasicResponse),
-    MessageEvent.CAMERA_ERROR: (CameraError, CameraError),
-    MessageEvent.CAMERA_STOP: (SerializerDataResponse, BasicResponse),
-    MessageEvent.CAMERA_START: (SerializerDataResponse, BasicResponse),
+    CameraCommand.CAMERA_OFFER: (CameraOfferRequest, BasicResponse),
+    CameraCommand.CAMERA_ANSWER: (EmptyRequest, CameraAnswerResponse),
+    CameraCommand.CAMERA_DISCONNECT: (CameraDisconnectPayload, BasicResponse),
+    CameraCommand.CAMERA_ERROR: (CameraError, CameraError),
+    CameraCommand.CAMERA_STOP: (SerializerDataResponse, BasicResponse),
+    CameraCommand.CAMERA_START: (SerializerDataResponse, BasicResponse),
     MessageEvent.ON_MEASURE_TEMPERATURE: (TemperatureRequest, SerializerDataResponse),
     MessageEvent.ON_MEASURE_HUMIDITY: (HumidityRequest, SerializerDataResponse),
     MessageEvent.ON_MEASUREMENT_TEMP_HUM: (TempHumRequest, SerializerDataResponse),

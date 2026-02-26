@@ -1,5 +1,13 @@
 from enum import StrEnum
 from typing import Union
+class CameraCommand(StrEnum):
+    CAMERA_OFFER = "camera_offer"
+    CAMERA_ANSWER = "camera_answer"
+    CAMERA_DISCONNECT = "camera_disconnect"
+    CAMERA_ERROR = "camera_error"
+    CAMERA_START = "camera_start"
+    CAMERA_STOP = "camera_stop"
+
 
 class MessageEvent(StrEnum):
     # Basic events
@@ -23,14 +31,6 @@ class MessageEvent(StrEnum):
 
     # RFID events
     ON_READ = "on_read"
-
-    # Camera
-    CAMERA_OFFER = "camera_offer"
-    CAMERA_ANSWER = "camera_answer"
-    CAMERA_DISCONNECT = "camera_disconnect"
-    CAMERA_ERROR = "camera_error"
-    CAMERA_START = "camera_start"
-    CAMERA_STOP = "camera_stop"
 
     # Measurement events
     ON_MEASURE_TEMPERATURE = "on_measure_temperature"
