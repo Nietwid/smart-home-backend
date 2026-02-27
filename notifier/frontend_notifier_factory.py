@@ -24,7 +24,16 @@ class FrontendNotifierFactory:
                     }
                 )
             )
-
+    def update_device_pending(self,home_id:int, device_id:int, pending:list[str]):
+        return FrontendNotifierData(
+                home_id=home_id,
+                data=FrontendMessage(
+                    action=FrontendMessageType.UPDATE_DEVICE_PENDING, data={
+                        "pending":pending,
+                        "device_id":device_id,
+                    }
+                )
+            )
     def display_toaster(self, home_id:int, message:str):
         return FrontendNotifierData(
             home_id=home_id,

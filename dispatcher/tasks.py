@@ -87,7 +87,11 @@ def check_command_timeout(self, message_id: str):
         device_name = device.name
         pending = redis_cache.delete_device_pending(device.pk, message.command)
         notifications = [
-            # TODO add frontend notifier for device pending
+            frontend_notifier_factory.update_device_pending(
+                home_id=device.home.id,
+                pending=pending,
+                device_id=device.pk,
+            ),
         ]
     else:
         logger.error(f"Invalid scope: {message.scope}")
