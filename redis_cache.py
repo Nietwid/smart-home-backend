@@ -9,12 +9,13 @@ logger = logging.getLogger(__name__)
 
 
 class RedisCache:
+    DEFAULT_TIMEOUT = 60
 
     def save_device_message(self, message: DeviceMessage) -> None:
         cache.set(
             CacheKey.device_message(message.message_id),
             message.model_dump(),
-            timeout=30,
+            timeout=self.DEFAULT_TIMEOUT,
         )
 
     def get_device_message_and_delete(self, message_id: str) -> DeviceMessage | None:
@@ -47,7 +48,9 @@ class RedisCache:
             pending = []
         if not command in pending:
             pending.append(command)
-        cache.set(CacheKey.peripheral_pending(pk), pending, timeout=60)
+        cache.set(
+            CacheKey.peripheral_pending(pk), pending, timeout=self.DEFAULT_TIMEOUT
+        )
         return pending
 
     def delete_peripheral_pending(self, pk: int, command: MessageCommand) -> list[str]:
@@ -56,7 +59,9 @@ class RedisCache:
             return []
         if command in pending:
             pending.remove(command)
-        cache.set(CacheKey.peripheral_pending(pk), pending, timeout=60)
+        cache.set(
+            CacheKey.peripheral_pending(pk), pending, timeout=self.DEFAULT_TIMEOUT
+        )
         return pending
 
     def delete_device_pending(self, pk: int, command: MessageCommand):
@@ -65,7 +70,7 @@ class RedisCache:
             return []
         if command in pending:
             pending.remove(command)
-        cache.set(CacheKey.device_pending(pk), pending, timeout=60)
+        cache.set(CacheKey.device_pending(pk), pending, timeout=self.DEFAULT_TIMEOUT)
         return pending
 
 

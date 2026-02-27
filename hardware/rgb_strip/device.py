@@ -27,7 +27,6 @@ class RGBStripHardware(BaseHardware):
     @classmethod
     def validate_config(cls, config: RGBStripConfig, device: Device) -> None:
         occupied_pins = []
-        print(f"{config=}")
         for peripheral in device.peripherals.all():
             occupied_pins.extend(extract_field(peripheral.config, "pin"))
 

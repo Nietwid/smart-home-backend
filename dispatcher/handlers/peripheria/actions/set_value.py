@@ -34,7 +34,6 @@ class SetValueActionIntent(ActionEventBaseHandler):
         )
         serializer.is_valid(raise_exception=True)
         device_message = action_event_intent_builder.build_intent(message)
-
         redis_cache.save_device_message(device_message)
         pending = redis_cache.add_peripheral_pending(
             message.peripheral.pk, message.command

@@ -38,7 +38,3 @@ class HardwareValidationError(Exception):
     def __init__(self, errors: dict):
         self.errors = errors
         super().__init__(str(errors))
-
-
-class BaseHardwareSchema(BaseModel):
-    name: str = Field(default=None)
