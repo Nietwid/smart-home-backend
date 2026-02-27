@@ -13,7 +13,6 @@ from notifier.router_notifier_factory import router_notifier_factory
 from peripherals.serializers import PeripheralSerializer
 from redis_cache import redis_cache
 from dispatcher.tasks import check_command_timeout
-from django.core.cache import cache
 
 
 @register_action_event(
@@ -53,9 +52,8 @@ class SetValueActionIntent(ActionEventBaseHandler):
             ),
         ]
         check_command_timeout.apply_async(
-            args=(device_message.message_id,), queue="default"
+            args=(device_message.message_id,), countdown=30, queue="default"
         )
-        print(f"{cache.keys("*")=}")
         return DispatchResult(
             notifications=notifications,
         )

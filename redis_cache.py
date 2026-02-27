@@ -16,11 +16,9 @@ class RedisCache:
             message.model_dump(),
             timeout=30,
         )
-        print(f"{cache.get(CacheKey.device_message(message.message_id))=}")
 
     def get_device_message_and_delete(self, message_id: str) -> DeviceMessage | None:
         raw = cache.get(CacheKey.device_message(message_id))
-        print(f"{raw=}")
         if not raw:
             return None
         cache.delete(CacheKey.device_message(message_id))

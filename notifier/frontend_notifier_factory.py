@@ -39,7 +39,7 @@ class FrontendNotifierFactory:
             home_id=home_id,
             data=FrontendMessage(
                 action=FrontendMessageType.DISPLAY_TOASTER, data={
-                    message:message
+                    "message":message
                 }
             )
         )

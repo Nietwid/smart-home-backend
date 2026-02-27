@@ -19,7 +19,7 @@ class PinOutputState(BaseModel):
     value: bool = Field(default=False)
 
 
-class PinInputConfig(BaseModel):
+class PinInputConfig(BaseHardwareSchema):
     pin: int
     mode: Literal["PULL_UP", "PULL_DOWN"]
 

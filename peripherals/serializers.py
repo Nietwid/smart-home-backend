@@ -26,6 +26,7 @@ class PeripheralSerializer(serializers.ModelSerializer):
         name = data.get("name")
         hardware_cls = HARDWARE_REGISTRY.get(name)
         errors = {}
+        print(data)
         if hardware_cls is None:
             raise serializers.ValidationError({"name": "Unknown device type"})
 
@@ -44,7 +45,6 @@ class PeripheralSerializer(serializers.ModelSerializer):
             try:
                 state_cls = hardware_cls.state_model(**data["state"])
                 hardware_cls.validate_state(state_cls, data["device"])
-                print(hardware_cls)
             except ValidationError as e:
                 for err in e.errors():
                     path = ".".join(str(x) for x in err["loc"])

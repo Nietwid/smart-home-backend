@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
+from hardware.base import BaseHardwareSchema
 
-class PwmConfig(BaseModel):
+
+class PwmConfig(BaseHardwareSchema):
     pin: int
     frequency: int = 250
     resolution_bits: int = 8
