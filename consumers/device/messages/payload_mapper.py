@@ -19,7 +19,7 @@ PAYLOAD_MAPPING: dict = {
     MessageEvent.ON_READ: (OnReadRequest, BasicResponse),
     MessageAction.ON_READ_SUCCESS: (SerializerDataResponse, BasicResponse),
     MessageAction.ON_READ_FAILURE: (SerializerDataResponse, BasicResponse),
-    MessageAction.SET_VALUE: (SerializerDataResponse, BasicResponse),
+    MessageAction.UPDATE_STATE: (SerializerDataResponse, BasicResponse),
     MessageEvent.ON_CLICK: (SerializerDataResponse, BasicResponse),
     MessageEvent.ON_HOLD: (SerializerDataResponse, BasicResponse),
     MessageEvent.ON_TOGGLE: (SerializerDataResponse, BasicResponse),

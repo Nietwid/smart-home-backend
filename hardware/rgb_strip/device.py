@@ -17,11 +17,7 @@ class RGBStripHardware(BaseHardware):
     state_model = RGBStripState
     hardware_type = HardwareTypes.LIGHT
     chip_support = [name.value for name in ChipType]
-    actions = (
-        MessageAction.SET_COLOR,
-        MessageEvent.TURN_ON,
-        MessageEvent.TURN_OFF,
-    )
+    actions = (MessageAction.UPDATE_STATE,)
     events = ()
 
     @classmethod

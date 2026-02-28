@@ -19,9 +19,9 @@ from dispatcher.tasks import check_command_timeout
     scope=Scope.PERIPHERAL,
     message_type=MessageType.ACTION,
     direction=MessageDirection.INTENT,
-    handler_name=MessageAction.SET_VALUE,
+    handler_name=MessageAction.UPDATE_STATE,
 )
-class SetValueActionIntent(ActionEventBaseHandler):
+class UpdateStateActionIntent(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         serializer = PeripheralSerializer(
@@ -35,8 +35,8 @@ class SetValueActionIntent(ActionEventBaseHandler):
         serializer.is_valid(raise_exception=True)
         device_message = action_event_intent_builder.build_intent(message)
         redis_cache.save_device_message(device_message)
-        pending = redis_cache.add_peripheral_pending(
-            message.peripheral.pk, message.command
+        pending = redis_cache.add_device_pending(
+            message.peripheral.pk, message.command, peripheral=True
         )
         notifications = [
             router_notifier_factory.device_message(
@@ -62,9 +62,9 @@ class SetValueActionIntent(ActionEventBaseHandler):
     scope=Scope.PERIPHERAL,
     message_type=MessageType.ACTION,
     direction=MessageDirection.RESULT,
-    handler_name=MessageAction.SET_VALUE,
+    handler_name=MessageAction.UPDATE_STATE,
 )
-class SetValueActionResult(ActionEventBaseHandler):
+class UpdateStateActionResult(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         payload: BasicResponse = message.payload
@@ -77,7 +77,9 @@ class SetValueActionResult(ActionEventBaseHandler):
 
         message.peripheral.state.update(device_message.payload)
         message.peripheral.state.save(update_fields=["state"])
-        pending = redis_cache.delete_peripheral_pending(message.peripheral.pk)
+        pending = redis_cache.delete_device_pending(
+            message.peripheral.pk, peripheral=True
+        )
         home_id = message.peripheral.device.home.id
         notifications = [
             frontend_notifier_factory.update_peripheral_state(

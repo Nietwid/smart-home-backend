@@ -14,7 +14,7 @@ class PinPwm(BaseHardware):
     state_model = PwmState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageAction.SET_VALUE,)
+    actions = (MessageAction.UPDATE_STATE,)
     events = ()
 
     @classmethod

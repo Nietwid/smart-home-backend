@@ -1,10 +1,11 @@
-from consumers.device.messages.enum import MessageEvent
+from consumers.device.messages.enum import MessageEvent, MessageCommand
 from consumers.device.messages.device_message import DeviceMessage
 from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 from dispatcher.command_message.message import CommandMessage
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
+from device.models import Device
 
 
 class CommandMessageFactory:
@@ -78,6 +79,20 @@ class CommandMessageFactory:
             peripheral=peripheral,
             home_id=home_id,
             router_mac=router_mac,
+        )
+
+    def update_peripheral(self, device: Device, data: dict) -> CommandMessage:
+        home_id = device.home.pk
+        router_mac = device.home.router.mac
+        return CommandMessage(
+            scope=Scope.CPU,
+            type=MessageType.ACTION,
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.UPDATE_PERIPHERAL,
+            home_id=home_id,
+            router_mac=router_mac,
+            payload=data,
+            device=device,
         )
 
 

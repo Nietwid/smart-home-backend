@@ -19,7 +19,7 @@ class PinInputHardware(BaseHardware):
     state_model = PinOutputState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageAction.SET_VALUE,)
+    actions = (MessageAction.UPDATE_STATE,)
     events = ()
 
     @classmethod
@@ -31,8 +31,7 @@ class PinInputHardware(BaseHardware):
 
     @classmethod
     def validate_state(cls, state: PinOutputState, device: Device) -> None:
-        if not isinstance(state.value, bool):
-            raise HardwareValidationError({"value": {"__errors": ["Invalid value"]}})
+        pass
 
 
 @hardware_registry(name="pin_input")
@@ -42,7 +41,7 @@ class PinOutputHardware(BaseHardware):
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
-    actions = (MessageAction.SET_VALUE,)
+    actions = (MessageAction.UPDATE_STATE,)
     events = ()
 
     @classmethod

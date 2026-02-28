@@ -7,7 +7,14 @@ class DispatcherConfig(AppConfig):
 
     def ready(self):
         from dispatcher.handlers.cpu.events.device_connect import DeviceConnectEvent
-        from dispatcher.handlers.peripheria.actions.set_value import (
-            SetValueActionIntent,
-            SetValueActionResult,
+        from dispatcher.handlers.cpu.events.device_disconnect import (
+            DeviceDisconnectEvent,
+        )
+        from dispatcher.handlers.cpu.actions.update_peripheral import (
+            UpdatePeripheralActionIntent,
+            UpdatePeripheralActionResult,
+        )
+        from dispatcher.handlers.peripheria.actions.update_state import (
+            UpdateStateActionIntent,
+            UpdateStateActionResult,
         )

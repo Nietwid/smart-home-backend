@@ -1,11 +1,19 @@
 from rest_framework import serializers
 
+from dispatcher.command_message.factory import command_message_factory
 from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
 from peripherals.models import Peripherals
 from pydantic import ValidationError
 
 from redis_cache import redis_cache
+from dispatcher.dispatcher import action_event_dispatcher
+
+
+class PeripheralSerializerDevice(serializers.ModelSerializer):
+    class Meta:
+        model = Peripherals
+        fields = ["id", "name", "config", "state"]
 
 
 class PeripheralSerializer(serializers.ModelSerializer):
@@ -58,12 +66,9 @@ class PeripheralSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         peripheral: Peripherals = super().create(validated_data)
-        # DeviceMessenger().send(
-        #     "1234",
-        #     build_request(
-        #         MessageEvent.UPDATE_CONFIG,
-        #         peripheral.device.mac,
-        #         {peripheral.pk: {"name": peripheral.name, "config": peripheral.config}},
-        #     ),
-        # )
+        data = PeripheralSerializerDevice(peripheral.device.peripherals, many=True).data
+        command_message = command_message_factory.update_peripheral(
+            peripheral.device, data
+        )
+        action_event_dispatcher.dispatch(command_message)
         return peripheral

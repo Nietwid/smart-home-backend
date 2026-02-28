@@ -39,7 +39,6 @@ class Device(models.Model):
     last_seen = models.DateTimeField(auto_now_add=True, auto_created=True)
     mac = models.CharField(max_length=100, db_index=True, unique=True)
     wifi_strength = models.IntegerField(default=0)
-    pending = JSONField(default=list, blank=True)
     is_online = models.BooleanField(default=False)
     firmware_version = models.FloatField(default=1.0)
     chip_type = models.CharField(

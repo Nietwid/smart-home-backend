@@ -11,9 +11,12 @@ class CameraCommand(StrEnum):
 
 class MessageEvent(StrEnum):
     # Basic events
-    GET_CONNECTED_DEVICES = "get_connected_devices"
     DEVICE_CONNECT = "device_connect"
     DEVICE_DISCONNECT = "device_disconnect"
+
+
+
+    GET_CONNECTED_DEVICES = "get_connected_devices"
     HEALTH_CHECK = "health_check"
     SET_SETTINGS = "set_settings"
     GET_SETTINGS = "get_settings"
@@ -46,6 +49,11 @@ class MessageEvent(StrEnum):
     ON_HUMIDITY_BELOW = "on_humidity_below"
 
 class MessageAction(StrEnum):
+    # CPU
+    UPDATE_PERIPHERAL = "update_peripheral"
+
+
+
     # Light action
     ON = "on"
     OFF = "off"
@@ -59,6 +67,7 @@ class MessageAction(StrEnum):
     ACCESS_GRANTED = "access_granted"
     ACCESS_DENIED = "access_denied"
 
+    UPDATE_STATE = "update_state"
     SET_VALUE = "set_value"
     SET_COLOR = "set_color"
 

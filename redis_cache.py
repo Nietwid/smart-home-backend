@@ -42,35 +42,38 @@ class RedisCache:
     def get_device_pending(self, pk: int) -> list[str]:
         return cache.get(CacheKey.device_pending(pk))
 
-    def add_peripheral_pending(self, pk: int, command: MessageCommand) -> list[str]:
-        pending = self.get_peripherals_pending(pk)
+    def add_device_pending(
+        self, pk: int, command: MessageCommand, peripheral=False
+    ) -> list[str]:
+        if peripheral:
+            pending = self.get_peripherals_pending(pk)
+            cache_key = CacheKey.peripheral_pending(pk)
+        else:
+            pending = self.get_device_pending(pk)
+            cache_key = CacheKey.device_pending(pk)
+
         if not pending:
             pending = []
         if not command in pending:
             pending.append(command)
-        cache.set(
-            CacheKey.peripheral_pending(pk), pending, timeout=self.DEFAULT_TIMEOUT
-        )
+
+        cache.set(cache_key, pending, timeout=self.DEFAULT_TIMEOUT)
         return pending
 
-    def delete_peripheral_pending(self, pk: int, command: MessageCommand) -> list[str]:
-        pending = self.get_peripherals_pending(pk)
+    def delete_device_pending(
+        self, pk: int, command: MessageCommand, peripheral=False
+    ) -> list[str]:
+        if peripheral:
+            pending = self.get_peripherals_pending(pk)
+            cache_key = CacheKey.peripheral_pending(pk)
+        else:
+            pending = self.get_device_pending(pk)
+            cache_key = CacheKey.device_pending(pk)
         if not pending:
             return []
         if command in pending:
             pending.remove(command)
-        cache.set(
-            CacheKey.peripheral_pending(pk), pending, timeout=self.DEFAULT_TIMEOUT
-        )
-        return pending
-
-    def delete_device_pending(self, pk: int, command: MessageCommand):
-        pending = self.get_device_pending(pk)
-        if not pending:
-            return []
-        if command in pending:
-            pending.remove(command)
-        cache.set(CacheKey.device_pending(pk), pending, timeout=self.DEFAULT_TIMEOUT)
+        cache.set(cache_key, pending, timeout=self.DEFAULT_TIMEOUT)
         return pending
 
 

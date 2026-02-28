@@ -4,7 +4,35 @@ from notifier.message import FrontendNotifierData
 
 
 class FrontendNotifierFactory:
-    def update_peripheral_state(self,home_id:int, state:dict)->FrontendNotifierData:
+
+    def update_router(self, home_id:int, data:dict)->FrontendNotifierData:
+        return FrontendNotifierData(
+                home_id=home_id,
+                data=FrontendMessage(
+                    action=FrontendMessageType.UPDATE_ROUTER,
+                    data=data
+                )
+        )
+
+    def update_room(self, home_id:int, data:dict)->FrontendNotifierData:
+        return FrontendNotifierData(
+                home_id=home_id,
+                data=FrontendMessage(
+                    action=FrontendMessageType.UPDATE_ROOM,
+                    data=data
+                )
+        )
+
+    def update_device(self, home_id:int, data:dict)->FrontendNotifierData:
+        return FrontendNotifierData(
+                home_id=home_id,
+                data=FrontendMessage(
+                    action=FrontendMessageType.UPDATE_DEVICE,
+                    data=data
+                )
+        )
+
+    def update_peripheral_state(self, home_id:int, state:dict)->FrontendNotifierData:
         return FrontendNotifierData(
                 home_id=home_id,
                 data=FrontendMessage(
@@ -24,7 +52,7 @@ class FrontendNotifierFactory:
                     }
                 )
             )
-    def update_device_pending(self,home_id:int, device_id:int, pending:list[str]):
+    def update_device_pending(self,home_id:int, device_id:int, pending:list[str])->FrontendNotifierData:
         return FrontendNotifierData(
                 home_id=home_id,
                 data=FrontendMessage(
@@ -34,7 +62,7 @@ class FrontendNotifierFactory:
                     }
                 )
             )
-    def display_toaster(self, home_id:int, message:str):
+    def display_toaster(self, home_id:int, message:str)->FrontendNotifierData:
         return FrontendNotifierData(
             home_id=home_id,
             data=FrontendMessage(

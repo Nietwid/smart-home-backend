@@ -70,8 +70,8 @@ def check_command_timeout(self, message_id: str):
         peripheral = peripheral_repository.get_by_id_with_device(message.peripheral_id)
         home_id = peripheral.device.home.id
         device_name = peripheral.device.name
-        pending = redis_cache.delete_peripheral_pending(
-            message.peripheral_id, message.command
+        pending = redis_cache.delete_device_pending(
+            message.peripheral_id, message.command, peripheral=True
         )
         notifications = [
             frontend_notifier_factory.update_peripheral_pending(
