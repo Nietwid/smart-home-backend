@@ -6,7 +6,6 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 
-from consumers.device.messages.builders.basic import get_connected_devices_request
 from device.models import Router, Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
@@ -68,7 +67,6 @@ class RouterConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
-            print(f"Received message: {text_data}")
             handle_device_message_task.delay(text_data, self.home.pk, self.router.mac)
         except Exception as e:
             logger.error(f"Could not push task to RabbitMQ: {e}")

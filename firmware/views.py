@@ -5,7 +5,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, get_object_or_404
 
-from consumers.device.messages.enum import MessageEvent
+from dispatcher.device.messages.enum import MessageEvent
 
 # from consumers.device.messages.builders import update_firmware_request
 from device.serializers.device import DeviceSerializer

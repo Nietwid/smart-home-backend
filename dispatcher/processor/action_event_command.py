@@ -1,6 +1,6 @@
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.dispatcher import action_event_dispatcher
-from dispatcher.handlers.enums import Scope, MessageType
+from dispatcher.device.messages.enum import Scope, MessageType
 from hardware.cpu.device import CpuHardware
 from hardware.registry import HARDWARE_REGISTRY
 from notifier.notifier import notifier

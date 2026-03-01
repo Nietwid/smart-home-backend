@@ -1,12 +1,12 @@
 from django.utils import timezone
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 from device.models import Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.dispatch_result import DispatchResult
-from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
+from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from room.serializer import RoomSerializer

@@ -2,9 +2,9 @@ from typing import Optional, Any
 
 from pydantic import BaseModel, Field, ConfigDict
 
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 from device.models import Device
-from dispatcher.handlers.enums import MessageType, Scope, MessageDirection
+from dispatcher.device.messages.enum import MessageType, Scope, MessageDirection
 from peripherals.models import Peripherals
 
 

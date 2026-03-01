@@ -3,7 +3,7 @@ from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from ai_assistance.tasks import ai_test
-from consumers.device.messages.enum import CameraCommand
+from dispatcher.device.messages.enum import CameraCommand
 from consumers.router.message.message import CameraRouterMessage
 from consumers.router.message.payload.camera import CameraRouterMessagePayload
 from consumers.router.messenger import router_messenger

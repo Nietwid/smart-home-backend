@@ -1,6 +1,6 @@
-from consumers.device.messages.enum import MessageCommand
-from consumers.device.messages.device_message import DeviceMessage
-from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
+from dispatcher.device.messages.enum import MessageCommand
+from dispatcher.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.command_message.message import CommandMessage
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
 from peripherals.repository import peripheral_repository

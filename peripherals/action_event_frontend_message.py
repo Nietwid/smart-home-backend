@@ -1,9 +1,9 @@
 from typing import Optional, Dict, Any
 from pydantic import BaseModel, model_validator, Field
 
-from dispatcher.handlers.enums import Scope, MessageType
+from dispatcher.device.messages.enum import Scope, MessageType
 
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 
 
 class ActionEventFrontendMessage(BaseModel):

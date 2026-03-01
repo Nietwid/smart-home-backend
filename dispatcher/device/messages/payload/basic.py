@@ -2,8 +2,9 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from consumers.device.messages.device_state import DeviceState
+from dispatcher.device.messages.device_state import DeviceState
 from device.models import ChipType
+from dispatcher.device.messages.enum import ActionResult
 
 
 class EmptyRequest(BaseModel):
@@ -28,8 +29,8 @@ class SerializerDataResponse(BaseModel):
     pass
 
 
-class BasicResponse(BaseModel):
-    status: Literal["accepted", "rejected"]
+class BasicResult(BaseModel):
+    status: ActionResult
 
 
 class DeviceConnectRequest(BaseModel):

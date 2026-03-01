@@ -1,7 +1,7 @@
 from consumers.events.base_event import BaseEventRequest
 from consumers.microservice_message.on_measurement import on_measurement
 from consumers.rabbitmq_publisher import QueueNames, get_publisher
-from consumers.device.messages.builders import (
+from dispatcher.device.messages.builders import (
     measurements_sleeping_time_response,
 )
 from consumers.router_message.device_message import DeviceMessage

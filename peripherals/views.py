@@ -27,9 +27,8 @@ class HandleEventAction(APIView):
                 errors[path] = err["msg"]
             return Response(errors, status=400)
         except Exception as e:
-            print(e)
+            print(f"{e=}")
             return Response({}, status=400)
-
         command_message = command_message_factory.from_frontend_message(
             frontend_message
         )

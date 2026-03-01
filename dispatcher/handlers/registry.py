@@ -1,5 +1,9 @@
-from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import (
+    Scope,
+    MessageType,
+    MessageDirection,
+    MessageCommand,
+)
 
 DISPATCH_DICT = {}
 

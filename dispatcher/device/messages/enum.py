@@ -1,4 +1,24 @@
-from enum import StrEnum
+from enum import StrEnum, Enum
+
+class Scope(Enum):
+    CPU = 1
+    PERIPHERAL = 2
+
+
+class MessageType(Enum):
+    ACTION = 1
+    EVENT = 2
+
+
+class MessageDirection(Enum):
+    INTENT = 1
+    RESULT = 2
+
+class ActionResult(Enum):
+    ACCEPTED = 1
+    REJECTED = 2
+
+
 class CameraCommand(StrEnum):
     CAMERA_OFFER = "camera_offer"
     CAMERA_ANSWER = "camera_answer"
@@ -10,10 +30,6 @@ class CameraCommand(StrEnum):
 
 class MessageEvent(StrEnum):
     # Basic events
-    DEVICE_CONNECT = "device_connect"
-    DEVICE_DISCONNECT = "device_disconnect"
-
-
 
     GET_CONNECTED_DEVICES = "get_connected_devices"
     HEALTH_CHECK = "health_check"
@@ -29,7 +45,6 @@ class MessageEvent(StrEnum):
     # Button events
     ON_CLICK = "on_click"
     ON_HOLD = "on_hold"
-    ON_TOGGLE = "on_toggle"
 
     # RFID events
     ON_READ = "on_read"
@@ -54,7 +69,6 @@ class MessageAction(StrEnum):
     ON = "on"
     OFF = "off"
     BLINK = "blink"
-    TOGGLE = "toggle"
 
     # RFID actions
     ADD_TAG = "add_tag"
@@ -68,14 +82,16 @@ class MessageAction(StrEnum):
     SET_COLOR = "set_color"
 
 class MessageCommand(StrEnum):
-    #Event CPU
+    # CPU events
     DEVICE_CONNECT = "device_connect"
     DEVICE_DISCONNECT = "device_disconnect"
 
-    # Event CPU
-
-    #Action CPU
+    # CPU action
     UPDATE_PERIPHERAL = "update_peripheral"
     UPDATE_STATE = "update_state"
 
-    #Action CPU
+    # Peripheral events
+    ON_TOGGLE = "on_toggle"
+
+    # Peripheral action
+    TOGGLE = "toggle"

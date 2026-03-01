@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from django.db import models
 
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 from room.models import Room
 from user.models import Home
 

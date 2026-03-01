@@ -1,9 +1,9 @@
 import logging
 
-from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.device_message import DeviceMessage
 from django.core.cache import cache
 from cache_key import CacheKey
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 
 logger = logging.getLogger(__name__)
 

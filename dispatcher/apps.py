@@ -18,3 +18,7 @@ class DispatcherConfig(AppConfig):
             UpdateStateActionIntent,
             UpdateStateActionResult,
         )
+        from dispatcher.handlers.peripheria.actions.toggle import (
+            ToggleActionIntent,
+            ToggleActionResult,
+        )

@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from consumers.device.messages.payload.basic import (
+from dispatcher.device.messages.payload.basic import (
     DeviceConnectRequest,
 )
 

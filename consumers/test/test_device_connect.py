@@ -2,8 +2,8 @@ import pytest
 from aquarium.models import Aquarium
 from consumers.router_message.message_type import MessageType
 
-from consumers.device.messages.device_message import DeviceMessage
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.handlers.cpu.events.device_connect import DeviceConnectEvent
 
 

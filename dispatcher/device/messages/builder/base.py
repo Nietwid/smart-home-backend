@@ -1,6 +1,6 @@
-from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.device_message import DeviceMessage
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.handlers.enums import MessageDirection, Scope
+from dispatcher.device.messages.enum import MessageDirection, Scope
 
 
 class BaseMessageBuilder:

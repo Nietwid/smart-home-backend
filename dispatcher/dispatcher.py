@@ -2,8 +2,8 @@ import logging
 
 from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
+from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.handlers.registry import DISPATCH_DICT
 from notifier.message import NotifierMessage
 

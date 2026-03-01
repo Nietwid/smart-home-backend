@@ -1,11 +1,10 @@
 import logging
-from django.core.cache import cache
 from celery import shared_task
 from pydantic import ValidationError
 
-from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.device_message import DeviceMessage
 from device.repository.device_repository import device_repository
-from dispatcher.handlers.enums import Scope
+from dispatcher.device.messages.enum import Scope
 from dispatcher.processor.action_event_command import action_event_command_processor
 from dispatcher.command_message.factory import command_message_factory
 from notifier.frontend_notifier_factory import frontend_notifier_factory
@@ -40,6 +39,7 @@ def handle_device_message_task(
     """
     try:
         message = DeviceMessage.model_validate_json(raw_json)
+        print(f"TASK message: {message}")
         command_message = command_message_factory.from_device_message(
             message, home_id, router_mac
         )

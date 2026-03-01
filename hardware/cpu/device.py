@@ -1,4 +1,4 @@
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 
 
 class CpuHardware:

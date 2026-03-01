@@ -1,5 +1,5 @@
-from consumers.device.messages.builder.base import BaseMessageBuilder
-from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.builder.base import BaseMessageBuilder
+from dispatcher.device.messages.device_message import DeviceMessage
 from dispatcher.command_message.message import CommandMessage
 from time import time
 

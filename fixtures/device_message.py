@@ -1,10 +1,10 @@
 import pytest
 
-from consumers.device.messages.enum import MessageEvent
-from consumers.device.messages.device_message import DeviceMessage
-from consumers.device.messages.payload.basic import DeviceConnectRequest
+from dispatcher.device.messages.enum import MessageEvent
+from dispatcher.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.payload.basic import DeviceConnectRequest
 from device.models import ChipType
-from dispatcher.handlers.enums import MessageDirection, MessageType, Scope
+from dispatcher.device.messages.enums import MessageDirection, MessageType, Scope
 from .base import device
 
 

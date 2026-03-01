@@ -3,10 +3,10 @@ from typing import Any
 from uuid import uuid4
 from pydantic import BaseModel, field_validator, model_validator, Field
 
-from consumers.device.messages.enum import MessageCommand
-from consumers.device.messages.payload.basic import SerializerDataResponse
-from consumers.device.messages.payload_mapper import PAYLOAD_MAPPING
-from dispatcher.handlers.enums import MessageType, MessageDirection, Scope
+from dispatcher.device.messages.enum import MessageCommand
+from dispatcher.device.messages.payload.basic import SerializerDataResponse
+from dispatcher.device.messages.payload_mapper import PAYLOAD_MAPPING
+from dispatcher.device.messages.enum import MessageType, MessageDirection, Scope
 
 
 def get_message_id():

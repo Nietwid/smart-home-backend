@@ -1,6 +1,6 @@
 from consumers.router.message.message import DeviceRouterMessage
 from notifier.message import RouterNotifierData
-from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.device_message import DeviceMessage
 
 class RouterNotifierFactory:
 

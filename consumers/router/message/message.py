@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from consumers.device.messages.device_message import DeviceMessage
-from consumers.device.messages.enum import CameraCommand
+from dispatcher.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.enum import CameraCommand
 from consumers.router.message.enum import RouterMessageType
 from consumers.router.message.payload.camera import CameraRouterMessagePayload
 

@@ -1,4 +1,4 @@
-from consumers.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.device_message import DeviceMessage
 from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.events.base_event import BaseEventResponse
 from device.serializers.device import DeviceSerializer

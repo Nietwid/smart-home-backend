@@ -1,12 +1,12 @@
-from consumers.device.messages.builder.action_event_intent import (
+from dispatcher.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
 )
-from consumers.device.messages.payload.basic import BasicResponse
+from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.dispatch_result import DispatchResult
-from consumers.device.messages.enum import MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.handlers.base import ActionEventBaseHandler
-from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
+from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
 from dispatcher.tasks import check_command_timeout
 from notifier.frontend_notifier_factory import frontend_notifier_factory
@@ -50,7 +50,7 @@ class UpdatePeripheralActionIntent(ActionEventBaseHandler):
 )
 class UpdatePeripheralActionResult(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
-        payload: BasicResponse = message.payload
+        payload: BasicResult = message.payload
         if payload.status != "success":
             return DispatchResult()
 
