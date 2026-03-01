@@ -19,9 +19,10 @@ def action_event_validator(message: CommandMessage) -> None:
         if message.type == MessageType.ACTION
         else hardware_cls.events
     )
-
     if message.command not in allowed_commands:
-        raise ValueError(f"Invalid {message.type.name.lower()}: {message.command}")
+        raise ValueError(
+            f"Invalid {message.type.name.lower()}: {message.command} allowed: {allowed_commands}"
+        )
 
 
 class ActionEventCommandProcessor:

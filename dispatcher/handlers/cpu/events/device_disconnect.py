@@ -1,10 +1,5 @@
-from datetime import datetime
-
-from consumers.device.messages.enum import MessageEvent
-from consumers.frontend.messages.message import FrontendMessage
-from consumers.frontend.messages.types import (
-    FrontendMessageType,
-)
+from django.utils import timezone
+from consumers.device.messages.enum import MessageCommand
 from device.models import Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
@@ -14,7 +9,6 @@ from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
 from notifier.frontend_notifier_factory import frontend_notifier_factory
-from notifier.message import FrontendNotifierData
 from room.serializer import RoomSerializer
 
 
@@ -22,7 +16,7 @@ from room.serializer import RoomSerializer
     scope=Scope.CPU,
     message_type=MessageType.EVENT,
     direction=MessageDirection.INTENT,
-    handler_name=MessageEvent.DEVICE_DISCONNECT,
+    handler_name=MessageCommand.DEVICE_DISCONNECT,
 )
 class DeviceDisconnectEvent(ActionEventBaseHandler):
     """
@@ -31,7 +25,7 @@ class DeviceDisconnectEvent(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         device: Device = message.device
-        device.last_seen = datetime.now()
+        device.last_seen = timezone.now()
         device.is_online = False
         device.save(update_fields=["last_seen", "is_online"])
         home_id = device.home.id

@@ -3,6 +3,7 @@ from typing import Optional
 from django.contrib.auth.models import AbstractBaseUser
 from django.db.models import Q, QuerySet
 from device.models import Device, ChipType
+from user.models import Home
 
 
 class DeviceRepository:
@@ -31,7 +32,8 @@ class DeviceRepository:
         self, home_id: int, mac: str, chip_type: ChipType
     ) -> Device:
         device, created = Device.objects.get_or_create(
-            mac=mac, defaults={"chip_type": chip_type, "home": home_id}
+            mac=mac,
+            defaults={"chip_type": chip_type, "home": Home.objects.get(pk=home_id)},
         )
         return device
 

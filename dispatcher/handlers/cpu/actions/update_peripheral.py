@@ -3,7 +3,7 @@ from consumers.device.messages.builder.action_event_intent import (
 )
 from consumers.device.messages.payload.basic import BasicResponse
 from dispatcher.dispatch_result import DispatchResult
-from consumers.device.messages.enum import MessageAction
+from consumers.device.messages.enum import MessageCommand
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
@@ -18,13 +18,13 @@ from redis_cache import redis_cache
     scope=Scope.CPU,
     message_type=MessageType.ACTION,
     direction=MessageDirection.INTENT,
-    handler_name=MessageAction.UPDATE_PERIPHERAL,
+    handler_name=MessageCommand.UPDATE_PERIPHERAL,
 )
 class UpdatePeripheralActionIntent(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         device_message = action_event_intent_builder.build_intent(message)
         redis_cache.save_device_message(device_message)
-        pending = redis_cache.add_device_pending(message.peripheral.pk, message.command)
+        pending = redis_cache.add_device_pending(message.device.pk, message.command)
         notifications = [
             router_notifier_factory.device_message(
                 router_mac=message.device.get_router_mac(),
@@ -36,7 +36,7 @@ class UpdatePeripheralActionIntent(ActionEventBaseHandler):
                 device_id=message.device.pk,
             ),
         ]
-        check_command_timeout().apply_async(
+        check_command_timeout.apply_async(
             args=(device_message.message_id,), countdown=30, queue="default"
         )
         return DispatchResult(notifications=notifications)
@@ -46,7 +46,7 @@ class UpdatePeripheralActionIntent(ActionEventBaseHandler):
     scope=Scope.CPU,
     message_type=MessageType.ACTION,
     direction=MessageDirection.RESULT,
-    handler_name=MessageAction.UPDATE_PERIPHERAL,
+    handler_name=MessageCommand.UPDATE_PERIPHERAL,
 )
 class UpdatePeripheralActionResult(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:

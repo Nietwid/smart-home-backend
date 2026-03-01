@@ -119,12 +119,23 @@ DATABASES = {
 
 
 # Celery
-CELERY_BROKER_URL = os.getenv("REDIS_CELERY")
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.getenv("REDIS_CELERY")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Europe/Warsaw"
+CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_BEAT_SCHEDULE = {
+    "checker": {"task": "device.tasks.check_devices", "schedule": crontab(minute="*")},
+    "old_firmware_delete": {
+        "task": "firmware.tasks.delete_old_firmware",
+        "schedule": crontab(day_of_month="1"),
+    },
+}
+
+CELERY_TASK_ROUTES = {"ai_assistance.tasks.*": {"queue": "ai"}}
+
 
 # Redis
 CACHES = {
@@ -144,17 +155,6 @@ CHANNEL_LAYERS = {
         "CONFIG": {"hosts": [os.getenv("REDIS_CHANNEL_LAYERS")]},
     },
 }
-
-CELERY_BEAT_SCHEDULE = {
-    "checker": {"task": "device.tasks.check_devices", "schedule": crontab(minute="*")},
-    "old_firmware_delete": {
-        "task": "firmware.tasks.delete_old_firmware",
-        "schedule": crontab(day_of_month="1"),
-    },
-}
-
-CELERY_TASK_ROUTES = {"ai_assistance.tasks.*": {"queue": "ai"}}
-
 
 from datetime import timedelta
 

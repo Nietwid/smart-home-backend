@@ -1,9 +1,9 @@
-from consumers.device.messages.enum import MessageAction, MessageEvent
+from consumers.device.messages.enum import MessageCommand
 
 
 class CpuHardware:
-    actions = (MessageAction.UPDATE_PERIPHERAL,)
-    events =(
-            MessageEvent.DEVICE_CONNECT,
-            MessageEvent.DEVICE_DISCONNECT,
-        ),
+    actions = (MessageCommand.UPDATE_PERIPHERAL,)
+    events = (
+        MessageCommand.DEVICE_CONNECT,
+        MessageCommand.DEVICE_DISCONNECT,
+    )

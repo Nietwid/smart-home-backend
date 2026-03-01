@@ -25,7 +25,7 @@ class DeviceMessage(BaseModel):
     @field_validator("device_id", mode="after")
     def validate_mac(cls, value):
         pattern = r"^([0-9a-fA-F]{2}[:-]){5}([0-9a-fA-F]){2}$"
-        if not re.match(pattern, value) and value != "camera":
+        if not re.match(pattern, value):
             raise ValueError("Invalid MAC address")
         return value
 

@@ -1,4 +1,4 @@
-from consumers.device.messages.enum import MessageEvent, MessageAction
+from consumers.device.messages.enum import MessageCommand
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.extract_field import extract_field
@@ -17,7 +17,7 @@ class RGBStripHardware(BaseHardware):
     state_model = RGBStripState
     hardware_type = HardwareTypes.LIGHT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageAction.UPDATE_STATE,)
+    actions = (MessageCommand.UPDATE_STATE,)
     events = ()
 
     @classmethod

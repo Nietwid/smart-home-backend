@@ -3,8 +3,7 @@ from django.utils import timezone
 from consumers.device.messages.builder.action_event_request import (
     action_event_response_builder,
 )
-from consumers.device.messages.enum import MessageEvent
-from consumers.router.message.message import DeviceRouterMessage
+from consumers.device.messages.enum import MessageCommand
 from consumers.device.messages.payload.basic import DeviceConnectRequest
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
@@ -15,7 +14,6 @@ from dispatcher.handlers.registry import register_action_event
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.enums import Scope, MessageType, MessageDirection
 from notifier.frontend_notifier_factory import frontend_notifier_factory
-from notifier.message import RouterNotifierData, FrontendNotifierData
 from notifier.router_notifier_factory import router_notifier_factory
 from room.serializer import RoomSerializer
 
@@ -26,7 +24,7 @@ from device.models import Device
     scope=Scope.CPU,
     message_type=MessageType.EVENT,
     direction=MessageDirection.INTENT,
-    handler_name=MessageEvent.DEVICE_CONNECT,
+    handler_name=MessageCommand.DEVICE_CONNECT,
 )
 class DeviceConnectEvent(ActionEventBaseHandler):
     """Handles device connection events by updating or creating device records."""

@@ -20,7 +20,7 @@ class BaseMessageBuilder:
     def _build_request(self, message: CommandMessage, payload: dict) -> DeviceMessage:
         if message.scope == Scope.CPU:
             device_id = message.device.mac
-            peripheral_id = None
+            peripheral_id = 0
         else:
             device_id = message.peripheral.device.mac
             peripheral_id = message.peripheral.pk

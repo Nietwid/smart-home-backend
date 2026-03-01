@@ -1,4 +1,4 @@
-from consumers.device.messages.enum import MessageAction
+from consumers.device.messages.enum import MessageCommand
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used
@@ -19,7 +19,7 @@ class PinInputHardware(BaseHardware):
     state_model = PinOutputState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageAction.UPDATE_STATE,)
+    actions = (MessageCommand.UPDATE_STATE,)
     events = ()
 
     @classmethod
@@ -41,7 +41,7 @@ class PinOutputHardware(BaseHardware):
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
-    actions = (MessageAction.UPDATE_STATE,)
+    actions = (MessageCommand.UPDATE_STATE,)
     events = ()
 
     @classmethod

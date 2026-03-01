@@ -43,14 +43,13 @@ def handle_device_message_task(
         command_message = command_message_factory.from_device_message(
             message, home_id, router_mac
         )
-    except ValidationError:
-        logger.error(f"Payload validation failed for message: {raw_json}")
+    except ValidationError as e:
+        logger.error(f"Payload validation failed for message: {raw_json} : {e}")
         return
     except Exception as exc:
         logger.error(f"Error processing message. exc: {exc}")
         # Necessary to trigger the 'auto retry_for' logic
         raise exc
-
     action_event_command_processor(command_message)
 
 

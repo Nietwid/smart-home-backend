@@ -44,13 +44,13 @@ class RouterConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(f"router_{self.mac}", self.channel_name)
         await self.accept()
         await self.set_home()
-        await FrontendMessenger().async_update_frontend(
-            self.home.id,
-            await self.get_router_serialized_data(),
-            action=FrontendMessageType.UPDATE_ROUTER,
-        )
-        connected_message = get_connected_devices_request()
-        await self.send(text_data=connected_message.model_dump_json())
+        # await FrontendMessenger().async_update_frontend(
+        #     self.home.id,
+        #     await self.get_router_serialized_data(),
+        #     action=FrontendMessageType.UPDATE_ROUTER,
+        # )
+        # connected_message = get_connected_devices_request()
+        # await self.send(text_data=connected_message.model_dump_json())
 
     async def disconnect(self, code):
         if not self.router:
@@ -58,16 +58,17 @@ class RouterConsumer(AsyncWebsocketConsumer):
         self.router.last_seen = datetime.now()
         self.router.is_online = False
         await sync_to_async(self.router.save)(update_fields=["last_seen", "is_online"])
-        await FrontendMessenger().async_update_frontend(
-            self.home.id,
-            await self.get_router_serialized_data(),
-            action=FrontendMessageType.UPDATE_ROUTER,
-        )
-        router_devices = await self.get_router_devices()
-        await self.deactivate_all_device(router_devices)
+        # await FrontendMessenger().async_update_frontend(
+        #     self.home.id,
+        #     await self.get_router_serialized_data(),
+        #     action=FrontendMessageType.UPDATE_ROUTER,
+        # )
+        # router_devices = await self.get_router_devices()
+        # await self.deactivate_all_device(router_devices)
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
+            print(f"Received message: {text_data}")
             handle_device_message_task.delay(text_data, self.home.pk, self.router.mac)
         except Exception as e:
             logger.error(f"Could not push task to RabbitMQ: {e}")

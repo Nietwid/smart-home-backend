@@ -10,7 +10,7 @@ class Notifier:
             match message.destination:
                 case Destinations.ROUTER:
                     message: RouterNotifierData
-                    router_messenger.send(message.router_mac, message)
+                    router_messenger.send(message.router_mac, message.data)
                 case Destinations.FRONTEND:
                     message: FrontendNotifierData
                     frontend_messenger.send(message.home_id, message)

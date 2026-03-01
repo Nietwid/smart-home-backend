@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
-from django.db.models import JSONField
 from django.db import models
 
-from consumers.device.messages.enum import MessageEvent
+from consumers.device.messages.enum import MessageCommand
 from room.models import Room
 from user.models import Home
 
@@ -49,7 +48,7 @@ class Device(models.Model):
     def __str__(self):
         return self.name
 
-    def get_event_request(self, event_type: MessageEvent) -> "list[CommandMessage]":
+    def get_event_request(self, event_type: MessageCommand) -> "list[CommandMessage]":
         events = Event.objects.filter(device=self, event=event_type.value)
         return []
 

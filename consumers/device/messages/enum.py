@@ -1,5 +1,4 @@
 from enum import StrEnum
-from typing import Union
 class CameraCommand(StrEnum):
     CAMERA_OFFER = "camera_offer"
     CAMERA_ANSWER = "camera_answer"
@@ -49,9 +48,6 @@ class MessageEvent(StrEnum):
     ON_HUMIDITY_BELOW = "on_humidity_below"
 
 class MessageAction(StrEnum):
-    # CPU
-    UPDATE_PERIPHERAL = "update_peripheral"
-
 
 
     # Light action
@@ -71,4 +67,15 @@ class MessageAction(StrEnum):
     SET_VALUE = "set_value"
     SET_COLOR = "set_color"
 
-MessageCommand = Union[MessageEvent, MessageAction]
+class MessageCommand(StrEnum):
+    #Event CPU
+    DEVICE_CONNECT = "device_connect"
+    DEVICE_DISCONNECT = "device_disconnect"
+
+    # Event CPU
+
+    #Action CPU
+    UPDATE_PERIPHERAL = "update_peripheral"
+    UPDATE_STATE = "update_state"
+
+    #Action CPU

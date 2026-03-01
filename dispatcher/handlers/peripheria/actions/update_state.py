@@ -1,7 +1,7 @@
 from consumers.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
 )
-from consumers.device.messages.enum import MessageAction
+from consumers.device.messages.enum import MessageCommand
 from consumers.device.messages.payload.basic import BasicResponse
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.dispatch_result import DispatchResult
@@ -19,7 +19,7 @@ from dispatcher.tasks import check_command_timeout
     scope=Scope.PERIPHERAL,
     message_type=MessageType.ACTION,
     direction=MessageDirection.INTENT,
-    handler_name=MessageAction.UPDATE_STATE,
+    handler_name=MessageCommand.UPDATE_STATE,
 )
 class UpdateStateActionIntent(ActionEventBaseHandler):
 
@@ -51,7 +51,7 @@ class UpdateStateActionIntent(ActionEventBaseHandler):
             ),
         ]
         check_command_timeout.apply_async(
-            args=(device_message.message_id,), countdown=30, queue="default"
+            args=(device_message.message_id,), countdown=5, queue="default"
         )
         return DispatchResult(
             notifications=notifications,
@@ -62,23 +62,24 @@ class UpdateStateActionIntent(ActionEventBaseHandler):
     scope=Scope.PERIPHERAL,
     message_type=MessageType.ACTION,
     direction=MessageDirection.RESULT,
-    handler_name=MessageAction.UPDATE_STATE,
+    handler_name=MessageCommand.UPDATE_STATE,
 )
 class UpdateStateActionResult(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
+        print(message.payload)
         payload: BasicResponse = message.payload
-        if payload.status != "success":
+        if payload.status != "accepted":
             return DispatchResult()
 
         device_message = redis_cache.get_device_message_and_delete(message.message_id)
         if not device_message:
             return DispatchResult()
-
         message.peripheral.state.update(device_message.payload)
-        message.peripheral.state.save(update_fields=["state"])
+        message.peripheral.save(update_fields=["state"])
+
         pending = redis_cache.delete_device_pending(
-            message.peripheral.pk, peripheral=True
+            message.peripheral.pk, message.command, peripheral=True
         )
         home_id = message.peripheral.device.home.id
         notifications = [
@@ -86,7 +87,7 @@ class UpdateStateActionResult(ActionEventBaseHandler):
                 home_id=home_id, state=message.peripheral.state
             ),
             frontend_notifier_factory.update_peripheral_pending(
-                home_id=message.peripheral.device.home.id,
+                home_id=home_id,
                 pending=pending,
                 device_id=message.peripheral.device.pk,
                 peripheral_id=message.peripheral.pk,
