@@ -1,9 +1,10 @@
 from pydantic import BaseModel, Field
 
+from hardware.base import BasePeripheralConfig
 from hardware.pwm.schema import PwmConfig, PwmState
 
 
-class RGBStripConfig(BaseModel):
+class RGBStripConfig(BasePeripheralConfig):
     r_pin: PwmConfig
     g_pin: PwmConfig
     b_pin: PwmConfig

@@ -1,8 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from hardware.base import BasePeripheralConfig
+from hardware.pin.schema import PinOutputConfig
 
 
-class PwmConfig(BaseModel):
-    pin: int
+class PwmConfig(BasePeripheralConfig):
+    pin: PinOutputConfig
     frequency: int = 250
     resolution_bits: int = 8
 

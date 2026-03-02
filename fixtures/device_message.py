@@ -4,7 +4,7 @@ from dispatcher.device.messages.enum import MessageEvent
 from dispatcher.device.messages.device_message import DeviceMessage
 from dispatcher.device.messages.payload.basic import DeviceConnectRequest
 from device.models import ChipType
-from dispatcher.device.messages.enums import MessageDirection, MessageType, Scope
+from dispatcher.device.messages.enum import MessageDirection, MessageType, Scope
 from .base import device
 
 

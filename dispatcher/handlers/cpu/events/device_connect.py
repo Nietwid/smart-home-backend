@@ -1,7 +1,7 @@
 from django.utils import timezone
 
 from dispatcher.device.messages.builder.action_event_request import (
-    action_event_response_builder,
+    action_event_result_builder,
 )
 from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.payload.basic import DeviceConnectRequest
@@ -41,7 +41,7 @@ class DeviceConnectEvent(ActionEventBaseHandler):
         notifier_message = [
             router_notifier_factory.device_message(
                 router_mac=device.get_router_mac(),
-                message=action_event_response_builder.accept_response(message),
+                message=action_event_result_builder.accept_response(message),
             ),
             frontend_notifier_factory.update_device(
                 home_id=home_id, data=DeviceSerializer(device).data

@@ -15,6 +15,5 @@ urlpatterns = [
     path("api/cameras/", include("camera.urls")),
     path("api/temperature/", include("temperature.urls")),
     path("api/firmware/", include("firmware.urls")),
-    path("api/hardware/", include("hardware.urls")),
     path("api/peripherals/", include("peripherals.urls")),
 ]

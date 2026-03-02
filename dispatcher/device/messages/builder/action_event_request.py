@@ -4,7 +4,7 @@ from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.enum import ActionResult
 
 
-class ActionEventResponseMessageBuilder(BaseMessageBuilder):
+class ActionEventResultMessageBuilder(BaseMessageBuilder):
     def accept_response(self, message: CommandMessage) -> DeviceMessage:
         return self._build_response(message, {"status": ActionResult.ACCEPTED})
 
@@ -12,4 +12,4 @@ class ActionEventResponseMessageBuilder(BaseMessageBuilder):
         return self._build_response(message, {"status": ActionResult.REJECTED})
 
 
-action_event_response_builder = ActionEventResponseMessageBuilder()
+action_event_result_builder = ActionEventResultMessageBuilder()

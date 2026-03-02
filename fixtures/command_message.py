@@ -1,10 +1,10 @@
 import pytest
 
-from dispatcher.device.messages.enum import MessageEvent
+from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.payload.basic import DeviceConnectRequest
 from device.models import ChipType
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.device.messages.enums import Scope, MessageType, MessageDirection
+from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def command_message_device_connect(home, routr, device):
         scope=Scope.CPU,
         type=MessageType.EVENT,
         direction=MessageDirection.INTENT,
-        command=MessageEvent.DEVICE_CONNECT,
+        command=MessageCommand.DEVICE_CONNECT,
         home_id=home.pk,
         router_mac=routr.mac,
         payload=DeviceConnectRequest(

@@ -1,25 +1,20 @@
 from pydantic import BaseModel, Field
 from typing import Literal
 
+from hardware.base import BasePeripheralConfig
 
-class PinOutputConfig(BaseModel):
-    pin: int = Field(
-        ...,
-        title="GPIO Pin",
-        description="Number of the GPIO pin used as output",
-        ge=0,
-        le=40,
-        examples=[13],
-    )
+
+class PinOutputConfig(BasePeripheralConfig):
+    pin: int = Field(ge=0, le=40)
 
 
 class PinOutputState(BaseModel):
     is_on: bool = Field(default=False)
 
 
-class PinInputConfig(BaseModel):
+class PinInputConfig(BasePeripheralConfig):
     pin: int
-    mode: Literal["PULL_UP", "PULL_DOWN"]
+    mode: Literal["PULL_UP", "PULL_DOWN", "INPUT"]
 
 
 class PinInputState(BaseModel):

@@ -41,8 +41,8 @@ class PinOutputHardware(BaseHardware):
     hardware_type = HardwareTypes.INPUT
     description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
-    actions = (MessageCommand.UPDATE_STATE,)
-    events = ()
+    actions = ()
+    events = (MessageCommand.ON_TOGGLE,)
 
     @classmethod
     def validate_config(cls, config: PinInputConfig, device: Device) -> None:
