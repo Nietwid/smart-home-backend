@@ -8,5 +8,10 @@ class CpuMessageBuilder(BaseMessageBuilder):
     def health_check_response(self, message: CommandMessage) -> DeviceMessage:
         return self._build_response(message, {"timestamp": time()})
 
+    def update_peripheral_intent(
+        self, message: CommandMessage, data: dict
+    ) -> DeviceMessage:
+        return self._build_request(message, data)
+
 
 cpu_message_builder = CpuMessageBuilder()

@@ -39,9 +39,9 @@ class UpdateStateActionIntent(ActionEventBaseHandler):
         )
         serializer.is_valid(raise_exception=True)
         device_message = action_event_intent_builder.build_intent(message)
-        redis_cache.save_device_message(device_message)
-        pending = redis_cache.add_device_pending(
-            message.peripheral.pk, message.command, peripheral=True
+        redis_cache.add_device_message(device_message)
+        pending = redis_cache.add_peripheral_pending(
+            message.peripheral.pk, message.command
         )
         notifications = [
             router_notifier_factory.device_message(
@@ -76,14 +76,14 @@ class UpdateStateActionResult(ActionEventBaseHandler):
         if payload.status == ActionResult.REJECTED:
             return DispatchResult()
 
-        device_message = redis_cache.get_device_message_and_delete(message.message_id)
+        device_message = redis_cache.get_and_delete_device_message(message.message_id)
         if not device_message:
             return DispatchResult()
         message.peripheral.state.update(device_message.payload)
         message.peripheral.save(update_fields=["state"])
 
-        pending = redis_cache.delete_device_pending(
-            message.peripheral.pk, message.command, peripheral=True
+        pending = redis_cache.delete_peripheral_pending(
+            message.peripheral.pk, message.command
         )
         home_id = message.peripheral.device.home.id
         notifications = [

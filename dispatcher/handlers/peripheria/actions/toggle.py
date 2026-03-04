@@ -35,13 +35,11 @@ class ToggleActionIntent(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         device_message = action_event_intent_builder.build_intent(message)
         logger.info(f"device_message: {device_message}")
-        print(f"device_message: {device_message}")
-        redis_cache.save_device_message(device_message)
-        pending = redis_cache.add_device_pending(
-            message.peripheral.pk, message.command, peripheral=True
+        redis_cache.add_device_message(device_message)
+        pending = redis_cache.add_peripheral_pending(
+            message.peripheral.pk, message.command
         )
 
-        print(cache.keys("*"))
         notifications = [
             router_notifier_factory.device_message(
                 router_mac=message.peripheral.device.get_router_mac(),
@@ -72,7 +70,7 @@ class ToggleActionResult(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         payload: ToggleResult = message.payload
-        device_message = redis_cache.get_device_message_and_delete(message.message_id)
+        device_message = redis_cache.get_and_delete_device_message(message.message_id)
         logger.info(f"device_message: {device_message}")
 
         if not device_message:
@@ -80,8 +78,8 @@ class ToggleActionResult(ActionEventBaseHandler):
         message.peripheral.state["is_on"] = payload.is_on
         message.peripheral.save(update_fields=["state"])
 
-        pending = redis_cache.delete_device_pending(
-            message.peripheral.pk, message.command, peripheral=True
+        pending = redis_cache.delete_peripheral_pending(
+            message.peripheral.pk, message.command
         )
         home_id = message.peripheral.device.home.id
         notifications = [

@@ -89,6 +89,9 @@ class MessageCommand(StrEnum):
     # CPU action
     UPDATE_PERIPHERAL = "update_peripheral"
     UPDATE_STATE = "update_state"
+    SYNC_START = "sync_start"
+    SYNC_END = "sync_end"
+    RESTART = "restart"
 
     # Peripheral events
     ON_TOGGLE = "on_toggle"

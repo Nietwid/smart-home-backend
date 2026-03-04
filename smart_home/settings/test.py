@@ -145,6 +145,18 @@ CHANNEL_LAYERS = {
     },
 }
 
+# Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "only-tests",
+        "TIMEOUT": None,
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000,
+        },
+    }
+}
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(seconds=100000),
     "REFRESH_TOKEN_LIFETIME": timedelta(seconds=100000),

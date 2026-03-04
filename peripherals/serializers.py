@@ -66,9 +66,6 @@ class PeripheralSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         peripheral: Peripherals = super().create(validated_data)
-        data = PeripheralSerializerDevice(peripheral.device.peripherals, many=True).data
-        command_message = command_message_factory.update_peripheral(
-            peripheral.device, {"peripherals": data}
-        )
+        command_message = command_message_factory.sync_start(peripheral.device)
         action_event_command_processor(command_message)
         return peripheral

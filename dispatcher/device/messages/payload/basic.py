@@ -1,5 +1,3 @@
-from typing import Literal
-
 from pydantic import BaseModel
 
 from dispatcher.device.messages.device_state import DeviceState

@@ -2,6 +2,7 @@ from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.device_message import DeviceMessage
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.command_message.message import CommandMessage
+from dispatcher.device.messages.payload.cpu import UpdatePeripheralIntentPayload
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
@@ -83,7 +84,21 @@ class CommandMessageFactory:
             router_mac=router_mac,
         )
 
-    def update_peripheral(self, device: Device, data: dict) -> CommandMessage:
+    def sync_start(self, device: Device) -> CommandMessage:
+        home_id = device.home.pk
+        router_mac = device.home.router.mac
+        return CommandMessage(
+            scope=Scope.CPU,
+            type=MessageType.ACTION,
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.SYNC_START,
+            home_id=home_id,
+            router_mac=router_mac,
+            payload={},
+            device=device,
+        )
+
+    def update_peripheral(self, device: Device, peripheral_id: int) -> CommandMessage:
         home_id = device.home.pk
         router_mac = device.home.router.mac
         return CommandMessage(
@@ -93,7 +108,35 @@ class CommandMessageFactory:
             command=MessageCommand.UPDATE_PERIPHERAL,
             home_id=home_id,
             router_mac=router_mac,
-            payload=data,
+            payload=UpdatePeripheralIntentPayload(peripheral_id=peripheral_id),
+            device=device,
+        )
+
+    def sync_end(self, device: Device) -> CommandMessage:
+        home_id = device.home.pk
+        router_mac = device.home.router.mac
+        return CommandMessage(
+            scope=Scope.CPU,
+            type=MessageType.ACTION,
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.SYNC_END,
+            home_id=home_id,
+            router_mac=router_mac,
+            payload={},
+            device=device,
+        )
+
+    def restart(self, device: Device) -> CommandMessage:
+        home_id = device.home.pk
+        router_mac = device.home.router.mac
+        return CommandMessage(
+            scope=Scope.CPU,
+            type=MessageType.ACTION,
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.RESTART,
+            home_id=home_id,
+            router_mac=router_mac,
+            payload={},
             device=device,
         )
 

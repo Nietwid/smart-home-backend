@@ -61,7 +61,7 @@ def handle_device_message_task(
     max_retries=3,
 )
 def check_command_timeout(self, message_id: str):
-    message = redis_cache.get_device_message_and_delete(message_id)
+    message = redis_cache.get_and_delete_device_message(message_id)
     if not message:
         return
 
@@ -69,8 +69,8 @@ def check_command_timeout(self, message_id: str):
         peripheral = peripheral_repository.get_by_id_with_device(message.peripheral_id)
         home_id = peripheral.device.home.id
         device_name = peripheral.device.name
-        pending = redis_cache.delete_device_pending(
-            message.peripheral_id, message.command, peripheral=True
+        pending = redis_cache.delete_peripheral_pending(
+            message.peripheral_id, message.command
         )
         notifications = [
             frontend_notifier_factory.update_peripheral_pending(

@@ -26,6 +26,11 @@ CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS").lower() == "true"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# LOGS_FOLDER_PATH = os.path.join(BASE_DIR, "logs")
+#
+# if not os.path.exists(LOGS_FOLDER_PATH):
+#     os.makedirs(LOGS_FOLDER_PATH)
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
@@ -218,4 +223,45 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {lineno} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        # "file": {
+        #     "class": "logging.handlers.RotatingFileHandler",
+        #     "filename": os.path.join(BASE_DIR, "logs/app.log"),
+        #     "maxBytes": 5 * 1024 * 1024,  # 5 MB
+        #     "backupCount": 5,
+        #     "formatter": "verbose",
+        #     "level": "INFO",
+        # },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "base": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
 }

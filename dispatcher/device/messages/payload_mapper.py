@@ -7,11 +7,25 @@ from dispatcher.device.messages.payload.measurement import *
 from dispatcher.device.messages.payload.rfid import *
 
 PAYLOAD_MAPPING: dict = {
+    # CPU events
     MessageCommand.DEVICE_CONNECT: (DeviceConnectRequest, BasicResult),
     MessageCommand.DEVICE_DISCONNECT: (DeviceDisconnectRequest, BasicResult),
-    MessageCommand.ON_TOGGLE: (SerializerDataResponse, BasicResult),
+
+    # CPU action
     MessageCommand.UPDATE_PERIPHERAL: (SerializerDataResponse, BasicResult),
+    MessageCommand.UPDATE_STATE: (SerializerDataResponse, BasicResult),
+    MessageCommand.SYNC_START: (SerializerDataResponse, BasicResult),
+    MessageCommand.SYNC_END: (SerializerDataResponse, BasicResult),
+    MessageCommand.RESTART: (SerializerDataResponse, BasicResult),
+
+    # Peripheral events
+    MessageCommand.ON_TOGGLE: (SerializerDataResponse, BasicResult),
+
+    # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),
+
+
+
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
     MessageEvent.HEALTH_CHECK: (HealthCheckRequest, BasicResult),

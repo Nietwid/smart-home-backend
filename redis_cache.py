@@ -1,24 +1,55 @@
 import logging
 
+from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.device_message import DeviceMessage
 from django.core.cache import cache
 from cache_key import CacheKey
 from dispatcher.device.messages.enum import MessageCommand
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("base")
 
 
 class RedisCache:
     DEFAULT_TIMEOUT = 60
 
-    def save_device_message(self, message: DeviceMessage) -> None:
+    def add_device_message(self, message: DeviceMessage) -> None:
         cache.set(
             CacheKey.device_message(message.message_id),
             message.model_dump(),
             timeout=self.DEFAULT_TIMEOUT,
         )
 
-    def get_device_message_and_delete(self, message_id: str) -> DeviceMessage | None:
+    def add_device_pending(self, mac: str, command: MessageCommand) -> list[str]:
+        pending = self.get_device_pending(mac)
+        cache_key = CacheKey.device_pending(mac)
+        return self._add_pending(pending, cache_key, command)
+
+    def add_peripheral_pending(self, pk: int, command: MessageCommand) -> list[str]:
+        pending = self.get_peripherals_pending(pk)
+        cache_key = CacheKey.peripheral_pending(pk)
+        return self._add_pending(pending, cache_key, command)
+
+    def add_device_update_peripherals_ids(self, ids: list[int], device_mac: str):
+        cache.set(
+            CacheKey.update_peripheral(device_mac), ids, timeout=self.DEFAULT_TIMEOUT
+        )
+
+    def get_device_update_peripheral_id(self, device_mac: str) -> int | None:
+        ids = cache.get(CacheKey.update_peripheral(device_mac))
+        if not ids:
+            return None
+        next_id = ids.pop(0)
+        self.add_device_update_peripherals_ids(ids, device_mac)
+        logger.debug(cache.get(CacheKey.update_peripheral(device_mac)))
+        return next_id
+
+    def get_peripherals_pending(self, pk: int) -> list[str]:
+        return cache.get(CacheKey.peripheral_pending(pk))
+
+    def get_device_pending(self, mac: str) -> list[str]:
+        return cache.get(CacheKey.device_pending(mac))
+
+    def get_and_delete_device_message(self, message_id: str) -> DeviceMessage | None:
         raw = cache.get(CacheKey.device_message(message_id))
         if not raw:
             return None
@@ -36,39 +67,29 @@ class RedisCache:
             logger.exception(f"Failed to reconstruct DeviceMessage {message_id}")
             return None
 
-    def get_peripherals_pending(self, pk: int) -> list[str]:
-        return cache.get(CacheKey.peripheral_pending(pk))
+    def delete_device_pending(self, mac: str, command: MessageCommand) -> list[str]:
+        pending = self.get_device_pending(mac)
+        cache_key = CacheKey.device_pending(mac)
+        return self._delete_pending(pending, cache_key, command)
 
-    def get_device_pending(self, pk: int) -> list[str]:
-        return cache.get(CacheKey.device_pending(pk))
+    def delete_peripheral_pending(self, pk: int, command: MessageCommand) -> list[str]:
+        pending = self.get_peripherals_pending(pk)
+        cache_key = CacheKey.peripheral_pending(pk)
+        return self._delete_pending(pending, cache_key, command)
 
-    def add_device_pending(
-        self, pk: int, command: MessageCommand, peripheral=False
+    def _add_pending(
+        self, pending: list[str] | None, cache_key: str, command: MessageCommand
     ) -> list[str]:
-        if peripheral:
-            pending = self.get_peripherals_pending(pk)
-            cache_key = CacheKey.peripheral_pending(pk)
-        else:
-            pending = self.get_device_pending(pk)
-            cache_key = CacheKey.device_pending(pk)
-
         if not pending:
             pending = []
         if not command in pending:
             pending.append(command)
-
         cache.set(cache_key, pending, timeout=self.DEFAULT_TIMEOUT)
         return pending
 
-    def delete_device_pending(
-        self, pk: int, command: MessageCommand, peripheral=False
-    ) -> list[str]:
-        if peripheral:
-            pending = self.get_peripherals_pending(pk)
-            cache_key = CacheKey.peripheral_pending(pk)
-        else:
-            pending = self.get_device_pending(pk)
-            cache_key = CacheKey.device_pending(pk)
+    def _delete_pending(
+        self, pending: list[str], cache_key: str, command: MessageCommand
+    ):
         if not pending:
             return []
         if command in pending:

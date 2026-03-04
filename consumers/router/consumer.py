@@ -15,7 +15,7 @@ from consumers.frontend.messages.types import (
 from consumers.frontend.messages.messenger import FrontendMessenger
 from dispatcher.tasks import handle_device_message_task
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("base")
 
 
 class RouterConsumer(AsyncWebsocketConsumer):
@@ -67,6 +67,7 @@ class RouterConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
+            logger.debug(f"Received message: {text_data}")
             handle_device_message_task.delay(text_data, self.home.pk, self.router.mac)
         except Exception as e:
             logger.error(f"Could not push task to RabbitMQ: {e}")

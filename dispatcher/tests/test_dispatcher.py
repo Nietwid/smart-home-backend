@@ -1,8 +1,9 @@
-from dispatcher.device.messages.enum import MessageEvent
+from dispatcher.command_message.message import CommandMessage
+from dispatcher.device.messages.enum import MessageEvent, MessageCommand
 from dispatcher.dispatcher import ActionEventDispatcher
 from unittest.mock import Mock
 
-from dispatcher.device.messages.enums import Scope, MessageType, MessageDirection
+from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 
 
 class FakeResult:
@@ -17,7 +18,7 @@ def test_dispatch_calls_handler():
     message.scope = Scope.CPU
     message.type = MessageType.EVENT
     message.direction = MessageDirection.INTENT
-    message.command = MessageEvent.DEVICE_CONNECT
+    message.command = MessageCommand.DEVICE_CONNECT
 
     handler = Mock(return_value=FakeResult(notifications=["n1"]))
 
@@ -26,7 +27,7 @@ def test_dispatch_calls_handler():
             Scope.CPU,
             MessageType.EVENT,
             MessageDirection.INTENT,
-            MessageEvent.DEVICE_CONNECT,
+            MessageCommand.DEVICE_CONNECT,
         ): handler
     }
 
@@ -69,13 +70,13 @@ def test_dispatch_recursively_dispatches_nested_commands():
             Scope.CPU,
             MessageType.EVENT,
             MessageDirection.INTENT,
-            MessageEvent.DEVICE_CONNECT,
+            MessageCommand.DEVICE_CONNECT,
         ): root_handler,
         (
             Scope.CPU,
             MessageType.EVENT,
             MessageDirection.INTENT,
-            MessageEvent.DEVICE_DISCONNECT,
+            MessageCommand.DEVICE_DISCONNECT,
         ): nested_handler,
     }
 
