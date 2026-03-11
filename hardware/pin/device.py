@@ -13,7 +13,7 @@ from hardware.pin.schema import (
 
 
 @hardware_registry(name="pin_output")
-class PinInputHardware(BaseHardware):
+class PinOutputHardware(BaseHardware):
     description = "Digital output pin."
     config_model = PinOutputConfig
     state_model = PinOutputState
@@ -35,7 +35,7 @@ class PinInputHardware(BaseHardware):
 
 
 @hardware_registry(name="pin_input")
-class PinOutputHardware(BaseHardware):
+class PinInputHardware(BaseHardware):
     config_model = PinInputConfig
     state_model = PinInputState
     hardware_type = HardwareTypes.INPUT

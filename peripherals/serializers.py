@@ -19,6 +19,7 @@ class PeripheralSerializerDevice(serializers.ModelSerializer):
 class PeripheralSerializer(serializers.ModelSerializer):
     pending = serializers.SerializerMethodField(read_only=True)
     available_event = serializers.SerializerMethodField(read_only=True)
+    available_action = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Peripherals
@@ -30,12 +31,17 @@ class PeripheralSerializer(serializers.ModelSerializer):
             "state",
             "pending",
             "available_event",
+            "available_action",
         ]
         read_only_fields = ["pending"]
 
     def get_available_event(self, obj: Peripherals) -> tuple[str]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
         return hardware_cls.events
+
+    def get_available_action(self, obj: Peripherals) -> tuple[str]:
+        hardware_cls = HARDWARE_REGISTRY.get(obj.name)
+        return hardware_cls.actions
 
     def get_pending(self, obj: Peripherals) -> list[str]:
         pending = redis_cache.get_peripherals_pending(obj.pk)

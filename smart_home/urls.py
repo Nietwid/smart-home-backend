@@ -16,4 +16,5 @@ urlpatterns = [
     path("api/temperature/", include("temperature.urls")),
     path("api/firmware/", include("firmware.urls")),
     path("api/peripherals/", include("peripherals.urls")),
+    path("api/rule/", include("rules.urls")),
 ]
