@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 from dispatcher.device.messages.device_state import DeviceState
 from device.models import ChipType
-from dispatcher.device.messages.enum import ActionResult
+from dispatcher.device.messages.enum import ActionResult, DeviceStatuReport
 
 
 class EmptyRequest(BaseModel):
@@ -43,10 +43,6 @@ class DeviceDisconnectRequest(BaseModel):
 
 class HealthCheckRequest(BaseModel):
     wifi_strength: int
-
-
-class StateChangeRequest(BaseModel):
-    state: DeviceState
 
 
 class FirmwareUpdateErrorRequest(BaseModel):

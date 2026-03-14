@@ -3,8 +3,8 @@ from rest_framework.serializers import ModelSerializer
 
 from consumers.frontend.messages.messenger import FrontendMessenger
 from device_registry import DeviceRegistry
-from event.serializer import EventSerializer
 from peripherals.serializers import PeripheralSerializer
+from rules.serializers.rule import RuleSerializer
 
 from ..models import Device
 from redis_cache import redis_cache
@@ -21,8 +21,8 @@ class DeviceSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        data = EventSerializer(instance.events.all(), many=True).data
-        representation["events"] = data
+        # data = RuleSerializer(instance.events.all(), many=True).data
+        # representation["events"] = data
         return representation
 
     def get_pending(self, obj: Device):

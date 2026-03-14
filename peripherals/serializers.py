@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from dispatcher.command_message.factory import command_message_factory
+from dispatcher.device.messages.payload.enum import StartSyncType
 from dispatcher.processor.action_event_command import action_event_command_processor
 from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
@@ -85,6 +86,8 @@ class PeripheralSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         peripheral: Peripherals = super().create(validated_data)
-        command_message = command_message_factory.sync_start(peripheral.device)
+        command_message = command_message_factory.sync_start(
+            peripheral.device, StartSyncType.PERIPHERAL
+        )
         action_event_command_processor(command_message)
         return peripheral

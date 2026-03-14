@@ -2,6 +2,7 @@ from dispatcher.device.messages.enum import MessageAction, MessageEvent, CameraC
 from dispatcher.device.messages.payload.basic import *
 from dispatcher.device.messages.payload.button import *
 from dispatcher.device.messages.payload.camera import *
+from dispatcher.device.messages.payload.cpu import StartSyncPayload
 from dispatcher.device.messages.payload.lamp import *
 from dispatcher.device.messages.payload.measurement import *
 from dispatcher.device.messages.payload.rfid import *
@@ -13,17 +14,17 @@ PAYLOAD_MAPPING: dict = {
 
     # CPU action
     MessageCommand.UPDATE_PERIPHERAL: (SerializerDataResponse, BasicResult),
-    MessageCommand.UPDATE_STATE: (SerializerDataResponse, BasicResult),
-    MessageCommand.SYNC_START: (SerializerDataResponse, BasicResult),
+    MessageCommand.UPDATE_RULE: (SerializerDataResponse, BasicResult),
+    MessageCommand.SYNC_START: (StartSyncPayload, BasicResult),
     MessageCommand.SYNC_END: (SerializerDataResponse, BasicResult),
     MessageCommand.RESTART: (SerializerDataResponse, BasicResult),
 
     # Peripheral events
-    MessageCommand.ON_TOGGLE: (SerializerDataResponse, BasicResult),
+    MessageCommand.ON_TOGGLE: (ToggleResult, BasicResult),
 
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),
-
+    MessageCommand.UPDATE_STATE: (SerializerDataResponse, BasicResult),
 
 
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
@@ -31,7 +32,6 @@ PAYLOAD_MAPPING: dict = {
     MessageEvent.HEALTH_CHECK: (HealthCheckRequest, BasicResult),
     MessageEvent.SET_SETTINGS: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_SETTINGS: (EmptyRequest, SerializerDataResponse),
-    MessageEvent.STATE_CHANGE: (StateChangeRequest, BasicResult),
     MessageEvent.UPDATE_FIRMWARE: (SerializerDataResponse, BasicResult),
     MessageEvent.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
     MessageEvent.ON_READ: (OnReadRequest, BasicResult),

@@ -5,6 +5,8 @@ from dispatcher.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
 )
 from dispatcher.device.messages.payload.basic import BasicResult
+from dispatcher.device.messages.payload.cpu import StartSyncPayload
+from dispatcher.device.messages.payload.enum import StartSyncType
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.device.messages.enum import MessageCommand, ActionResult
 from dispatcher.command_message.message import CommandMessage
@@ -46,9 +48,9 @@ class SyncEndActionIntent(ActionEventBaseHandler):
 class SyncEndActionResult(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         payload: BasicResult = message.payload
+        redis_cache.get_and_delete_device_message(message.message_id)
         home_id = message.device.home.id
         if payload.status == ActionResult.REJECTED:
-            redis_cache.get_and_delete_device_message(message.message_id)
             return DispatchResult(
                 notifications=frontend_notifier_factory.display_toaster(
                     home_id=home_id,

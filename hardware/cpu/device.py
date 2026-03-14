@@ -7,6 +7,7 @@ class CpuHardware:
         MessageCommand.SYNC_END,
         MessageCommand.RESTART,
         MessageCommand.UPDATE_PERIPHERAL,
+        MessageCommand.UPDATE_RULE,
     )
     events = (
         MessageCommand.DEVICE_CONNECT,

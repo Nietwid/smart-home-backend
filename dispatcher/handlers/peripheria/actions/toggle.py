@@ -19,8 +19,6 @@ from redis_cache import redis_cache
 from dispatcher.tasks import check_command_timeout
 import logging
 
-from django.core.cache import cache
-
 logger = logging.getLogger(__name__)
 
 

@@ -55,7 +55,6 @@ class RestartActionIntent(ActionEventBaseHandler):
 )
 class RestartActionResult(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
-        logger.debug(f"{message}")
         payload: BasicResult = message.payload
         if payload.status != ActionResult.ACCEPTED:
             redis_cache.get_and_delete_device_message(message.message_id)
@@ -72,7 +71,7 @@ class RestartActionResult(ActionEventBaseHandler):
                 ),
                 frontend_notifier_factory.display_toaster(
                     home_id=home_id,
-                    message="Peripheral has beed updated. Device will restart in 10s",
+                    message="Device will restart in 10s",
                 ),
             ]
         )

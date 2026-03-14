@@ -32,4 +32,5 @@ class BaseMessageBuilder:
             device_id=device_id,
             peripheral_id=peripheral_id,
             payload=payload,
+            message_id=message.message_id,
         )

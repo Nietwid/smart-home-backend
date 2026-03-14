@@ -14,3 +14,7 @@ class CacheKey:
     @staticmethod
     def update_peripheral(device_mac: str) -> str:
         return f"device:update-peripheral:{device_mac}"
+
+    @staticmethod
+    def sync_rule(device_mac: str) -> str:
+        return f"device:sync-rule:{device_mac}"

@@ -20,7 +20,7 @@ class PinOutputHardware(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = (MessageCommand.TOGGLE,)
-    events = ()
+    events = (MessageCommand.ON_TOGGLE,)
 
     @classmethod
     def validate_config(cls, config: PinOutputConfig, device: Device) -> None:

@@ -5,6 +5,8 @@ from dispatcher.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
 )
 from dispatcher.device.messages.payload.basic import BasicResult
+from dispatcher.device.messages.payload.cpu import StartSyncPayload
+from dispatcher.device.messages.payload.enum import StartSyncType
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.device.messages.enum import MessageCommand, ActionResult
 from dispatcher.command_message.message import CommandMessage
@@ -15,6 +17,7 @@ from dispatcher.tasks import check_command_timeout
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.router_notifier_factory import router_notifier_factory
 from redis_cache import redis_cache
+from rules.repository import RuleRepository
 
 logger = logging.getLogger("base")
 
@@ -57,7 +60,10 @@ class SyncStartActionResult(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         payload: BasicResult = message.payload
         home_id = message.device.home.id
-        redis_cache.get_and_delete_device_message(message.message_id)
+        intent_message = redis_cache.get_and_delete_device_message(message.message_id)
+        if not intent_message:
+            return DispatchResult()
+        intent_payload: StartSyncPayload = intent_message.payload
         if payload.status == ActionResult.REJECTED:
             return DispatchResult(
                 notifications=frontend_notifier_factory.display_toaster(
@@ -65,13 +71,30 @@ class SyncStartActionResult(ActionEventBaseHandler):
                     message="Error syncing device. Please try again.",
                 )
             )
-        peripheral_ids = [p.id for p in message.device.peripherals.all()]
-        redis_cache.add_device_update_peripherals_ids(
-            peripheral_ids, message.device.mac
+
+        if intent_payload.sync_type == StartSyncType.PERIPHERAL:
+            peripheral_ids = [p.id for p in message.device.peripherals.all()]
+            redis_cache.add_device_update_peripherals_ids(
+                peripheral_ids, message.device.mac
+            )
+            first_id = redis_cache.get_device_update_peripheral_id(message.device.mac)
+            next_step_message = command_message_factory.update_peripheral(
+                message.device, first_id
+            )
+            return DispatchResult(commands=[next_step_message])
+
+        elif intent_payload.sync_type == StartSyncType.RULE:
+            rule_ids = RuleRepository.get_local_ids(message.device.mac)
+            redis_cache.add_sync_rule_ids(rule_ids, message.device.mac)
+            first_id = redis_cache.get_sync_rule_id(message.device.mac)
+            next_step_message = command_message_factory.update_rule(
+                message.device, first_id
+            )
+            return DispatchResult(commands=[next_step_message])
+
+        return DispatchResult(
+            notifications=frontend_notifier_factory.display_toaster(
+                home_id=home_id,
+                message="Error syncing device. Please try again.",
+            )
         )
-        logger.debug(f"peripheral ids: {peripheral_ids}")
-        first_id = redis_cache.get_device_update_peripheral_id(message.device.mac)
-        next_step_message = command_message_factory.update_peripheral(
-            message.device, first_id
-        )
-        return DispatchResult(commands=[next_step_message])

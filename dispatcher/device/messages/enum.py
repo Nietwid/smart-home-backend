@@ -18,6 +18,11 @@ class ActionResult(Enum):
     ACCEPTED = 1
     REJECTED = 2
 
+class DeviceStatuReport(Enum):
+    ON = 1
+    OFF = 2
+    OPEN = 3
+    CLOSED = 4
 
 class CameraCommand(StrEnum):
     CAMERA_OFFER = "camera_offer"
@@ -88,13 +93,17 @@ class MessageCommand(StrEnum):
 
     # CPU action
     UPDATE_PERIPHERAL = "update_peripheral"
-    UPDATE_STATE = "update_state"
+    UPDATE_RULE = "update_rule"
     SYNC_START = "sync_start"
     SYNC_END = "sync_end"
     RESTART = "restart"
 
     # Peripheral events
     ON_TOGGLE = "on_toggle"
+    ON_UPDATE_STATE = "on_update_state"
+    ON_STATUS_REPORT = "on_status_report"
+
 
     # Peripheral action
     TOGGLE = "toggle"
+    UPDATE_STATE = "update_state"

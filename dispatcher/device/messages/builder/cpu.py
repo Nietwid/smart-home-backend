@@ -13,5 +13,8 @@ class CpuMessageBuilder(BaseMessageBuilder):
     ) -> DeviceMessage:
         return self._build_request(message, data)
 
+    def update_rule_intent(self, message: CommandMessage, data: dict) -> DeviceMessage:
+        return self._build_request(message, data)
+
 
 cpu_message_builder = CpuMessageBuilder()

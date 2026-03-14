@@ -40,7 +40,18 @@ class RedisCache:
             return None
         next_id = ids.pop(0)
         self.add_device_update_peripherals_ids(ids, device_mac)
-        logger.debug(cache.get(CacheKey.update_peripheral(device_mac)))
+        return next_id
+
+    def add_sync_rule_ids(self, ids: list[int], device_mac: str):
+        cache.set(CacheKey.sync_rule(device_mac), ids, timeout=self.DEFAULT_TIMEOUT)
+
+    def get_sync_rule_id(self, device_mac: str) -> int | None:
+        ids = cache.get(CacheKey.sync_rule(device_mac))
+        if not ids:
+            return None
+        next_id = ids.pop(0)
+        self.add_sync_rule_ids(ids, device_mac)
+        logger.debug(cache.get(CacheKey.sync_rule(device_mac)))
         return next_id
 
     def get_peripherals_pending(self, pk: int) -> list[str]:

@@ -1,9 +1,27 @@
 from rest_framework import serializers
 
+from dispatcher.command_message.factory import command_message_factory
+from dispatcher.device.messages.payload.enum import StartSyncType
+from dispatcher.processor.action_event_command import action_event_command_processor
 from rules.models import Rule, RuleAction, RuleCondition, RuleTrigger
 from rules.serializers.action import RuleActionSerializer
 from rules.serializers.condition import RuleConditionSerializer
 from rules.serializers.trigger import RuleTriggerSerializer
+
+
+class RuleSerializerDevice(serializers.ModelSerializer):
+    triggers = RuleTriggerSerializer(many=True)
+    conditions = RuleConditionSerializer(many=True, required=False)
+    actions = RuleActionSerializer(many=True)
+
+    class Meta:
+        model = Rule
+        fields = (
+            "id",
+            "triggers",
+            "conditions",
+            "actions",
+        )
 
 
 class RuleSerializer(serializers.ModelSerializer):
@@ -58,5 +76,11 @@ class RuleSerializer(serializers.ModelSerializer):
 
         for action in actions_data:
             RuleAction.objects.create(rule=rule, **action)
+        rule.save()
 
+        if rule.is_local:
+            command_message = command_message_factory.sync_start(
+                rule.device, StartSyncType.RULE
+            )
+            action_event_command_processor(command_message)
         return rule

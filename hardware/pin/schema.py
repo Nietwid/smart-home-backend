@@ -17,5 +17,4 @@ class PinInputConfig(BasePeripheralConfig):
     mode: Literal["PULL_UP", "PULL_DOWN", "INPUT"]
 
 
-class PinInputState(BaseModel):
-    value: bool = Field(default=False)
+class PinInputState(PinOutputState): ...

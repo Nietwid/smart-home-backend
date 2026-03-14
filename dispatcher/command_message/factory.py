@@ -2,7 +2,12 @@ from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.device_message import DeviceMessage
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.device.messages.payload.cpu import UpdatePeripheralIntentPayload
+from dispatcher.device.messages.payload.cpu import (
+    UpdatePeripheralIntentPayload,
+    StartSyncPayload,
+    UpdateRuleIntentPayload,
+)
+from dispatcher.device.messages.payload.enum import StartSyncType
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
@@ -84,7 +89,7 @@ class CommandMessageFactory:
             router_mac=router_mac,
         )
 
-    def sync_start(self, device: Device) -> CommandMessage:
+    def sync_start(self, device: Device, sync_type: StartSyncType) -> CommandMessage:
         home_id = device.home.pk
         router_mac = device.home.router.mac
         return CommandMessage(
@@ -94,7 +99,7 @@ class CommandMessageFactory:
             command=MessageCommand.SYNC_START,
             home_id=home_id,
             router_mac=router_mac,
-            payload={},
+            payload=StartSyncPayload(sync_type=sync_type),
             device=device,
         )
 
@@ -109,6 +114,20 @@ class CommandMessageFactory:
             home_id=home_id,
             router_mac=router_mac,
             payload=UpdatePeripheralIntentPayload(peripheral_id=peripheral_id),
+            device=device,
+        )
+
+    def update_rule(self, device: Device, rule_id: int) -> CommandMessage:
+        home_id = device.home.pk
+        router_mac = device.home.router.mac
+        return CommandMessage(
+            scope=Scope.CPU,
+            type=MessageType.ACTION,
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.UPDATE_RULE,
+            home_id=home_id,
+            router_mac=router_mac,
+            payload=UpdateRuleIntentPayload(rule_id=rule_id),
             device=device,
         )
 

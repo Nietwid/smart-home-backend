@@ -14,6 +14,10 @@ class DispatcherConfig(AppConfig):
             UpdatePeripheralActionIntent,
             UpdatePeripheralActionResult,
         )
+        from dispatcher.handlers.cpu.actions.update_rule import (
+            UpdateRuleActionIntent,
+            UpdateRuleActionResult,
+        )
         from dispatcher.handlers.cpu.actions.sync_start import (
             SyncStartActionIntent,
             SyncStartActionResult,

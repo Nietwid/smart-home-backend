@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "consumers",
     "peripherals",
     "hardware",
+    "rules",
 ]
 
 
