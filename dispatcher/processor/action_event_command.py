@@ -15,7 +15,7 @@ def action_event_validator(message: CommandMessage) -> None:
         raise ValueError(f"Invalid scope: {message.scope}")
 
     allowed_commands = (
-        hardware_cls.actions
+        hardware_cls.get_available_actions()
         if message.type == MessageType.ACTION
         else hardware_cls.events
     )

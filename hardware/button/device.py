@@ -18,7 +18,7 @@ class ButtonMonostable(BaseHardware):
     state_model = ButtonMonostableState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageCommand.TOGGLE,)
+    actions = {MessageCommand.TOGGLE: None}
     events = (MessageCommand.ON_TOGGLE,)
 
     @classmethod
@@ -39,7 +39,7 @@ class PinInputHardware(BaseHardware):
     state_model = ButtonBistableState
     hardware_type = HardwareTypes.INPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageCommand.CLICK, MessageCommand.HOLD)
+    actions = {MessageCommand.CLICK: None, MessageCommand.HOLD: None}
     events = (MessageCommand.ON_CLICK, MessageCommand.ON_HOLD)
 
     @classmethod

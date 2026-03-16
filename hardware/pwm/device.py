@@ -9,12 +9,11 @@ from hardware.pwm.schema import PwmState, PwmConfig
 
 @hardware_registry(name="pin_pwm")
 class PinPwm(BaseHardware):
-    description = "Single-channel PWM controller"
     config_model = PwmConfig
     state_model = PwmState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageCommand.UPDATE_STATE,)
+    actions = {MessageCommand.UPDATE_STATE: None}
     events = ()
 
     @classmethod

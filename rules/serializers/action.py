@@ -20,7 +20,7 @@ class RuleActionSerializer(serializers.ModelSerializer):
                 f"The selected peripheral ({peripheral.name}) is not supported."
             )
 
-        if not action in registry.actions:
+        if not action in registry.get_available_actions():
             raise serializers.ValidationError(
                 f"The selected action ({action}) is not supported for the selected peripheral."
             )

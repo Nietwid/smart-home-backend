@@ -14,13 +14,20 @@ from hardware.pin.schema import (
 
 @hardware_registry(name="pin_output")
 class PinOutputHardware(BaseHardware):
-    description = "Digital output pin."
     config_model = PinOutputConfig
     state_model = PinOutputState
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageCommand.TOGGLE,)
-    events = (MessageCommand.ON_TOGGLE,)
+    actions = {
+        MessageCommand.TOGGLE: None,
+        MessageCommand.ON: None,
+        MessageCommand.OFF: None,
+    }
+    events = (
+        MessageCommand.ON_TOGGLE,
+        MessageCommand.ON_ON,
+        MessageCommand.ON_OFF,
+    )
 
     @classmethod
     def validate_config(cls, config: PinOutputConfig, device: Device) -> None:
@@ -39,7 +46,6 @@ class PinInputHardware(BaseHardware):
     config_model = PinInputConfig
     state_model = PinInputState
     hardware_type = HardwareTypes.INPUT
-    description = "Digital input pin."
     chip_support = [name.value for name in ChipType]
     actions = ()
     events = (MessageCommand.ON_TOGGLE,)

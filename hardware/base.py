@@ -3,6 +3,8 @@ from typing import Type, Optional
 from pydantic import BaseModel, Field
 
 from device.models import Device
+from dispatcher.device.messages.enum import MessageCommand
+from typing import Collection
 
 
 class BaseHardware(ABC):
@@ -12,7 +14,7 @@ class BaseHardware(ABC):
     description: str = ""
     hardware_type: str = ""
     chip_support: tuple[str] = []
-    actions: tuple[str] = []
+    actions: dict[MessageCommand, Type[BaseModel]] = {}
     events: tuple[str] = []
 
     @classmethod
@@ -22,6 +24,10 @@ class BaseHardware(ABC):
     @classmethod
     def parse_state(cls, data: dict) -> Type[BaseModel]:
         return cls.state_model(**data)
+
+    @classmethod
+    def get_available_actions(cls) -> Collection[MessageCommand]:
+        return cls.actions.keys()
 
     @classmethod
     @abstractmethod

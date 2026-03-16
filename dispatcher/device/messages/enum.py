@@ -47,9 +47,6 @@ class MessageEvent(StrEnum):
     TURN_ON = "turn_on"
     TURN_OFF = "turn_off"
 
-    # RFID events
-    ON_READ = "on_read"
-
     # Measurement events
     ON_MEASURE_TEMPERATURE = "on_measure_temperature"
     ON_MEASURE_HUMIDITY = "on_measure_humidity"
@@ -64,21 +61,7 @@ class MessageEvent(StrEnum):
     ON_HUMIDITY_BELOW = "on_humidity_below"
 
 class MessageAction(StrEnum):
-
-
-    # Light action
-    ON = "on"
-    OFF = "off"
-    BLINK = "blink"
-
     # RFID actions
-    ADD_TAG = "add_tag"
-    ON_READ_SUCCESS = "on_read_success"
-    ON_READ_FAILURE = "on_read_failure"
-    ACCESS_GRANTED = "access_granted"
-    ACCESS_DENIED = "access_denied"
-
-    UPDATE_STATE = "update_state"
     SET_VALUE = "set_value"
     SET_COLOR = "set_color"
 
@@ -100,10 +83,21 @@ class MessageCommand(StrEnum):
     ON_STATUS_REPORT = "on_status_report"
     ON_CLICK = "on_click"
     ON_HOLD = "on_hold"
-
+    ON_ON = "on_on"
+    ON_OFF = "on_off"
+    ON_BLINK = "on_blink"
+    ON_READ = "on_read"
+    ON_READ_SUCCESS = "on_read_success"
+    ON_READ_FAILURE = "on_read_failure"
 
     # Peripheral action
     TOGGLE = "toggle"
     UPDATE_STATE = "update_state"
     CLICK = "click"
     HOLD = "hold"
+    ON = "on"
+    OFF = "off"
+    BLINK = "blink"
+    ADD_TAG = "add_tag"
+    ACCESS_GRANTED = "access_granted"
+    ACCESS_DENIED = "access_denied"

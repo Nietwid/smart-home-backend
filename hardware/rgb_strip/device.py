@@ -2,6 +2,7 @@ from dispatcher.device.messages.enum import MessageCommand
 from device.models import ChipType, Device
 from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.extract_field import extract_field
+from hardware.rgb_strip.extra_settings import UpdateStateExtraSettings
 from hardware.rgb_strip.schema import (
     RGBStripState,
     RGBStripConfig,
@@ -12,12 +13,14 @@ from hardware.enums import HardwareTypes
 
 @hardware_registry(name="rgb_strip")
 class RGBStripHardware(BaseHardware):
-    description = "RGB LED strip controller with three independent PWM outputs (R, G, B channels)."
     config_model = RGBStripConfig
     state_model = RGBStripState
     hardware_type = HardwareTypes.LIGHT
     chip_support = [name.value for name in ChipType]
-    actions = (MessageCommand.UPDATE_STATE, MessageCommand.TOGGLE)
+    actions = {
+        MessageCommand.UPDATE_STATE: UpdateStateExtraSettings,
+        MessageCommand.TOGGLE: None,
+    }
     events = ()
 
     @classmethod

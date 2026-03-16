@@ -6,7 +6,7 @@ from room.models import Room
 from user.models import Home
 
 if TYPE_CHECKING:
-    from dispatcher.command_message import CommandMessage
+    from peripherals.models import Peripherals
 
 
 class Router(models.Model):
@@ -73,3 +73,11 @@ class Event(models.Model):
     action = models.CharField(max_length=100, null=True)
     event = models.CharField(max_length=100, null=True)
     extra_settings = models.JSONField(default=dict)
+
+
+class RfidCard(models.Model):
+    uid = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    last_used = models.DateTimeField(auto_now=True)
+    allowed_peripherals = models.ManyToManyField("peripherals.Peripherals", blank=True)
