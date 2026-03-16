@@ -47,10 +47,6 @@ class MessageEvent(StrEnum):
     TURN_ON = "turn_on"
     TURN_OFF = "turn_off"
 
-    # Button events
-    ON_CLICK = "on_click"
-    ON_HOLD = "on_hold"
-
     # RFID events
     ON_READ = "on_read"
 
@@ -102,8 +98,12 @@ class MessageCommand(StrEnum):
     ON_TOGGLE = "on_toggle"
     ON_UPDATE_STATE = "on_update_state"
     ON_STATUS_REPORT = "on_status_report"
+    ON_CLICK = "on_click"
+    ON_HOLD = "on_hold"
 
 
     # Peripheral action
     TOGGLE = "toggle"
     UPDATE_STATE = "update_state"
+    CLICK = "click"
+    HOLD = "hold"

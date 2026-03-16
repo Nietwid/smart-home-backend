@@ -8,8 +8,6 @@ urlpatterns = [
     path("api/lamp/", include("lamp.urls")),
     path("api/stairs/", include("stairs.urls")),
     path("api/device/", include("device.urls")),
-    path("api/aquarium/", include("aquarium.urls")),
-    path("api/button/", include("button.urls")),
     path("api/rfid/", include("rfid.urls")),
     path("api/event/", include("event.urls")),
     path("api/cameras/", include("camera.urls")),
