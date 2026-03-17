@@ -55,7 +55,7 @@ class RetrieveUpdateDestroyDevice(RetrieveUpdateDestroyAPIView):
     serializer_class = DeviceSerializer
 
     def get_queryset(self):
-        return get_available_for_user_device(Device, self.request.user)
+        return device_repository.get_available_for_user(self.request.user)
 
 
 class UpdateButtonType(UpdateAPIView):
@@ -63,4 +63,4 @@ class UpdateButtonType(UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return get_available_for_user_device(Device, self.request.user)
+        return device_repository.get_available_for_user(self.request.user)

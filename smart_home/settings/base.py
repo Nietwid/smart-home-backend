@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     "sunblind",
     "event",
     "firmware",
-    "ai_assistance",
     "consumers",
     "peripherals",
     "hardware",
