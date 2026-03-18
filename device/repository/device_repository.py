@@ -15,8 +15,7 @@ class DeviceRepository:
 
     def get_available_for_user(self, user: AbstractBaseUser) -> QuerySet[Device]:
         return Device.objects.filter(
-            Q(home__users=user),
-            Q(room__user=user) | Q(room__visibility="PU"),
+            Q(home__users=user), Q(room__user=user) | Q(room__visibility="PU")
         ).prefetch_related("peripherals")
 
     def get_by_id(self, device_id: int) -> Optional[Device]:

@@ -2,7 +2,6 @@ import json
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from ai_assistance.tasks import ai_test
 from dispatcher.device.messages.enum import CameraCommand
 from consumers.router.message.message import CameraRouterMessage
 from consumers.router.message.payload.camera import CameraRouterMessagePayload
@@ -30,9 +29,6 @@ class UserConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         command_type = data.get("type", None)
         match command_type:
-            case "aiCommand":
-                message = data.get("message", None)
-                ai_test.delay(self.user_instance.pk, message, self.channel_name)
             case "camera_open":
                 camera_id = data.get("id", None)
                 if not camera_id:

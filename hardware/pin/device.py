@@ -47,7 +47,7 @@ class PinInputHardware(BaseHardware):
     state_model = PinInputState
     hardware_type = HardwareTypes.INPUT
     chip_support = [name.value for name in ChipType]
-    actions = ()
+    actions = {}
     events = (MessageCommand.ON_TOGGLE,)
 
     @classmethod

@@ -16,7 +16,7 @@ class PinOutputHardware(BaseHardware):
     state_model = Pca9685State
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
-    actions = ()
+    actions = {}
     events = ()
 
     @classmethod

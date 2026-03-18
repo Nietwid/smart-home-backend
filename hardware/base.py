@@ -8,8 +8,8 @@ from typing import Collection
 
 
 class BaseHardware(ABC):
-    config_model = None
-    state_model = None
+    config_model: Type[BaseModel] = None
+    state_model: Type[BaseModel] = None
 
     description: str = ""
     hardware_type: str = ""
@@ -18,11 +18,15 @@ class BaseHardware(ABC):
     events: tuple[str] = []
 
     @classmethod
-    def parse_config(cls, data: dict) -> Type[BaseModel]:
+    def parse_config(cls, data: dict) -> BaseModel:
+        if cls.config_model is None:
+            raise NotImplementedError()
         return cls.config_model(**data)
 
     @classmethod
-    def parse_state(cls, data: dict) -> Type[BaseModel]:
+    def parse_state(cls, data: dict) -> BaseModel:
+        if cls.config_model is None:
+            raise NotImplementedError()
         return cls.state_model(**data)
 
     @classmethod
@@ -47,4 +51,4 @@ class HardwareValidationError(Exception):
 
 
 class BasePeripheralConfig(BaseModel):
-    name: Optional[str] = Field(default=None)
+    name: str = Field(default=None)

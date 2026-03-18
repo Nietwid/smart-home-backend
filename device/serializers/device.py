@@ -16,12 +16,6 @@ class DeviceSerializer(ModelSerializer):
         exclude = ["mac"]
         read_only_fields = ["last_seen"]
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        # data = RuleSerializer(instance.events.all(), many=True).data
-        # representation["events"] = data
-        return representation
-
     def get_pending(self, obj: Device):
         pending = redis_cache.get_device_pending(obj.pk)
         if not pending:

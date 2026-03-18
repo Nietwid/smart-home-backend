@@ -10,8 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from device.models import Device, Router
 from room.models import Room
-from utils.get_available_for_user_device import get_available_for_user_device
-from .repository.device_repository import DeviceRepository, device_repository
+from .repository.device_repository import device_repository
 from .serializers.device import DeviceSerializer
 from .serializers.router import RouterSerializer
 

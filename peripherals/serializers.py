@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from dispatcher.command_message.factory import command_message_factory
+from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.payload.enum import StartSyncType
 from dispatcher.processor.action_event_command import action_event_command_processor
 from hardware.base import HardwareValidationError
@@ -9,6 +10,7 @@ from peripherals.models import Peripherals
 from pydantic import ValidationError
 
 from redis_cache import redis_cache
+from typing import Collection
 
 
 class PeripheralSerializerDevice(serializers.ModelSerializer):
@@ -40,9 +42,11 @@ class PeripheralSerializer(serializers.ModelSerializer):
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
         return hardware_cls.events
 
-    def get_available_action(self, obj: Peripherals) -> tuple[str]:
+    def get_available_action(self, obj: Peripherals) -> Collection[MessageCommand]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
-        return hardware_cls.actions
+        print(hardware_cls)
+        print(hardware_cls.config_model.model_json_schema())
+        return hardware_cls.get_available_actions()
 
     def get_pending(self, obj: Peripherals) -> list[str]:
         pending = redis_cache.get_peripherals_pending(obj.pk)
