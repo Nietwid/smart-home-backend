@@ -1,16 +1,16 @@
 from rest_framework import serializers
 
-from dispatcher.command_message.factory import command_message_factory
 from dispatcher.device.messages.enum import MessageCommand
-from dispatcher.device.messages.payload.enum import StartSyncType
-from dispatcher.processor.action_event_command import action_event_command_processor
 from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
+from notifier.frontend_notifier_factory import frontend_notifier_factory
 from peripherals.models import Peripherals
 from pydantic import ValidationError
 
 from redis_cache import redis_cache
 from typing import Collection
+from notifier.notifier import notifier
+from device.models import Device
 
 
 class PeripheralSerializerDevice(serializers.ModelSerializer):
@@ -88,8 +88,12 @@ class PeripheralSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         peripheral: Peripherals = super().create(validated_data)
-        command_message = command_message_factory.sync_start(
-            peripheral.device, StartSyncType.PERIPHERAL
-        )
-        action_event_command_processor(command_message)
+        device: Device = peripheral.device
+        if not MessageCommand.UPDATE_PERIPHERAL in device.required_action:
+            device.required_action.append(MessageCommand.UPDATE_PERIPHERAL)
+            device.save(update_fields=["required_action"])
+            message = frontend_notifier_factory.update_device_required_action(
+                device.home.pk, device.required_action, device.pk
+            )
+            notifier.notify(message)
         return peripheral

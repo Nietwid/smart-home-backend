@@ -16,6 +16,7 @@ class ActionEventFrontendMessage(BaseModel):
 
     @model_validator(mode="after")
     def check_scope_ids(self, data):
+        print(self.device_id)
         if self.scope == Scope.PERIPHERAL and not self.peripheral_id:
             raise ValueError("peripheral_id is required when scope is 'peripheral'")
         if self.scope == Scope.CPU and not self.device_id:

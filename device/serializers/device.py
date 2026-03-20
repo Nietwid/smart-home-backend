@@ -13,7 +13,7 @@ class DeviceSerializer(ModelSerializer):
 
     class Meta:
         model = Device
-        exclude = ["mac"]
+        fields = "__all__"
         read_only_fields = ["last_seen"]
 
     def get_pending(self, obj: Device):

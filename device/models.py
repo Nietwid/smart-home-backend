@@ -43,6 +43,8 @@ class Device(models.Model):
     chip_type = models.CharField(
         max_length=100, choices=ChipType, default=ChipType.ESP32
     )
+    required_action = models.JSONField(default=list, blank=True, null=True)
+
     svg_id = models.CharField(max_length=100, default="", blank=True, null=True)
 
     def __str__(self):

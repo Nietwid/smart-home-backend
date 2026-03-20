@@ -30,8 +30,8 @@ class BaseHardware(ABC):
         return cls.state_model(**data)
 
     @classmethod
-    def get_available_actions(cls) -> Collection[MessageCommand]:
-        return cls.actions.keys()
+    def get_available_actions(cls) -> list[MessageCommand]:
+        return list(cls.actions.keys())
 
     @classmethod
     @abstractmethod

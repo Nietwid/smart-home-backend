@@ -32,6 +32,18 @@ class FrontendNotifierFactory:
                 )
         )
 
+    def update_device_required_action(self, home_id:int, actions:list[str], device_id:int)->FrontendNotifierData:
+        return FrontendNotifierData(
+                home_id=home_id,
+                data=FrontendMessage(
+                    action=FrontendMessageType.UPDATE_DEVICE_REQUIRED_ACTION,
+                    data={
+                        "actions":actions,
+                        "device_id":device_id
+                    }
+                )
+        )
+
     def update_peripheral_state(self, home_id:int, state:dict)->FrontendNotifierData:
         return FrontendNotifierData(
                 home_id=home_id,
@@ -40,6 +52,7 @@ class FrontendNotifierFactory:
                     data=state
                 )
         )
+
 
     def update_peripheral_pending(self, home_id:int, device_id:int, peripheral_id:int, pending:list[str])->FrontendNotifierData:
         return FrontendNotifierData(
