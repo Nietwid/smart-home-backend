@@ -1,5 +1,6 @@
 import logging
 
+from device.models import Device
 from dispatcher.command_message.factory import command_message_factory
 from dispatcher.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
@@ -48,8 +49,9 @@ class SyncEndActionIntent(ActionEventBaseHandler):
 class SyncEndActionResult(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         payload: BasicResult = message.payload
-        redis_cache.get_and_delete_device_message(message.message_id)
-        home_id = message.device.home.id
+        old_message = redis_cache.get_and_delete_device_message(message.message_id)
+        device: Device = message.device
+        home_id = device.home.id
         if payload.status == ActionResult.REJECTED:
             return DispatchResult(
                 notifications=frontend_notifier_factory.display_toaster(
@@ -58,14 +60,26 @@ class SyncEndActionResult(ActionEventBaseHandler):
                 )
             )
         pending = redis_cache.delete_device_pending(
-            message.device.pk, MessageCommand.SYNC_START
+            device.pk, MessageCommand.SYNC_START
         )
         notifications = [
             frontend_notifier_factory.update_device_pending(
                 home_id=home_id,
                 pending=pending,
-                device_id=message.device.pk,
+                device_id=device.pk,
             )
         ]
-        next_step_message = command_message_factory.restart(message.device)
+        old_payload: StartSyncPayload = old_message.payload
+        if old_payload.sync_type == StartSyncType.PERIPHERAL:
+            if MessageCommand.UPDATE_PERIPHERAL in device.required_action:
+                device.required_action.remove(MessageCommand.UPDATE_PERIPHERAL)
+                device.save(update_fields=["required_action"])
+                notifications.append(
+                    frontend_notifier_factory.update_device_required_action(
+                        home_id=home_id,
+                        actions=device.required_action,
+                        device_id=device.pk,
+                    )
+                )
+        next_step_message = command_message_factory.restart(device)
         return DispatchResult(notifications=notifications, commands=[next_step_message])

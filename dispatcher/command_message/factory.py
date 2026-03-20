@@ -131,7 +131,7 @@ class CommandMessageFactory:
             device=device,
         )
 
-    def sync_end(self, device: Device) -> CommandMessage:
+    def sync_end(self, device: Device, sync_type: StartSyncType) -> CommandMessage:
         home_id = device.home.pk
         router_mac = device.home.router.mac
         return CommandMessage(
@@ -141,7 +141,7 @@ class CommandMessageFactory:
             command=MessageCommand.SYNC_END,
             home_id=home_id,
             router_mac=router_mac,
-            payload={},
+            payload=StartSyncPayload(sync_type=sync_type),
             device=device,
         )
 

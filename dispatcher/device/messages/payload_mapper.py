@@ -16,7 +16,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.UPDATE_PERIPHERAL: (SerializerDataResponse, BasicResult),
     MessageCommand.UPDATE_RULE: (SerializerDataResponse, BasicResult),
     MessageCommand.SYNC_START: (StartSyncPayload, BasicResult),
-    MessageCommand.SYNC_END: (SerializerDataResponse, BasicResult),
+    MessageCommand.SYNC_END: (StartSyncPayload, BasicResult),
     MessageCommand.RESTART: (SerializerDataResponse, BasicResult),
 
     # Peripheral events

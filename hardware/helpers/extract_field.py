@@ -17,7 +17,7 @@ def extract_field(config: Union[dict, list], field: str) -> List[Any]:
 
     if isinstance(config, dict):
         for key, value in config.items():
-            if key == field:
+            if field in key:
                 results.append(value)
             else:
                 results.extend(extract_field(value, field))

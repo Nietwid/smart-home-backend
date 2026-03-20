@@ -4,6 +4,7 @@ from dispatcher.command_message.factory import command_message_factory
 from dispatcher.device.messages.builder.cpu import cpu_message_builder
 from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.device.messages.payload.cpu import UpdatePeripheralIntentPayload
+from dispatcher.device.messages.payload.enum import StartSyncType
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.device.messages.enum import MessageCommand, ActionResult
 from dispatcher.command_message.message import CommandMessage
@@ -84,6 +85,8 @@ class UpdatePeripheralActionResult(ActionEventBaseHandler):
                 message.device, next_id
             )
         else:
-            next_step_message = command_message_factory.sync_end(message.device)
+            next_step_message = command_message_factory.sync_end(
+                message.device, StartSyncType.PERIPHERAL
+            )
 
         return DispatchResult(commands=[next_step_message])
