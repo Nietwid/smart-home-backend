@@ -44,8 +44,6 @@ class PeripheralSerializer(serializers.ModelSerializer):
 
     def get_available_action(self, obj: Peripherals) -> Collection[MessageCommand]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
-        print(hardware_cls)
-        print(hardware_cls.config_model.model_json_schema())
         return hardware_cls.get_available_actions()
 
     def get_pending(self, obj: Peripherals) -> list[str]:

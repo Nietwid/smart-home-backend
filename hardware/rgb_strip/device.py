@@ -32,7 +32,7 @@ class RGBStripHardware(BaseHardware):
         errors = {}
 
         for color in ["r_pin", "g_pin", "b_pin"]:
-            pin_value = getattr(config, color).pin
+            pin_value = getattr(config, color)
             if pin_value in occupied_pins:
                 errors.setdefault(color, {})["__errors"] = ["This pin is already used"]
 

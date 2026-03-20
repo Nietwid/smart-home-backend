@@ -1,15 +1,18 @@
-from hardware.pin.schema import PinInputConfig, PinInputState
+from hardware.base import BasePeripheralConfig
+from pydantic import BaseModel, Field
 
 
-class ButtonMonostableConfig(PinInputConfig):
-    ...
+class ButtonMonostableConfig(BasePeripheralConfig):
+    pin: int = Field(ge=0, le=40)
 
 
-class ButtonMonostableState(PinInputState):
-    ...
+class ButtonMonostableState(BaseModel):
+    is_on: bool = Field(default=False)
 
 
-class ButtonBistableConfig(PinInputConfig):
-    ...
+class ButtonBistableConfig(BasePeripheralConfig):
+    pin: int = Field(ge=0, le=40)
 
-class ButtonBistableState(PinInputState): ...
+
+class ButtonBistableState(BaseModel):
+    is_on: bool = Field(default=False)

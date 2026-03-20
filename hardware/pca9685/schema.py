@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from typing import Literal
 
 from hardware.base import BasePeripheralConfig
 

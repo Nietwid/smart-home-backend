@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Type, Optional
+from typing import Type
 from pydantic import BaseModel, Field
 
 from device.models import Device
@@ -51,4 +51,4 @@ class HardwareValidationError(Exception):
 
 
 class BasePeripheralConfig(BaseModel):
-    name: str = Field(default=None)
+    name: str = Field(default="")

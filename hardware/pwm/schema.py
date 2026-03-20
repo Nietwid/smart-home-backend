@@ -5,7 +5,7 @@ from hardware.pin.schema import PinOutputConfig
 
 
 class PwmConfig(BasePeripheralConfig):
-    pin: PinOutputConfig
+    pin: int = Field(ge=0, le=40)
     frequency: int = 250
     resolution_bits: int = 8
 
