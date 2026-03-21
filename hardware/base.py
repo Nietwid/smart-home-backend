@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Type
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from device.models import Device
 from dispatcher.device.messages.enum import MessageCommand
-from typing import Collection
 
 
 class BaseHardware(ABC):
@@ -52,3 +51,21 @@ class HardwareValidationError(Exception):
 
 class BasePeripheralConfig(BaseModel):
     name: str = Field(default="")
+
+
+def clean_schema(schema):
+    for prop in schema.get("properties", {}).values():
+        if "anyOf" in prop:
+            non_null = [x for x in prop["anyOf"] if x.get("type") != "null"]
+            if non_null:
+                prop.clear()
+                prop.update(non_null[0])
+
+        if prop.get("default") is None:
+            prop.pop("default", None)
+
+
+class BaseExtraSettings(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra=lambda schema, model: clean_schema(schema),
+    )

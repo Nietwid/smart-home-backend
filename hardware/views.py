@@ -12,3 +12,18 @@ class HardwareList(APIView):
             for key, value in HARDWARE_REGISTRY.items()
         }
         return Response(schemas, status=200)
+
+
+class ActionExtraSettings(APIView):
+
+    def get(self, request):
+        name = request.query_params.get("name")
+        action = request.query_params.get("action")
+        cls = HARDWARE_REGISTRY.get(name)
+        if not cls:
+            return Response({}, status=404)
+        cls_action = cls.actions.get(action)
+        if not cls_action:
+            return Response(None, status=200)
+        extra_settings = cls_action.model_json_schema()
+        return Response(extra_settings, status=200)

@@ -95,5 +95,5 @@ class PeripheralSerializer(serializers.ModelSerializer):
             message = frontend_notifier_factory.update_device_required_action(
                 device.home.pk, device.required_action, device.pk
             )
-            notifier.notify(message)
+            notifier.notify([message])
         return peripheral
