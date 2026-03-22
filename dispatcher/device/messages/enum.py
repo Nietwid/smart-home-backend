@@ -37,7 +37,6 @@ class MessageEvent(StrEnum):
     # Basic events
 
     GET_CONNECTED_DEVICES = "get_connected_devices"
-    HEALTH_CHECK = "health_check"
     SET_SETTINGS = "set_settings"
     GET_SETTINGS = "get_settings"
     STATE_CHANGE = "state_change"
@@ -69,6 +68,8 @@ class MessageCommand(StrEnum):
     # CPU events
     DEVICE_CONNECT = "device_connect"
     DEVICE_DISCONNECT = "device_disconnect"
+    HEALTH_CHECK = "health_check"
+
 
     # CPU action
     UPDATE_PERIPHERAL = "update_peripheral"

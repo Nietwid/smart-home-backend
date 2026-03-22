@@ -11,6 +11,7 @@ PAYLOAD_MAPPING: dict = {
     # CPU events
     MessageCommand.DEVICE_CONNECT: (DeviceConnectRequest, BasicResult),
     MessageCommand.DEVICE_DISCONNECT: (DeviceDisconnectRequest, BasicResult),
+    MessageCommand.HEALTH_CHECK: (HealthCheckRequest, HealthCheckResult),
 
     # CPU action
     MessageCommand.UPDATE_PERIPHERAL: (SerializerDataResponse, BasicResult),
@@ -29,7 +30,6 @@ PAYLOAD_MAPPING: dict = {
 
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
-    MessageEvent.HEALTH_CHECK: (HealthCheckRequest, BasicResult),
     MessageEvent.SET_SETTINGS: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_SETTINGS: (EmptyRequest, SerializerDataResponse),
     MessageEvent.UPDATE_FIRMWARE: (SerializerDataResponse, BasicResult),

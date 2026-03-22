@@ -44,6 +44,9 @@ class DeviceDisconnectRequest(BaseModel):
 class HealthCheckRequest(BaseModel):
     wifi_strength: int
 
+class HealthCheckResult(BaseModel):
+    timestamp: int
+
 
 class FirmwareUpdateErrorRequest(BaseModel):
     message: str
@@ -57,8 +60,6 @@ class DeviceDisconnectResponse(BaseModel):
     pass
 
 
-class HealthCheckResponse(BaseModel):
-    pass
 
 
 class SetSettingsResponse(BaseModel):

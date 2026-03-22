@@ -1,4 +1,7 @@
 from django.apps import AppConfig
+import pkgutil
+import importlib
+import logging
 
 
 class DispatcherConfig(AppConfig):
@@ -6,36 +9,22 @@ class DispatcherConfig(AppConfig):
     name = "dispatcher"
 
     def ready(self):
-        from dispatcher.handlers.cpu.events.device_connect import DeviceConnectEvent
-        from dispatcher.handlers.cpu.events.device_disconnect import (
-            DeviceDisconnectEvent,
-        )
-        from dispatcher.handlers.cpu.actions.update_peripheral import (
-            UpdatePeripheralActionIntent,
-            UpdatePeripheralActionResult,
-        )
-        from dispatcher.handlers.cpu.actions.update_rule import (
-            UpdateRuleActionIntent,
-            UpdateRuleActionResult,
-        )
-        from dispatcher.handlers.cpu.actions.sync_start import (
-            SyncStartActionIntent,
-            SyncStartActionResult,
-        )
-        from dispatcher.handlers.cpu.actions.sync_end import (
-            SyncEndActionIntent,
-            SyncEndActionResult,
-        )
-        from dispatcher.handlers.cpu.actions.restart import (
-            RestartActionIntent,
-            RestartActionResult,
-        )
+        base_packages = [
+            "dispatcher.handlers.cpu.actions",
+            "dispatcher.handlers.cpu.events",
+            "dispatcher.handlers.peripherals.actions",
+            "dispatcher.handlers.peripherals.events",
+        ]
 
-        from dispatcher.handlers.peripheria.actions.update_state import (
-            UpdateStateActionIntent,
-            UpdateStateActionResult,
-        )
-        from dispatcher.handlers.peripheria.actions.toggle import (
-            ToggleActionIntent,
-            ToggleActionResult,
-        )
+        for package_path in base_packages:
+            try:
+                pkg = importlib.import_module(package_path)
+
+                for loader, module_name, is_pkg in pkgutil.walk_packages(
+                    pkg.__path__, pkg.__name__ + "."
+                ):
+                    importlib.import_module(module_name)
+                    logging.debug(f"Auto-imported: {module_name}")
+            except ModuleNotFoundError as e:
+                logging.error(f"ModuleNotFoundError: {e}")
+                pass
