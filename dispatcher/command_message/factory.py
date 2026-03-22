@@ -18,7 +18,6 @@ class CommandMessageFactory:
     def from_frontend_message(
         self, message: ActionEventFrontendMessage
     ) -> CommandMessage:
-        device = None
         peripheral = None
 
         if message.scope == Scope.CPU:
@@ -29,6 +28,7 @@ class CommandMessageFactory:
             peripheral = peripheral_repository.get_by_id_with_device(
                 message.peripheral_id
             )
+            device = peripheral.device
             home_id = peripheral.device.home.pk
             router_mac = peripheral.device.home.router.mac
         else:
@@ -76,6 +76,7 @@ class CommandMessageFactory:
             peripheral = peripheral_repository.get_by_id_with_device(
                 message.peripheral_id
             )
+            device = peripheral.device
         return CommandMessage(
             scope=message.scope,
             type=message.type,

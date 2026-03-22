@@ -41,10 +41,7 @@ class DeviceDisconnectRequest(BaseModel):
     pass
 
 
-class HealthCheckRequest(BaseModel):
-    wifi_strength: int
-
-class HealthCheckResult(BaseModel):
+class OnSyncTimeResult(BaseModel):
     timestamp: int
 
 

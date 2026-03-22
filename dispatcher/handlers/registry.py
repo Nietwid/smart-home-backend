@@ -1,3 +1,5 @@
+import logging
+
 from dispatcher.device.messages.enum import (
     Scope,
     MessageType,
@@ -5,6 +7,7 @@ from dispatcher.device.messages.enum import (
     MessageCommand,
 )
 
+logger = logging.getLogger("base")
 DISPATCH_DICT = {}
 
 

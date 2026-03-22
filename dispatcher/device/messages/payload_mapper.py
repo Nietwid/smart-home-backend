@@ -11,7 +11,6 @@ PAYLOAD_MAPPING: dict = {
     # CPU events
     MessageCommand.DEVICE_CONNECT: (DeviceConnectRequest, BasicResult),
     MessageCommand.DEVICE_DISCONNECT: (DeviceDisconnectRequest, BasicResult),
-    MessageCommand.HEALTH_CHECK: (HealthCheckRequest, HealthCheckResult),
 
     # CPU action
     MessageCommand.UPDATE_PERIPHERAL: (SerializerDataResponse, BasicResult),
@@ -22,7 +21,7 @@ PAYLOAD_MAPPING: dict = {
 
     # Peripheral events
     MessageCommand.ON_TOGGLE: (ToggleResult, BasicResult),
-
+    MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),
     MessageCommand.UPDATE_STATE: (SerializerDataResponse, BasicResult),

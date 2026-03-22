@@ -1,4 +1,4 @@
-from dispatcher.device.messages.enum import MessageEvent, MessageCommand
+from dispatcher.device.messages.enum import MessageCommand
 from device.models import Device
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.handlers.base import ActionEventBaseHandler
@@ -19,4 +19,6 @@ class OnToggleEventHandler(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         device: Device = message.device
         peripheral: Peripherals = message.peripheral
-        return DispatchResult(commands=device.get_event_request(MessageEvent.ON_CLICK))
+        return DispatchResult(
+            commands=device.get_event_request(MessageCommand.ON_CLICK)
+        )

@@ -13,7 +13,6 @@ class CpuHardware:
     events = (
         MessageCommand.DEVICE_CONNECT,
         MessageCommand.DEVICE_DISCONNECT,
-        MessageCommand.HEALTH_CHECK,
     )
 
     @classmethod

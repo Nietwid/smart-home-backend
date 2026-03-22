@@ -68,7 +68,6 @@ class MessageCommand(StrEnum):
     # CPU events
     DEVICE_CONNECT = "device_connect"
     DEVICE_DISCONNECT = "device_disconnect"
-    HEALTH_CHECK = "health_check"
 
 
     # CPU action
@@ -90,6 +89,7 @@ class MessageCommand(StrEnum):
     ON_READ = "on_read"
     ON_READ_SUCCESS = "on_read_success"
     ON_READ_FAILURE = "on_read_failure"
+    ON_SYNC_TIME = "on_sync_time"
 
     # Peripheral action
     TOGGLE = "toggle"
