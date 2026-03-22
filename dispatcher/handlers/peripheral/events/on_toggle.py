@@ -19,6 +19,4 @@ class OnToggleEventHandler(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         device: Device = message.device
         peripheral: Peripherals = message.peripheral
-        return DispatchResult(
-            commands=device.get_event_request(MessageCommand.ON_CLICK)
-        )
+        return DispatchResult()

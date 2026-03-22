@@ -20,7 +20,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.RESTART: (SerializerDataResponse, BasicResult),
 
     # Peripheral events
-    MessageCommand.ON_TOGGLE: (ToggleResult, BasicResult),
+    MessageCommand.ON_TOGGLE: (SerializerDataResponse, ToggleResult),
     MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),

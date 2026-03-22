@@ -27,3 +27,21 @@ class ActionExtraSettings(APIView):
             return Response(None, status=200)
         extra_settings = cls_action.model_json_schema()
         return Response(extra_settings, status=200)
+
+
+class EventCondition(APIView):
+    def get(self, request):
+        name = request.query_params.get("name")
+        event = request.query_params.get("event")
+        cls = HARDWARE_REGISTRY.get(name)
+        if not cls:
+            return Response({}, status=404)
+        try:
+            cls_event_conditions = cls.event_conditions.get(event)
+            if not cls_event_conditions:
+                return Response(None, status=200)
+        except Exception as e:
+            print(e)
+            return Response(None, status=200)
+        event_conditions = cls_event_conditions.model_json_schema()
+        return Response(event_conditions, status=200)

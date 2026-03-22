@@ -60,15 +60,13 @@ class RuleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Trigger peripheral must belong to rule device"
             )
-
         data["is_local"] = trigger_device == action_device
-
         return data
 
     def create(self, validated_data):
-
         triggers_data = validated_data.pop("triggers")
         actions_data = validated_data.pop("actions")
+        conditions_data = validated_data.pop("conditions")
 
         rule = Rule.objects.create(**validated_data)
 
@@ -77,6 +75,10 @@ class RuleSerializer(serializers.ModelSerializer):
 
         for action in actions_data:
             RuleAction.objects.create(rule=rule, **action)
+
+        for condition in conditions_data:
+            RuleCondition.objects.create(rule=rule, **condition)
+
         rule.save()
 
         if rule.is_local:
@@ -90,4 +92,5 @@ class RuleSerializer(serializers.ModelSerializer):
                 device.home.pk, device.required_action, device.pk
             )
             notifier.notify([message])
+
         return rule

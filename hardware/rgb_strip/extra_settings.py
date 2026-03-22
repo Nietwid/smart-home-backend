@@ -2,7 +2,6 @@ from pydantic import Field, ConfigDict, field_validator, ValidationInfo
 from typing import Optional
 
 from hardware.base import BaseExtraSettings
-from hardware.rgb_strip.schema import RGBStripConfig
 
 
 class UpdateStateExtraSettings(BaseExtraSettings):

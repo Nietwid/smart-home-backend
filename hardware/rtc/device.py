@@ -4,6 +4,7 @@ from hardware.base import BaseHardware, HardwareValidationError
 from hardware.registry import hardware_registry
 from hardware.enums import HardwareTypes
 from hardware.rtc.schema import RtcConfig, RtcState
+from rules.conditions.time import TimeCondition
 
 
 @hardware_registry(name="rtc")
@@ -13,7 +14,11 @@ class Rtc(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = {}
-    events = (MessageCommand.ON_SYNC_TIME,)
+    events = (
+        MessageCommand.ON_SYNC_TIME,
+        MessageCommand.ON_TIME,
+    )
+    event_conditions = {MessageCommand.ON_TIME: TimeCondition}
 
     @classmethod
     def validate_config(cls, config: RtcConfig, device: Device) -> None:

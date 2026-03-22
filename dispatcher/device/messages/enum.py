@@ -90,6 +90,7 @@ class MessageCommand(StrEnum):
     ON_READ_SUCCESS = "on_read_success"
     ON_READ_FAILURE = "on_read_failure"
     ON_SYNC_TIME = "on_sync_time"
+    ON_TIME = "on_time"
 
     # Peripheral action
     TOGGLE = "toggle"

@@ -31,6 +31,7 @@ class RuleCondition(models.Model):
     peripheral = models.ForeignKey(
         Peripherals, on_delete=models.CASCADE, null=True, blank=True
     )
+    event = models.CharField(max_length=50)
     operator = models.CharField(max_length=20)
     value = models.CharField(max_length=100)
 

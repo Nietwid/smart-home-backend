@@ -4,7 +4,6 @@ from dispatcher.command_message.factory import command_message_factory
 from dispatcher.device.messages.builder.cpu import cpu_message_builder
 from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.device.messages.payload.cpu import (
-    UpdatePeripheralIntentPayload,
     UpdateRuleIntentPayload,
 )
 from dispatcher.device.messages.payload.enum import StartSyncType
@@ -17,7 +16,6 @@ from dispatcher.handlers.registry import register_action_event
 from dispatcher.tasks import check_command_timeout
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.router_notifier_factory import router_notifier_factory
-from peripherals.serializers import PeripheralSerializerDevice
 from redis_cache import redis_cache
 from rules.repository import RuleRepository
 from rules.serializers.rule import RuleSerializerDevice

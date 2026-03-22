@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 from device.models import Device
 from dispatcher.device.messages.enum import MessageCommand
+from rules.conditions.base import BaseCondition
 
 
 class BaseHardware(ABC):
@@ -15,6 +16,7 @@ class BaseHardware(ABC):
     chip_support: tuple[str] = []
     actions: dict[MessageCommand, Type[BaseModel]] = {}
     events: tuple[str] = []
+    event_conditions: dict[str, Type[BaseCondition]] = {}
 
     @classmethod
     def parse_config(cls, data: dict) -> BaseModel:
