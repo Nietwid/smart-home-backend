@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
-from dispatcher.command_message.factory import command_message_factory
-from dispatcher.device.messages.payload.enum import StartSyncType
-from dispatcher.processor.action_event_command import action_event_command_processor
+from device.models import Device
+from dispatcher.device.messages.enum import MessageCommand
+from notifier.frontend_notifier_factory import frontend_notifier_factory
 from rules.models import Rule, RuleAction, RuleCondition, RuleTrigger
 from rules.serializers.action import RuleActionSerializer
 from rules.serializers.condition import RuleConditionSerializer
 from rules.serializers.trigger import RuleTriggerSerializer
+from notifier.notifier import notifier
 
 
 class RuleSerializerDevice(serializers.ModelSerializer):
@@ -79,8 +80,14 @@ class RuleSerializer(serializers.ModelSerializer):
         rule.save()
 
         if rule.is_local:
-            command_message = command_message_factory.sync_start(
-                rule.device, StartSyncType.RULE
+            device: Device = rule.device
+            if MessageCommand.UPDATE_RULE in device.required_action:
+                return rule
+
+            device.required_action.append(MessageCommand.UPDATE_RULE)
+            device.save(update_fields=["required_action"])
+            message = frontend_notifier_factory.update_device_required_action(
+                device.home.pk, device.required_action, device.pk
             )
-            action_event_command_processor(command_message)
+            notifier.notify([message])
         return rule

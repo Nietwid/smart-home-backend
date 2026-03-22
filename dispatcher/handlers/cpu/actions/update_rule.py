@@ -88,6 +88,8 @@ class UpdateRuleActionResult(ActionEventBaseHandler):
                 message.device, next_id
             )
         else:
-            next_step_message = command_message_factory.sync_end(message.device)
+            next_step_message = command_message_factory.sync_end(
+                message.device, StartSyncType.RULE
+            )
 
         return DispatchResult(commands=[next_step_message])

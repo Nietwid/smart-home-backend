@@ -81,5 +81,17 @@ class SyncEndActionResult(ActionEventBaseHandler):
                         device_id=device.pk,
                     )
                 )
+        elif old_payload.sync_type == StartSyncType.RULE:
+            if MessageCommand.UPDATE_RULE in device.required_action:
+                device.required_action.remove(MessageCommand.UPDATE_RULE)
+                device.save(update_fields=["required_action"])
+                notifications.append(
+                    frontend_notifier_factory.update_device_required_action(
+                        home_id=home_id,
+                        actions=device.required_action,
+                        device_id=device.pk,
+                    )
+                )
+
         next_step_message = command_message_factory.restart(device)
         return DispatchResult(notifications=notifications, commands=[next_step_message])
