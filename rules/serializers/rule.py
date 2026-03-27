@@ -66,7 +66,7 @@ class RuleSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         triggers_data = validated_data.pop("triggers")
         actions_data = validated_data.pop("actions")
-        conditions_data = validated_data.pop("conditions")
+        conditions_data = validated_data.pop("conditions", [])
 
         rule = Rule.objects.create(**validated_data)
 

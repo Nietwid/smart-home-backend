@@ -91,8 +91,10 @@ class MessageCommand(StrEnum):
     ON_READ_FAILURE = "on_read_failure"
     ON_SYNC_TIME = "on_sync_time"
     ON_TIME = "on_time"
+    ON_MOTION = "on_motion"
 
     # Peripheral action
+    MOTION = "motion"
     TOGGLE = "toggle"
     UPDATE_STATE = "update_state"
     CLICK = "click"

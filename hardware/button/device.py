@@ -12,8 +12,8 @@ from hardware.button.schema import (
 )
 
 
-@hardware_registry(name="button_monostable")
-class ButtonMonostable(BaseHardware):
+@hardware_registry(name="button_bistable")
+class ButtonBistableHardware(BaseHardware):
     config_model = ButtonMonostableConfig
     state_model = ButtonMonostableState
     hardware_type = HardwareTypes.OUTPUT
@@ -33,8 +33,8 @@ class ButtonMonostable(BaseHardware):
         pass
 
 
-@hardware_registry(name="button_bistable")
-class PinInputHardware(BaseHardware):
+@hardware_registry(name="button_monostable")
+class ButtonMonostableHardware(BaseHardware):
     config_model = ButtonBistableConfig
     state_model = ButtonBistableState
     hardware_type = HardwareTypes.INPUT

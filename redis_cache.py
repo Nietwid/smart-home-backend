@@ -24,10 +24,12 @@ class RedisCache:
         cache_key = CacheKey.device_pending(mac)
         return self._add_pending(pending, cache_key, command)
 
-    def add_peripheral_pending(self, pk: int, command: MessageCommand) -> list[str]:
+    def add_peripheral_pending(
+        self, pk: int, command: MessageCommand, timeout=DEFAULT_TIMEOUT
+    ) -> list[str]:
         pending = self.get_peripherals_pending(pk)
         cache_key = CacheKey.peripheral_pending(pk)
-        return self._add_pending(pending, cache_key, command)
+        return self._add_pending(pending, cache_key, command, timeout)
 
     def add_device_update_peripherals_ids(self, ids: list[int], device_mac: str):
         cache.set(
@@ -89,13 +91,17 @@ class RedisCache:
         return self._delete_pending(pending, cache_key, command)
 
     def _add_pending(
-        self, pending: list[str] | None, cache_key: str, command: MessageCommand
+        self,
+        pending: list[str] | None,
+        cache_key: str,
+        command: MessageCommand,
+        timeout=DEFAULT_TIMEOUT,
     ) -> list[str]:
         if not pending:
             pending = []
         if not command in pending:
             pending.append(command)
-        cache.set(cache_key, pending, timeout=self.DEFAULT_TIMEOUT)
+        cache.set(cache_key, pending, timeout=timeout)
         return pending
 
     def _delete_pending(

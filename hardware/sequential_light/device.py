@@ -5,8 +5,8 @@ from hardware.helpers.is_used import is_used
 from hardware.registry import hardware_registry
 from hardware.enums import HardwareTypes
 from hardware.sequential_light.extra_settings import (
-    BaseExtraSettings,
     BlinkExtraSettings,
+    LightBaseExtraSettings,
 )
 from hardware.sequential_light.schema import (
     SequentialLightState,
@@ -21,9 +21,9 @@ class SequentialLightHardware(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = {
-        MessageCommand.ON: BaseExtraSettings,
-        MessageCommand.OFF: BaseExtraSettings,
-        MessageCommand.TOGGLE: BaseExtraSettings,
+        MessageCommand.ON: LightBaseExtraSettings,
+        MessageCommand.OFF: LightBaseExtraSettings,
+        MessageCommand.TOGGLE: LightBaseExtraSettings,
         MessageCommand.BLINK: BlinkExtraSettings,
     }
     events = (

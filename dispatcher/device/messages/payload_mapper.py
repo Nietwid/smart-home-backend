@@ -22,10 +22,12 @@ PAYLOAD_MAPPING: dict = {
     # Peripheral events
     MessageCommand.ON_TOGGLE: (SerializerDataResponse, ToggleResult),
     MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
+    MessageCommand.ON_BLINK:(OnBlinkPayload, BasicResult),
+
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),
     MessageCommand.UPDATE_STATE: (SerializerDataResponse, BasicResult),
-
+    MessageCommand.BLINK: (SerializerDataResponse, BasicResult),
 
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
@@ -45,7 +47,6 @@ PAYLOAD_MAPPING: dict = {
     MessageEvent.ON_HUMIDITY_ABOVE: (EmptyRequest, EmptyResponse),
     MessageCommand.ON: (SerializerDataResponse, BasicResult),
     MessageCommand.OFF: (SerializerDataResponse, BasicResult),
-    MessageCommand.BLINK: (SerializerDataResponse, BasicResult),
     MessageCommand.ACCESS_GRANTED: (AccessGrantedPayload, BasicResult),
     MessageCommand.ACCESS_DENIED: (AccessDeniedPayload, BasicResult),
     MessageCommand.ADD_TAG: (SerializerDataResponse, AddTagResponse),
