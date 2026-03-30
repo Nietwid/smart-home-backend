@@ -1,9 +1,9 @@
+
 from pydantic import BaseModel
 
-from dispatcher.device.messages.device_state import DeviceState
-from device.models import ChipType
-from dispatcher.device.messages.enum import ActionResult, DeviceStatuReport
+from dispatcher.device.messages.enum import ActionResult
 
+from device.models import ChipType
 
 class EmptyRequest(BaseModel):
     """Used for request events without payload."""

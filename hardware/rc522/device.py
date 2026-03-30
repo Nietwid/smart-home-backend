@@ -15,8 +15,6 @@ class Rc522(BaseHardware):
     chip_support = [name.value for name in ChipType]
     actions = {
         MessageCommand.ADD_TAG: None,
-        MessageCommand.ACCESS_GRANTED: None,
-        MessageCommand.ACCESS_DENIED: None,
     }
     events = (
         MessageCommand.ON_READ,

@@ -9,9 +9,11 @@ from dispatcher.device.messages.payload.cpu import (
 )
 from dispatcher.device.messages.payload.enum import StartSyncType
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
+from peripherals.models import Peripherals
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
 from device.models import Device
+from rules.models import RuleAction
 
 
 class CommandMessageFactory:
@@ -158,6 +160,25 @@ class CommandMessageFactory:
             router_mac=router_mac,
             payload={},
             device=device,
+        )
+
+    def get_commands_from_rule(
+        self,
+        device: Device,
+        home_id: int,
+        router_mac: str,
+        action: RuleAction,
+    ) -> CommandMessage:
+        return CommandMessage(
+            scope=Scope.PERIPHERAL,
+            type=MessageType.ACTION,
+            direction=MessageDirection.INTENT,
+            command=action.action,
+            home_id=home_id,
+            router_mac=router_mac,
+            payload=action.extra_settings,
+            device=device,
+            peripheral=action.peripheral,
         )
 
 

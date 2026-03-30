@@ -14,7 +14,7 @@ class DeviceSerializer(ModelSerializer):
     class Meta:
         model = Device
         fields = "__all__"
-        read_only_fields = ["last_seen"]
+        read_only_fields = ["last_seen", "mac"]
 
     def get_pending(self, obj: Device):
         pending = redis_cache.get_device_pending(obj.pk)

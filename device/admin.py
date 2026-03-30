@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-from .models import Device, Event, Router
+from .models import Device, Router
 
 # Register your models here.
 
 admin.site.register(Device)
 admin.site.register(Router)
-admin.site.register(Event)

@@ -23,6 +23,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.ON_TOGGLE: (SerializerDataResponse, ToggleResult),
     MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
     MessageCommand.ON_BLINK:(OnBlinkPayload, BasicResult),
+    MessageCommand.ON_READ: (OnReadIntent, BasicResult),
 
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),
@@ -36,7 +37,6 @@ PAYLOAD_MAPPING: dict = {
     MessageEvent.GET_SETTINGS: (EmptyRequest, SerializerDataResponse),
     MessageEvent.UPDATE_FIRMWARE: (SerializerDataResponse, BasicResult),
     MessageEvent.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
-    MessageCommand.ON_READ: (OnReadIntent, BasicResult),
     MessageCommand.ON_CLICK: (SerializerDataResponse, BasicResult),
     MessageCommand.ON_HOLD: (SerializerDataResponse, BasicResult),
     MessageEvent.ON_MEASURE_TEMPERATURE: (TemperatureRequest, SerializerDataResponse),

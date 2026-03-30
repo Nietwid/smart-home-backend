@@ -1,3 +1,4 @@
+from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.enum import MessageCommand
 from device.models import Device
 from dispatcher.handlers.base import ActionEventBaseHandler
@@ -14,11 +15,13 @@ from dispatcher.handlers.registry import register_action_event
 )
 class OnClickEventIntentHandler(ActionEventBaseHandler):
 
-    def __call__(self, message: MessageCommand) -> DispatchResult:
+    def __call__(self, message: CommandMessage) -> DispatchResult:
         """
         Handle the incoming request for a click event.
         """
         device: Device = message.device
         return DispatchResult(
-            commands=device.get_event_request(MessageCommand.ON_CLICK)
+            commands=device.get_event_request(
+                peripheral=message.peripheral, event_type=MessageCommand.ON_CLICK
+            )
         )

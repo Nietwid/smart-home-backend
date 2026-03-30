@@ -18,26 +18,14 @@ from peripherals.models import RfidCard
     scope=Scope.PERIPHERAL,
     message_type=MessageType.EVENT,
     direction=MessageDirection.INTENT,
-    handler_name=MessageCommand.ON_READ,
+    handler_name=MessageCommand.ON_READ_FAILURE,
 )
-class OnReadEvent(ActionEventBaseHandler):
+class OnReadFailureEvent(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
-        payload: OnReadIntent = message.payload
-        uid = payload.uid
-        peripheral = message.peripheral
         device = message.device
-        access = RfidCard.objects.filter(
-            allowed_peripherals=peripheral, uid=uid, is_active=True
-        ).exists()
         return DispatchResult(
-            notifications=[
-                router_notifier_factory.device_message(
-                    router_mac=device.get_router_mac(),
-                    message=rfid_message_builder.on_read_card_result(message, access),
-                ),
-            ],
             commands=device.get_event_request(
-                peripheral=peripheral, event_type=MessageCommand.ON_READ
+                message.peripheral, MessageCommand.ON_READ_FAILURE
             ),
         )
