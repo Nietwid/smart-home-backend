@@ -15,7 +15,7 @@ from dispatcher.device.messages.enum import (
 from dispatcher.handlers.registry import register_action_event
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.router_notifier_factory import router_notifier_factory
-from peripherals.serializers import PeripheralSerializer
+from peripherals.serializers.peripheral import PeripheralSerializer
 from redis_cache import redis_cache
 from dispatcher.tasks import check_command_timeout
 

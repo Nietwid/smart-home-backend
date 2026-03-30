@@ -1,4 +1,4 @@
-from device.models import RfidCard
+from peripherals.models import RfidCard
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
@@ -89,6 +89,7 @@ class AddTagActionResult(ActionEventBaseHandler):
                         status=400,
                         intent_id=old_payload.intent_id,
                         card_name=old_payload.name,
+                        peripheral_id=peripheral.pk,
                     ),
                 )
             )
@@ -100,6 +101,7 @@ class AddTagActionResult(ActionEventBaseHandler):
                         status=409,
                         intent_id=old_payload.intent_id,
                         card_name=old_payload.name,
+                        peripheral_id=peripheral.pk,
                     ),
                 )
             )
@@ -109,16 +111,15 @@ class AddTagActionResult(ActionEventBaseHandler):
                 name=old_payload.name,
             )
             card.allowed_peripherals.add(peripheral)
-
-        return DispatchResult(
-            notifications=[
+            notifications.append(
                 frontend_notifier_factory.add_tag_result(
                     home_id=home_id,
                     context=AddTagResultPayload(
                         status=201,
                         intent_id=old_payload.intent_id,
                         card_name=old_payload.name,
+                        peripheral_id=peripheral.pk,
                     ),
                 )
-            ]
-        )
+            )
+        return DispatchResult(notifications=notifications)

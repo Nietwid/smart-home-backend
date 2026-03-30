@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from peripherals.serializers import PeripheralSerializer
+from peripherals.serializers.peripheral import PeripheralSerializer
 
 from ..models import Device
 from redis_cache import redis_cache

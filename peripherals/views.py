@@ -1,13 +1,15 @@
 from pydantic import ValidationError
 from rest_framework import permissions
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from dispatcher.command_message.factory import command_message_factory
 from dispatcher.processor.action_event_command import action_event_command_processor
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
-from peripherals.serializers import PeripheralSerializer
+from peripherals.serializers.peripheral import PeripheralSerializer
+from peripherals.serializers.rfid_card import RfidCardSerializer
+from peripherals.models import RfidCard
 
 
 class CreatePeripheral(CreateAPIView):
@@ -35,3 +37,14 @@ class HandleEventAction(APIView):
         )
         action_event_command_processor(command_message)
         return Response({}, status=200)
+
+
+class GetAllPeripheralRfidCards(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = RfidCardSerializer
+
+    def get_queryset(self):
+        peripheral_id = self.kwargs.get("pk")
+        if peripheral_id is None:
+            return []
+        return RfidCard.objects.filter(allowed_peripherals__id=peripheral_id)

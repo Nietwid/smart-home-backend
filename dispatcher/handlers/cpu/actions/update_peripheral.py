@@ -14,7 +14,7 @@ from dispatcher.handlers.registry import register_action_event
 from dispatcher.tasks import check_command_timeout
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.router_notifier_factory import router_notifier_factory
-from peripherals.serializers import PeripheralSerializerDevice
+from peripherals.serializers.peripheral import PeripheralSerializerDevice
 from redis_cache import redis_cache
 
 logger = logging.getLogger("base")
