@@ -20,6 +20,7 @@ class HandleEventAction(APIView):
     def put(self, request, *args, **kwargs):
         try:
             frontend_message = ActionEventFrontendMessage(**request.data)
+            print(frontend_message)
         except ValidationError as e:
             errors = {}
             for err in e.errors():

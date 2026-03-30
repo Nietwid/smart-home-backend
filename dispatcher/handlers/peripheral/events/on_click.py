@@ -22,19 +22,3 @@ class OnClickEventIntentHandler(ActionEventBaseHandler):
         return DispatchResult(
             commands=device.get_event_request(MessageCommand.ON_CLICK)
         )
-
-
-@register_action_event(
-    scope=Scope.PERIPHERAL,
-    message_type=MessageType.EVENT,
-    direction=MessageDirection.RESULT,
-    handler_name=MessageCommand.ON_CLICK,
-)
-class OnClickEventResultHandler(ActionEventBaseHandler):
-
-    def __call__(self, message: MessageCommand) -> DispatchResult:
-        """
-        Handle the response from the device for a click event.
-        """
-        # Process the response as needed
-        return DispatchResult()

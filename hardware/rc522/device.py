@@ -7,13 +7,14 @@ from hardware.registry import hardware_registry
 from hardware.enums import HardwareTypes
 
 
-@hardware_registry(name="rc5522")
+@hardware_registry(name="rc522")
 class Rc522(BaseHardware):
     config_model = Rc552Config
     state_model = Rc552State
-    hardware_type = HardwareTypes.OUTPUT
+    hardware_type = HardwareTypes.SENSOR
     chip_support = [name.value for name in ChipType]
     actions = {
+        MessageCommand.ADD_TAG: None,
         MessageCommand.ACCESS_GRANTED: None,
         MessageCommand.ACCESS_DENIED: None,
     }
@@ -25,7 +26,7 @@ class Rc522(BaseHardware):
 
     @classmethod
     def validate_config(cls, config: Rc552Config, device: Device) -> None:
-        if is_used(device.peripherals.all(), "pin", [config.ss, config.cs]):
+        if is_used(device.peripherals.all(), "pin", [config.ss, config.rst]):
             raise HardwareValidationError(
                 {"pin": {"__errors": ["This pin is already used"]}}
             )

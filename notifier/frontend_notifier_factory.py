@@ -1,5 +1,6 @@
 from consumers.frontend.messages.message import FrontendMessage
 from consumers.frontend.messages.types import FrontendMessageType
+from notifier.frontend_notifier_payload import AddTagResultPayload
 from notifier.message import FrontendNotifierData
 
 
@@ -83,6 +84,13 @@ class FrontendNotifierFactory:
                     "message":message
                 }
             )
+        )
+
+    def add_tag_result(self, home_id:int, context:AddTagResultPayload):
+        return FrontendNotifierData(
+            home_id=home_id,
+            data=FrontendMessage(
+                action=FrontendMessageType.ADD_TAG_RESULT, data=context.model_dump()            )
         )
 
 frontend_notifier_factory = FrontendNotifierFactory()

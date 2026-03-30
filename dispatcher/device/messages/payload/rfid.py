@@ -1,17 +1,18 @@
 from pydantic import BaseModel
 
-
-class AddTagRequest(BaseModel):
-    name: str
+from dispatcher.device.messages.enum import ActionResult
 
 
-class AddTagResponse(BaseModel):
-    name: str
-    uid: int
+class AddTagResult(BaseModel):
+    uid: str
+    status:ActionResult
 
+class AddTagIntent(BaseModel):
+    name:str
+    intent_id:str
 
-class OnReadRequest(BaseModel):
-    uid: int
+class OnReadIntent(BaseModel):
+    uid: str
 
 
 class OnReadSuccessPayload(BaseModel):
