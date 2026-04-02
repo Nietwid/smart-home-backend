@@ -77,6 +77,7 @@ class Device(models.Model):
                             self, home_id, router_mac, action
                         )
                     )
+        print(command_messages)
         return command_messages
 
     def get_router(self):

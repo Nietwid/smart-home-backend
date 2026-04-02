@@ -20,16 +20,16 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.RESTART: (SerializerDataResponse, BasicResult),
 
     # Peripheral events
-    MessageCommand.ON_TOGGLE: (SerializerDataResponse, ToggleResult),
     MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
     MessageCommand.ON_BLINK:(OnBlinkPayload, BasicResult),
     MessageCommand.ON_READ: (OnReadIntent, BasicResult),
 
     # Peripheral action
-    MessageCommand.TOGGLE: (SerializerDataResponse, ToggleResult),
+    MessageCommand.TOGGLE: (SerializerDataResponse, BasicResult),
     MessageCommand.UPDATE_STATE: (SerializerDataResponse, BasicResult),
     MessageCommand.BLINK: (SerializerDataResponse, BasicResult),
     MessageCommand.ADD_TAG: (AddTagIntent, AddTagResult),
+    MessageCommand.PLAY_SEQUENCE: (SerializerDataResponse, AddTagResult),
 
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),

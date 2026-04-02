@@ -29,7 +29,6 @@ class SequentialLightHardware(BaseHardware):
     events = (
         MessageCommand.ON_ON,
         MessageCommand.ON_OFF,
-        MessageCommand.ON_TOGGLE,
         MessageCommand.ON_BLINK,
     )
 

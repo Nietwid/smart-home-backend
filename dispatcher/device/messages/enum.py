@@ -78,7 +78,6 @@ class MessageCommand(StrEnum):
     RESTART = "restart"
 
     # Peripheral events
-    ON_TOGGLE = "on_toggle"
     ON_UPDATE_STATE = "on_update_state"
     ON_STATUS_REPORT = "on_status_report"
     ON_CLICK = "on_click"
@@ -105,3 +104,4 @@ class MessageCommand(StrEnum):
     ADD_TAG = "add_tag"
     ACCESS_GRANTED = "access_granted"
     ACCESS_DENIED = "access_denied"
+    PLAY_SEQUENCE = "play_sequence"

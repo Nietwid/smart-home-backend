@@ -12,9 +12,9 @@ from peripherals.models import Peripherals
     scope=Scope.PERIPHERAL,
     message_type=MessageType.EVENT,
     direction=MessageDirection.INTENT,
-    handler_name=MessageCommand.ON_TOGGLE,
+    handler_name=MessageCommand.ON_ON,
 )
-class OnToggleEventHandler(ActionEventBaseHandler):
+class OnOnEventHandler(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         device: Device = message.device

@@ -24,7 +24,6 @@ class PinOutputHardware(BaseHardware):
         MessageCommand.OFF: None,
     }
     events = (
-        MessageCommand.ON_TOGGLE,
         MessageCommand.ON_ON,
         MessageCommand.ON_OFF,
     )
@@ -48,7 +47,10 @@ class PinInputHardware(BaseHardware):
     hardware_type = HardwareTypes.INPUT
     chip_support = [name.value for name in ChipType]
     actions = {}
-    events = (MessageCommand.ON_TOGGLE,)
+    events = (
+        MessageCommand.ON_ON,
+        MessageCommand.ON_OFF,
+    )
 
     @classmethod
     def validate_config(cls, config: PinInputConfig, device: Device) -> None:

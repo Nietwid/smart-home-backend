@@ -2,7 +2,7 @@ from dispatcher.device.messages.builder.action_event_intent import (
     action_event_intent_builder,
 )
 from dispatcher.device.messages.enum import MessageCommand
-from dispatcher.device.messages.payload.button import ToggleResult
+from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.base import ActionEventBaseHandler
@@ -67,14 +67,12 @@ class ToggleActionIntent(ActionEventBaseHandler):
 class ToggleActionResult(ActionEventBaseHandler):
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
-        payload: ToggleResult = message.payload
+        payload: BasicResult = message.payload
         device_message = redis_cache.get_and_delete_device_message(message.message_id)
         logger.info(f"device_message: {device_message}")
 
         if not device_message:
             return DispatchResult()
-        message.peripheral.state["is_on"] = payload.is_on
-        message.peripheral.save(update_fields=["state"])
 
         pending = redis_cache.delete_peripheral_pending(
             message.peripheral.pk, message.command
