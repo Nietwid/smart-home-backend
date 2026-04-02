@@ -1,6 +1,5 @@
 import logging
 from abc import ABC, abstractmethod
-
 from device.models import Device
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.builder.action_event_intent import (
@@ -126,12 +125,13 @@ class ActionResultBaseHandler(ActionEventBaseHandler):
 
 class EventIntentBaseHandler(ActionEventBaseHandler):
     send_command: bool = True
+    update_frontend_peripheral_state: bool = False
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         notifications = []
         commands = []
         device: Device = message.device
-        self.process_message(message)
+        peripheral: Peripherals = message.peripheral
 
         if self.send_command:
             commands.extend(
@@ -142,10 +142,19 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
 
         notifications.extend(self.get_extra_notification(message))
 
+        self.update_peripheral_state(peripheral, message.payload)
+
+        if self.update_frontend_peripheral_state:
+            notifications.append(
+                frontend_notifier_factory.update_peripheral_state(
+                    home_id=device.home.pk, state=peripheral.state
+                ),
+            )
+
         return DispatchResult(notifications=notifications, commands=commands)
 
     def get_extra_notification(self, message: CommandMessage) -> list[NotifierMessage]:
         return []
 
-    def process_message(self, message: CommandMessage) -> None:
+    def update_peripheral_state(self, peripheral: Peripherals, state: dict) -> None:
         pass

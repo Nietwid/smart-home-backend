@@ -5,7 +5,11 @@ from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.dispatch_result import DispatchResult
-from dispatcher.handlers.base import ActionEventBaseHandler
+from dispatcher.handlers.base import (
+    ActionEventBaseHandler,
+    ActionIntentBaseHandler,
+    ActionResultBaseHandler,
+)
 from dispatcher.device.messages.enum import (
     Scope,
     MessageType,
@@ -26,9 +30,8 @@ from dispatcher.tasks import check_command_timeout
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.UPDATE_STATE,
 )
-class UpdateStateActionIntent(ActionEventBaseHandler):
-
-    def __call__(self, message: CommandMessage) -> DispatchResult:
+class UpdateStateActionIntent(ActionIntentBaseHandler):
+    def validate_payload(self, message: CommandMessage) -> None:
         serializer = PeripheralSerializer(
             data={
                 "name": message.peripheral.name,
@@ -38,29 +41,6 @@ class UpdateStateActionIntent(ActionEventBaseHandler):
             partial=True,
         )
         serializer.is_valid(raise_exception=True)
-        device_message = action_event_intent_builder.build_intent(message)
-        redis_cache.add_device_message(device_message)
-        pending = redis_cache.add_peripheral_pending(
-            message.peripheral.pk, message.command
-        )
-        notifications = [
-            router_notifier_factory.device_message(
-                router_mac=message.peripheral.device.get_router_mac(),
-                message=device_message,
-            ),
-            frontend_notifier_factory.update_peripheral_pending(
-                home_id=message.peripheral.device.home.id,
-                pending=pending,
-                device_id=message.peripheral.device.pk,
-                peripheral_id=message.peripheral.pk,
-            ),
-        ]
-        check_command_timeout.apply_async(
-            args=(device_message.message_id,), countdown=30, queue="default"
-        )
-        return DispatchResult(
-            notifications=notifications,
-        )
 
 
 @register_action_event(
@@ -69,33 +49,4 @@ class UpdateStateActionIntent(ActionEventBaseHandler):
     direction=MessageDirection.RESULT,
     handler_name=MessageCommand.UPDATE_STATE,
 )
-class UpdateStateActionResult(ActionEventBaseHandler):
-
-    def __call__(self, message: CommandMessage) -> DispatchResult:
-        payload: BasicResult = message.payload
-        if payload.status == ActionResult.REJECTED:
-            return DispatchResult()
-
-        device_message = redis_cache.get_and_delete_device_message(message.message_id)
-        if not device_message:
-            return DispatchResult()
-        message.peripheral.state.update(device_message.payload)
-        message.peripheral.save(update_fields=["state"])
-
-        pending = redis_cache.delete_peripheral_pending(
-            message.peripheral.pk, message.command
-        )
-        home_id = message.peripheral.device.home.id
-        notifications = [
-            frontend_notifier_factory.update_peripheral_state(
-                home_id=home_id, state=message.peripheral.state
-            ),
-            frontend_notifier_factory.update_peripheral_pending(
-                home_id=home_id,
-                pending=pending,
-                device_id=message.peripheral.device.pk,
-                peripheral_id=message.peripheral.pk,
-            ),
-        ]
-
-        return DispatchResult(notifications=notifications)
+class UpdateStateActionResult(ActionResultBaseHandler): ...

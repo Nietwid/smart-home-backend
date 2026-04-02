@@ -23,6 +23,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
     MessageCommand.ON_BLINK:(OnBlinkPayload, BasicResult),
     MessageCommand.ON_READ: (OnReadIntent, BasicResult),
+    MessageCommand.ON_UPDATE_STATE: (SerializerDataResponse, BasicResult),
 
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, BasicResult),
