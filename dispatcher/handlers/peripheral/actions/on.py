@@ -15,15 +15,15 @@ from dispatcher.handlers.registry import register_action_event
     scope=Scope.PERIPHERAL,
     message_type=MessageType.ACTION,
     direction=MessageDirection.INTENT,
-    handler_name=MessageCommand.TOGGLE,
+    handler_name=MessageCommand.ON,
 )
-class ToggleActionIntent(ActionIntentBaseHandler): ...
+class OnActionIntent(ActionIntentBaseHandler): ...
 
 
 @register_action_event(
     scope=Scope.PERIPHERAL,
     message_type=MessageType.ACTION,
     direction=MessageDirection.RESULT,
-    handler_name=MessageCommand.TOGGLE,
+    handler_name=MessageCommand.ON,
 )
-class ToggleActionResult(ActionResultBaseHandler): ...
+class OnActionResult(ActionResultBaseHandler): ...

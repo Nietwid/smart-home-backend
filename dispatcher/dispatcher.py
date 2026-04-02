@@ -1,11 +1,13 @@
 import logging
-
-from dispatcher.handlers.base import ActionEventBaseHandler
+from typing import TYPE_CHECKING
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.handlers.registry import DISPATCH_DICT
 from notifier.message import NotifierMessage
+
+if TYPE_CHECKING:
+    from dispatcher.handlers.base import ActionEventBaseHandler
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +17,7 @@ class ActionEventDispatcher:
         self,
         registry: dict[
             tuple[Scope, MessageType, MessageDirection, MessageCommand],
-            ActionEventBaseHandler,
+            "ActionEventBaseHandler",
         ],
     ):
         self.repository = registry

@@ -7,11 +7,11 @@ from dispatcher.device.messages.enum import (
     MessageCommand,
 )
 from dispatcher.device.messages.payload.rfid import OnReadIntent
-from dispatcher.dispatch_result import DispatchResult
-from dispatcher.handlers.base import ActionEventBaseHandler
+from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
+from notifier.message import NotifierMessage
 from notifier.router_notifier_factory import router_notifier_factory
-from peripherals.models import RfidCard
+from peripherals.models import RfidCard, Peripherals
 
 
 @register_action_event(
@@ -20,24 +20,21 @@ from peripherals.models import RfidCard
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.ON_READ,
 )
-class OnReadEvent(ActionEventBaseHandler):
+class OnReadEventHandler(EventIntentBaseHandler):
 
-    def __call__(self, message: CommandMessage) -> DispatchResult:
-        payload: OnReadIntent = message.payload
-        uid = payload.uid
-        peripheral = message.peripheral
+    def get_extra_notification(self, message: CommandMessage) -> list[NotifierMessage]:
         device = message.device
-        access = RfidCard.objects.filter(
+        access = self._is_card_allowed(message.peripheral, message.payload)
+        return [
+            router_notifier_factory.device_message(
+                router_mac=device.get_router_mac(),
+                message=rfid_message_builder.on_read_card_result(message, access),
+            ),
+        ]
+
+    def _is_card_allowed(self, peripheral: Peripherals, payload: OnReadIntent) -> bool:
+        uid = payload.uid
+        peripheral = peripheral
+        return RfidCard.objects.filter(
             allowed_peripherals=peripheral, uid=uid, is_active=True
         ).exists()
-        return DispatchResult(
-            notifications=[
-                router_notifier_factory.device_message(
-                    router_mac=device.get_router_mac(),
-                    message=rfid_message_builder.on_read_card_result(message, access),
-                ),
-            ],
-            commands=device.get_event_request(
-                peripheral=peripheral, event_type=MessageCommand.ON_READ
-            ),
-        )

@@ -8,7 +8,7 @@ from dispatcher.device.messages.enum import (
 )
 from dispatcher.device.messages.payload.rfid import OnReadIntent
 from dispatcher.dispatch_result import DispatchResult
-from dispatcher.handlers.base import ActionEventBaseHandler
+from dispatcher.handlers.base import ActionEventBaseHandler, EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
 from notifier.router_notifier_factory import router_notifier_factory
 from peripherals.models import RfidCard
@@ -20,10 +20,4 @@ from peripherals.models import RfidCard
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.ON_READ_SUCCESS,
 )
-class OnReadSuccessEvent(ActionEventBaseHandler):
-
-    def __call__(self, message: CommandMessage) -> DispatchResult:
-        device = message.device
-        return DispatchResult(
-            commands=device.get_event_request(message.peripheral, MessageCommand.ON_READ_SUCCESS),
-        )
+class OnReadSuccessEvent(EventIntentBaseHandler): ...

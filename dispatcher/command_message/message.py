@@ -23,5 +23,5 @@ class CommandMessage(BaseModel):
     router_mac: str
     message_id: str = Field(default_factory=get_message_id)
     payload: Any
-    device: Optional[Device] = Field(default=None)
+    device: Device = Field(default=None)
     peripheral: Optional[Peripherals] = Field(default=None)

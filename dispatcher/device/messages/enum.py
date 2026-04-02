@@ -91,6 +91,7 @@ class MessageCommand(StrEnum):
     ON_SYNC_TIME = "on_sync_time"
     ON_TIME = "on_time"
     ON_MOTION = "on_motion"
+    ON_ADD_TAG = "on_add_tag"
 
     # Peripheral action
     MOTION = "motion"

@@ -1,11 +1,7 @@
 from dispatcher.device.messages.enum import MessageCommand
-from device.models import Device
-from dispatcher.command_message.message import CommandMessage
-from dispatcher.handlers.base import ActionEventBaseHandler
-from dispatcher.dispatch_result import DispatchResult
+from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
-from peripherals.models import Peripherals
 
 
 @register_action_event(
@@ -14,9 +10,4 @@ from peripherals.models import Peripherals
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.ON_ON,
 )
-class OnOnEventHandler(ActionEventBaseHandler):
-
-    def __call__(self, message: CommandMessage) -> DispatchResult:
-        device: Device = message.device
-        peripheral: Peripherals = message.peripheral
-        return DispatchResult()
+class OnOnEventHandler(EventIntentBaseHandler): ...

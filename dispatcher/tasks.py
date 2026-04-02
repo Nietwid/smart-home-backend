@@ -54,17 +54,6 @@ def handle_device_message_task(
 
 
 @shared_task(
-    name="check_peripheral_pending",
-    bind=True,
-    ignore_result=True,
-    default_retry_delay=15,
-    max_retries=3,
-)
-def check_peripheral_pending(self, peripheral_id: int, command: str):
-    pass
-
-
-@shared_task(
     name="check_pending_command_timeout",
     bind=True,
     ignore_result=True,

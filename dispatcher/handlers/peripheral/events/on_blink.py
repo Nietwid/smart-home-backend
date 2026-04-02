@@ -1,8 +1,8 @@
+from device.models import Device
 from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.payload.lamp import OnBlinkPayload, OnBlinkStatus
-from dispatcher.dispatch_result import DispatchResult
-from dispatcher.handlers.base import ActionEventBaseHandler
+from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.device.messages.enum import (
     Scope,
     MessageType,
@@ -10,8 +10,9 @@ from dispatcher.device.messages.enum import (
 )
 from dispatcher.handlers.registry import register_action_event
 from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.message import NotifierMessage
+from peripherals.models import Peripherals
 from redis_cache import redis_cache
-from dispatcher.tasks import check_peripheral_pending
 
 
 @register_action_event(
@@ -20,37 +21,29 @@ from dispatcher.tasks import check_peripheral_pending
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.ON_BLINK,
 )
-class UpdateStateActionIntent(ActionEventBaseHandler):
-
-    def __call__(self, message: CommandMessage) -> DispatchResult:
+class OnBlinkEventIntentHandler(EventIntentBaseHandler):
+    def process_message(self, message: CommandMessage) -> None:
+        peripheral: Peripherals = message.peripheral
         payload: OnBlinkPayload = message.payload
         if payload.status == OnBlinkStatus.START:
-            pending = redis_cache.add_peripheral_pending(
-                message.peripheral.pk, message.command, timeout=90
-            )
-            check_peripheral_pending.apply_async(
-                args=(
-                    message.peripheral.pk,
-                    message.command,
-                ),
-                countdown=60,
-                queue="default",
+            redis_cache.add_peripheral_pending(
+                peripheral.pk, message.command, timeout=90
             )
         elif payload.status == OnBlinkStatus.STOP:
-            pending = redis_cache.delete_peripheral_pending(
-                message.peripheral.pk, message.command
-            )
+            redis_cache.delete_peripheral_pending(peripheral.pk, message.command)
         else:
             raise ValueError(f"Invalid status: {payload.status}")
 
-        notifications = [
+    def get_extra_notification(self, message: CommandMessage) -> list[NotifierMessage]:
+        device: Device = message.device
+        peripheral: Peripherals = message.peripheral
+        home_id = device.home.pk
+        pending = redis_cache.get_peripherals_pending(peripheral.pk)
+        return [
             frontend_notifier_factory.update_peripheral_pending(
-                home_id=message.peripheral.device.home.id,
+                home_id=home_id,
                 pending=pending,
-                device_id=message.peripheral.device.pk,
-                peripheral_id=message.peripheral.pk,
+                device_id=device.pk,
+                peripheral_id=peripheral.pk,
             ),
         ]
-        return DispatchResult(
-            notifications=notifications,
-        )
