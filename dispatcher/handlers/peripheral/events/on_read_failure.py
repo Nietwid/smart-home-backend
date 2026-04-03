@@ -6,6 +6,7 @@ from dispatcher.device.messages.enum import (
 )
 from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
+from notifier.enum import MicroserviceQueueName
 
 
 @register_action_event(
@@ -14,4 +15,5 @@ from dispatcher.handlers.registry import register_action_event
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.ON_READ_FAILURE,
 )
-class OnReadFailureEvent(EventIntentBaseHandler): ...
+class OnReadFailureEvent(EventIntentBaseHandler):
+    history_queue = MicroserviceQueueName.EVENTS

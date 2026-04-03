@@ -9,6 +9,7 @@ from dispatcher.device.messages.enum import (
     MessageDirection,
 )
 from dispatcher.handlers.registry import register_action_event
+from notifier.enum import MicroserviceQueueName
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.message import NotifierMessage
 from peripherals.models import Peripherals
@@ -22,6 +23,8 @@ from redis_cache import redis_cache
     handler_name=MessageCommand.ON_BLINK,
 )
 class OnBlinkEventIntentHandler(EventIntentBaseHandler):
+    history_queue = MicroserviceQueueName.EVENTS
+
     def process_message(self, message: CommandMessage) -> None:
         peripheral: Peripherals = message.peripheral
         payload: OnBlinkPayload = message.payload

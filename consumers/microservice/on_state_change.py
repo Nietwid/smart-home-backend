@@ -1,4 +1,4 @@
-from consumers.microservice_message.microservice_message import MicroserviceMessage
+from consumers.microservice.message import MicroserviceMessage
 from dispatcher.device.messages.device_state import DeviceState
 from consumers.router_message.message_event import MessageEvent
 

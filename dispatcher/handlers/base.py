@@ -1,5 +1,8 @@
 import logging
 from abc import ABC, abstractmethod
+
+from notifier.enum import MicroserviceQueueName
+from notifier.microservice_notifier_factory import microservice_message_factory
 from device.models import Device
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.builder.action_event_intent import (
@@ -126,6 +129,7 @@ class ActionResultBaseHandler(ActionEventBaseHandler):
 class EventIntentBaseHandler(ActionEventBaseHandler):
     send_command: bool = True
     update_frontend_peripheral_state: bool = False
+    history_queue: MicroserviceQueueName = None
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
         notifications = []
@@ -143,7 +147,15 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
         notifications.extend(self.get_extra_notification(message))
 
         self.update_peripheral_state(peripheral, message.payload)
-
+        if self.history_queue is not None:
+            notifications.append(
+                microservice_message_factory.log_event(
+                    peripheral=peripheral,
+                    event_type=message.command,
+                    payload=message.payload,
+                    queue_name=self.history_queue,
+                )
+            )
         if self.update_frontend_peripheral_state:
             notifications.append(
                 frontend_notifier_factory.update_peripheral_state(

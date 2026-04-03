@@ -10,6 +10,7 @@ from dispatcher.device.messages.payload.rfid import OnReadIntent
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.base import ActionEventBaseHandler, EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
+from notifier.enum import MicroserviceQueueName
 from notifier.router_notifier_factory import router_notifier_factory
 from peripherals.models import RfidCard
 
@@ -20,4 +21,5 @@ from peripherals.models import RfidCard
     direction=MessageDirection.INTENT,
     handler_name=MessageCommand.ON_READ_SUCCESS,
 )
-class OnReadSuccessEvent(EventIntentBaseHandler): ...
+class OnReadSuccessEvent(EventIntentBaseHandler):
+    history_queue = MicroserviceQueueName.EVENTS
