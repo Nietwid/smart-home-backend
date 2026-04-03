@@ -46,19 +46,6 @@ class MessageEvent(StrEnum):
     TURN_ON = "turn_on"
     TURN_OFF = "turn_off"
 
-    # Measurement events
-    ON_MEASURE_TEMPERATURE = "on_measure_temperature"
-    ON_MEASURE_HUMIDITY = "on_measure_humidity"
-    ON_MEASUREMENT_TEMP_HUM = "on_measurement_temp_hum"
-
-    # Temperature events
-    ON_TEMPERATURE_ABOVE = "on_temperature_above"
-    ON_TEMPERATURE_BELOW = "on_temperature_below"
-
-    # Humidity events
-    ON_HUMIDITY_ABOVE = "on_humidity_above"
-    ON_HUMIDITY_BELOW = "on_humidity_below"
-
 class MessageAction(StrEnum):
     # RFID actions
     SET_VALUE = "set_value"
@@ -92,6 +79,13 @@ class MessageCommand(StrEnum):
     ON_TIME = "on_time"
     ON_MOTION = "on_motion"
     ON_ADD_TAG = "on_add_tag"
+    ON_MEASURE_TEMPERATURE = "on_measure_temperature"
+    ON_MEASURE_HUMIDITY = "on_measure_humidity"
+    ON_TEMPERATURE_ABOVE = "on_temperature_above"
+    ON_TEMPERATURE_BELOW = "on_temperature_below"
+    ON_HUMIDITY_ABOVE = "on_humidity_above"
+    ON_HUMIDITY_BELOW = "on_humidity_below"
+
 
     # Peripheral action
     MOTION = "motion"
