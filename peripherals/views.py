@@ -1,6 +1,6 @@
 from pydantic import ValidationError
 from rest_framework import permissions
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -48,3 +48,18 @@ class GetAllPeripheralRfidCards(ListAPIView):
         if peripheral_id is None:
             return []
         return RfidCard.objects.filter(allowed_peripherals__id=peripheral_id)
+
+
+class CardDestroyAPIView(DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = RfidCard.objects.all()
+
+    def perform_destroy(self, instance: RfidCard):
+        peripheral_id = self.kwargs.get("peripheral_id")
+
+        if peripheral_id:
+            instance.allowed_peripherals.remove(peripheral_id)
+            if not instance.allowed_peripherals.exists():
+                instance.delete()
+        else:
+            instance.delete()
