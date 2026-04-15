@@ -25,11 +25,13 @@ class SequentialLightHardware(BaseHardware):
         MessageCommand.OFF: LightBaseExtraSettings,
         MessageCommand.TOGGLE: LightBaseExtraSettings,
         MessageCommand.BLINK: BlinkExtraSettings,
+        MessageCommand.UPDATE_STATE: None,
     }
     events = (
         MessageCommand.ON_ON,
         MessageCommand.ON_OFF,
         MessageCommand.ON_BLINK,
+        MessageCommand.ON_UPDATE_STATE,
     )
 
     @classmethod

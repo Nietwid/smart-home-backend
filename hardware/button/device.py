@@ -38,8 +38,8 @@ class ButtonBistableHardware(BaseHardware):
 
 @hardware_registry(name="button_monostable")
 class ButtonMonostableHardware(BaseHardware):
-    config_model = ButtonBistableConfig
-    state_model = ButtonBistableState
+    config_model = ButtonMonostableConfig
+    state_model = ButtonMonostableState
     hardware_type = HardwareTypes.INPUT
     chip_support = [name.value for name in ChipType]
     actions = {MessageCommand.CLICK: None, MessageCommand.HOLD: None}
@@ -49,12 +49,12 @@ class ButtonMonostableHardware(BaseHardware):
     )
 
     @classmethod
-    def validate_config(cls, config: ButtonBistableConfig, device: Device) -> None:
+    def validate_config(cls, config: ButtonMonostableConfig, device: Device) -> None:
         if is_used(device.peripherals.all(), "pin", [config.pin]):
             raise HardwareValidationError(
                 {"pin": {"__errors": ["This pin is already used"]}}
             )
 
     @classmethod
-    def validate_state(cls, state: ButtonBistableState, device: Device) -> None:
+    def validate_state(cls, state: ButtonMonostableState, device: Device) -> None:
         pass
