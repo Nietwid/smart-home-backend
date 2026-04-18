@@ -5,7 +5,7 @@ from dispatcher.device.messages.payload.camera import *
 from dispatcher.device.messages.payload.cpu import StartSyncPayload
 from dispatcher.device.messages.payload.lamp import *
 from dispatcher.device.messages.payload.measurement import *
-from dispatcher.device.messages.payload.rfid import *
+from dispatcher.device.messages.payload.sensor import *
 
 PAYLOAD_MAPPING: dict = {
     # CPU events
@@ -18,6 +18,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.SYNC_START: (StartSyncPayload, BasicResult),
     MessageCommand.SYNC_END: (StartSyncPayload, BasicResult),
     MessageCommand.RESTART: (SerializerDataResponse, BasicResult),
+    MessageCommand.UPDATE_FIRMWARE: (SerializerDataResponse, BasicResult),
 
     # Peripheral events
     MessageCommand.ON_SYNC_TIME:(EmptyRequest, OnSyncTimeResult),
@@ -32,6 +33,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.ON_HOLD: (SerializerDataResponse, BasicResult),
     MessageCommand.ON_READ_SUCCESS: (SerializerDataResponse, BasicResult),
     MessageCommand.ON_READ_FAILURE: (SerializerDataResponse, BasicResult),
+    MessageCommand.ON_MOTION: (OnMotionIntent, BasicResult),
 
     # Peripheral action
     MessageCommand.TOGGLE: (SerializerDataResponse, BasicResult),
@@ -50,8 +52,7 @@ PAYLOAD_MAPPING: dict = {
     MessageEvent.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
     MessageEvent.SET_SETTINGS: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_SETTINGS: (EmptyRequest, SerializerDataResponse),
-    MessageEvent.UPDATE_FIRMWARE: (SerializerDataResponse, BasicResult),
-    MessageEvent.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
+    # MessageEvent.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
     # MessageEvent.ON_TEMPERATURE_ABOVE: (EmptyRequest, EmptyResponse),
     # MessageEvent.ON_TEMPERATURE_BELOW: (EmptyRequest, EmptyResponse),
     # MessageEvent.ON_HUMIDITY_BELOW: (EmptyRequest, EmptyResponse),

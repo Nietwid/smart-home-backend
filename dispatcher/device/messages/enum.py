@@ -40,8 +40,6 @@ class MessageEvent(StrEnum):
     SET_SETTINGS = "set_settings"
     GET_SETTINGS = "get_settings"
     STATE_CHANGE = "state_change"
-    UPDATE_FIRMWARE = "update_firmware"
-    UPDATE_FIRMWARE_ERROR = "update_firmware_error"
     UPDATE_CONFIG = "update_config"
     TURN_ON = "turn_on"
     TURN_OFF = "turn_off"
@@ -63,6 +61,7 @@ class MessageCommand(StrEnum):
     SYNC_START = "sync_start"
     SYNC_END = "sync_end"
     RESTART = "restart"
+    UPDATE_FIRMWARE = "update_firmware"
 
     # Peripheral events
     ON_UPDATE_STATE = "on_update_state"

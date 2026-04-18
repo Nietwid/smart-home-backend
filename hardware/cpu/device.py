@@ -9,7 +9,9 @@ class CpuHardware:
         MessageCommand.RESTART,
         MessageCommand.UPDATE_PERIPHERAL,
         MessageCommand.UPDATE_RULE,
+        MessageCommand.UPDATE_FIRMWARE,
     )
+
     events = (
         MessageCommand.DEVICE_CONNECT,
         MessageCommand.DEVICE_DISCONNECT,

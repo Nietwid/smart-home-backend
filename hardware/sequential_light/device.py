@@ -30,7 +30,6 @@ class SequentialLightHardware(BaseHardware):
     events = (
         MessageCommand.ON_ON,
         MessageCommand.ON_OFF,
-        MessageCommand.ON_BLINK,
         MessageCommand.ON_UPDATE_STATE,
     )
 

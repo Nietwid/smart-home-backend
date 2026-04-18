@@ -6,7 +6,7 @@ from dispatcher.device.messages.enum import (
     MessageDirection,
     MessageCommand,
 )
-from dispatcher.device.messages.payload.rfid import OnReadIntent
+from dispatcher.device.messages.payload.sensor import OnReadIntent
 from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
 from notifier.enum import MicroserviceQueueName

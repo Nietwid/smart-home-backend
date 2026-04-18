@@ -18,3 +18,7 @@ class CacheKey:
     @staticmethod
     def sync_rule(device_mac: str) -> str:
         return f"device:sync-rule:{device_mac}"
+
+    @staticmethod
+    def firmware_update(token: str) -> str:
+        return f"firmware-update:{token}"

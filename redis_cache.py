@@ -24,6 +24,9 @@ class RedisCache:
         cache_key = CacheKey.device_pending(mac)
         return self._add_pending(pending, cache_key, command)
 
+    def add_update_firmware(self, token: str, firmware_id: int):
+        cache.set(CacheKey.firmware_update(token), firmware_id, timeout=60)
+
     def add_peripheral_pending(
         self, pk: int, command: MessageCommand, timeout=DEFAULT_TIMEOUT
     ) -> list[str]:
@@ -35,6 +38,12 @@ class RedisCache:
         cache.set(
             CacheKey.update_peripheral(device_mac), ids, timeout=self.DEFAULT_TIMEOUT
         )
+
+    def get_and_delete_update_firmware(self, token: str) -> int | None:
+        firmware_id = cache.get(CacheKey.firmware_update(token))
+        if firmware_id:
+            cache.delete(CacheKey.firmware_update(token))
+        return firmware_id
 
     def get_device_update_peripheral_id(self, device_mac: str) -> int | None:
         ids = cache.get(CacheKey.update_peripheral(device_mac))

@@ -8,3 +8,4 @@ venv
 .coverage
 ai_assistance/models
 htmlcov
+smart_home/media/firmware_device

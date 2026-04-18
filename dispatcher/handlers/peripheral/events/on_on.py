@@ -17,5 +17,5 @@ class OnOnEventHandler(EventIntentBaseHandler):
     history_queue = MicroserviceQueueName.EVENTS
 
     def update_peripheral_state(self, peripheral: Peripherals, state: dict) -> None:
-        peripheral.state.update({"is_on": False})
+        peripheral.state.update({"is_on": True})
         peripheral.save(update_fields=["state"])

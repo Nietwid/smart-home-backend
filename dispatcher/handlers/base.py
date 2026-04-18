@@ -145,6 +145,7 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
             )
 
         notifications.extend(self.get_extra_notification(message))
+        commands.extend(self.get_extra_commands(message))
 
         self.update_peripheral_state(peripheral, message.payload)
         if self.history_queue is not None:
@@ -166,6 +167,9 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
         return DispatchResult(notifications=notifications, commands=commands)
 
     def get_extra_notification(self, message: CommandMessage) -> list[NotifierMessage]:
+        return []
+
+    def get_extra_commands(self, message: CommandMessage) -> list[CommandMessage]:
         return []
 
     def update_peripheral_state(self, peripheral: Peripherals, state: dict) -> None:

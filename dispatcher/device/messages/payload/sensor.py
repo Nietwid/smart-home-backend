@@ -9,11 +9,12 @@ class AddTagResult(BaseModel):
 
 class AddTagIntent(BaseModel):
     name:str
-    intent_id:str
 
 class OnReadIntent(BaseModel):
     uid: str
 
+class OnMotionIntent(BaseModel):
+    is_on: bool
 
 class OnReadSuccessPayload(BaseModel):
     pass

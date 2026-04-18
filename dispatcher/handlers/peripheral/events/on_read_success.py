@@ -6,7 +6,7 @@ from dispatcher.device.messages.enum import (
     MessageDirection,
     MessageCommand,
 )
-from dispatcher.device.messages.payload.rfid import OnReadIntent
+from dispatcher.device.messages.payload.sensor import OnReadIntent
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.base import ActionEventBaseHandler, EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event

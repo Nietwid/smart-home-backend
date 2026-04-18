@@ -1,9 +1,6 @@
 from dispatcher.device.messages.builder.rfid import rfid_message_builder
 from peripherals.models import RfidCard
 from dispatcher.command_message.message import CommandMessage
-from dispatcher.device.messages.builder.action_event_intent import (
-    action_event_intent_builder,
-)
 from dispatcher.device.messages.enum import (
     Scope,
     MessageType,
@@ -18,7 +15,7 @@ from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.frontend_notifier_payload import AddTagResultPayload
 from notifier.router_notifier_factory import router_notifier_factory
 from redis_cache import redis_cache
-from dispatcher.device.messages.payload.rfid import AddTagResult, AddTagIntent
+from dispatcher.device.messages.payload.sensor import AddTagResult, AddTagIntent
 
 
 @register_action_event(
@@ -29,7 +26,7 @@ from dispatcher.device.messages.payload.rfid import AddTagResult, AddTagIntent
 )
 class AddTagActionIntent(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
-        device_message = rfid_message_builder.add_tag_intent(message)
+        device_message = rfid_message_builder.add_tag_intent(message,card_name=message.payload["name"])
         redis_cache.add_device_message(device_message)
         pending = redis_cache.add_peripheral_pending(
             message.peripheral.pk, message.command

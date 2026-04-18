@@ -48,8 +48,6 @@ INSTALLED_APPS = [
     "user",
     "device",
     "room",
-    "temperature",
-    "sunblind",
     "event",
     "firmware",
     "consumers",
