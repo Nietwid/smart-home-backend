@@ -26,6 +26,11 @@ CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS").lower() == "true"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# LOGS_FOLDER_PATH = os.path.join(BASE_DIR, "logs")
+#
+# if not os.path.exists(LOGS_FOLDER_PATH):
+#     os.makedirs(LOGS_FOLDER_PATH)
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
@@ -52,19 +57,14 @@ INSTALLED_APPS = [
     "channels",
     "user",
     "device",
-    "aquarium",
-    "lamp",
     "room",
-    "rfid",
-    "button",
-    "stairs",
-    "temperature",
-    "sunblind",
-    "light",
     "event",
     "firmware",
-    "ai_assistance",
     "consumers",
+    "peripherals",
+    "hardware",
+    "dispatcher",
+    "rules",
 ]
 
 MIDDLEWARE = [
@@ -116,20 +116,13 @@ DATABASES = {
 
 
 # Celery
-CELERY_BROKER_URL = os.getenv("REDIS_CELERY")
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.getenv("REDIS_CELERY")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Europe/Warsaw"
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [os.getenv("REDIS_CHANNEL_LAYERS")]},
-    },
-}
-
+CELERY_TASK_DEFAULT_QUEUE = "default"
 CELERY_BEAT_SCHEDULE = {
     "checker": {"task": "device.tasks.check_devices", "schedule": crontab(minute="*")},
     "old_firmware_delete": {
@@ -141,8 +134,26 @@ CELERY_BEAT_SCHEDULE = {
 CELERY_TASK_ROUTES = {"ai_assistance.tasks.*": {"queue": "ai"}}
 
 
-from datetime import timedelta
+# Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("REDIS_CELERY"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
 
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [os.getenv("REDIS_CHANNEL_LAYERS")]},
+    },
+}
+
+from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(seconds=int(os.getenv("ACCESS_TOKEN_LIFETIME"))),
@@ -204,4 +215,45 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {lineno} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        # "file": {
+        #     "class": "logging.handlers.RotatingFileHandler",
+        #     "filename": os.path.join(BASE_DIR, "logs/app.log"),
+        #     "maxBytes": 5 * 1024 * 1024,  # 5 MB
+        #     "backupCount": 5,
+        #     "formatter": "verbose",
+        #     "level": "INFO",
+        # },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "base": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
 }

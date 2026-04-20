@@ -1,6 +1,8 @@
 from consumers.events.base_event import BaseEventRequest
-from consumers.frontend_message.frontend_message_type import FrontendMessageType
-from consumers.frontend_message.messenger import FrontendMessenger
+from consumers.frontend.messages.types import (
+    FrontendMessageType,
+)
+from consumers.frontend.messages.messenger import FrontendMessenger
 from consumers.router_message.message_event import MessageEvent
 from device.serializers.device import DeviceSerializer
 

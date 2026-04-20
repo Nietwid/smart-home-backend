@@ -45,22 +45,17 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "camera",
     "channels",
-    "consumers",
     "user",
     "device",
-    "aquarium",
-    "lamp",
     "room",
-    "rfid",
-    "button",
-    "stairs",
-    "temperature",
-    "sunblind",
-    "light",
     "event",
     "firmware",
-    "ai_assistance",
+    "consumers",
+    "peripherals",
+    "hardware",
+    "rules",
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -73,7 +68,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 ROOT_URLCONF = "smart_home.urls"
+
 
 TEMPLATES = [
     {
@@ -90,6 +87,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = "smart_home.wsgi.application"
 
@@ -137,6 +135,18 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
+}
+
+# Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "only-tests",
+        "TIMEOUT": None,
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000,
+        },
+    }
 }
 
 SIMPLE_JWT = {

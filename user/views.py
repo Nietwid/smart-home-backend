@@ -1,22 +1,17 @@
 from uuid import uuid4, UUID
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import AbstractUser, User
-from django.http import HttpResponse
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework_simplejwt.serializers import Token
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from camera.models import Camera
 from room.models import Room
 from device.models import Device
 from django.conf import settings
-from device.serializers.device import DeviceSerializer
-from room.serializer import RoomSerializer
 from .models import Favourite, Home
 from .serializers import CustomTokenObtainPairSerializer
 
