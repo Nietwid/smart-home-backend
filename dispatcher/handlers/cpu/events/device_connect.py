@@ -36,7 +36,15 @@ class DeviceConnectEvent(ActionEventBaseHandler):
         device.last_seen = timezone.now()
         device.is_online = True
         device.firmware_version = payload.firmware_version
-        device.save(update_fields=["last_seen", "is_online", "firmware_version"])
+        device.wifi_strength = payload.wifi_strength
+        device.save(
+            update_fields=[
+                "last_seen",
+                "is_online",
+                "firmware_version",
+                "wifi_strength",
+            ]
+        )
 
         notifier_message = [
             router_notifier_factory.device_message(
