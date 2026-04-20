@@ -22,6 +22,9 @@ class RuleTrigger(models.Model):
     event = models.CharField(max_length=50)
     extra_settings = models.JSONField(default=dict)
 
+    def __str__(self):
+        return f"{self.peripheral.device.room} - {self.peripheral} - {self.event}"
+
 
 class RuleCondition(models.Model):
 
@@ -35,6 +38,9 @@ class RuleCondition(models.Model):
     operator = models.CharField(max_length=20)
     value = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f"{self.peripheral} - {self.event} - {self.operator} - {self.value}"
+
 
 class RuleAction(models.Model):
 
@@ -45,3 +51,6 @@ class RuleAction(models.Model):
     action = models.CharField(max_length=50)
     extra_settings = models.JSONField(default=dict)
     order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.peripheral.device.room} - {self.peripheral} - {self.action} - {self.order}"

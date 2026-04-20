@@ -16,3 +16,9 @@ class RuleRepository:
                 "id", flat=True
             )
         )
+
+    @classmethod
+    def get_device_rules(self, device_id: int) -> QuerySet[Rule]:
+        return Rule.objects.filter(device__pk=device_id).prefetch_related(
+            "actions", "conditions", "triggers"
+        )

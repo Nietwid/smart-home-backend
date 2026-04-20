@@ -5,6 +5,21 @@ from peripherals.models import Peripherals
 from rules.models import RuleTrigger
 
 
+class RuleTriggerFrontendSerializer(serializers.ModelSerializer):
+    peripheral_name = serializers.SerializerMethodField()
+    device_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RuleTrigger
+        fields = ["id", "event", "extra_settings", "peripheral_name", "device_name"]
+
+    def get_peripheral_name(self, obj: RuleTrigger):
+        return obj.peripheral.name
+
+    def get_device_name(self, obj: RuleTrigger):
+        return obj.peripheral.device.name
+
+
 class RuleTriggerSerializer(serializers.ModelSerializer):
     class Meta:
         model = RuleTrigger

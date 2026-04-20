@@ -6,6 +6,28 @@ from peripherals.models import Peripherals
 from rules.models import RuleAction
 
 
+class RuleActionFrontendSerializer(serializers.ModelSerializer):
+    peripheral_name = serializers.SerializerMethodField()
+    device_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RuleAction
+        fields = [
+            "id",
+            "action",
+            "extra_settings",
+            "order",
+            "peripheral_name",
+            "device_name",
+        ]
+
+    def get_peripheral_name(self, obj: RuleAction):
+        return obj.peripheral.name
+
+    def get_device_name(self, obj: RuleAction):
+        return obj.peripheral.device.name
+
+
 class RuleActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = RuleAction

@@ -4,10 +4,31 @@ from device.models import Device
 from dispatcher.device.messages.enum import MessageCommand
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from rules.models import Rule, RuleAction, RuleCondition, RuleTrigger
-from rules.serializers.action import RuleActionSerializer
+from rules.serializers.action import RuleActionSerializer, RuleActionFrontendSerializer
 from rules.serializers.condition import RuleConditionSerializer
-from rules.serializers.trigger import RuleTriggerSerializer
+from rules.serializers.trigger import (
+    RuleTriggerSerializer,
+    RuleTriggerFrontendSerializer,
+)
 from notifier.notifier import notifier
+
+
+class RuleSerializerFrontend(serializers.ModelSerializer):
+    triggers = RuleTriggerFrontendSerializer(many=True)
+    conditions = RuleConditionSerializer(many=True, required=False)
+    actions = RuleActionFrontendSerializer(many=True)
+
+    class Meta:
+        model = Rule
+        fields = (
+            "id",
+            "name",
+            "enabled",
+            "is_local",
+            "triggers",
+            "conditions",
+            "actions",
+        )
 
 
 class RuleSerializerDevice(serializers.ModelSerializer):
