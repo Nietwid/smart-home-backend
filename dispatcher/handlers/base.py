@@ -160,7 +160,7 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
         if self.update_frontend_peripheral_state:
             notifications.append(
                 frontend_notifier_factory.update_peripheral_state(
-                    home_id=device.home.pk, state=peripheral.state
+                    peripheral=peripheral
                 ),
             )
 

@@ -1,7 +1,9 @@
 from consumers.frontend.messages.message import FrontendMessage
 from consumers.frontend.messages.types import FrontendMessageType
+from device.models import Device
 from notifier.frontend_notifier_payload import AddTagResultPayload
 from notifier.message import FrontendNotifierData
+from peripherals.models import Peripherals
 
 
 class FrontendNotifierFactory:
@@ -45,12 +47,16 @@ class FrontendNotifierFactory:
                 )
         )
 
-    def update_peripheral_state(self, home_id:int, state:dict)->FrontendNotifierData:
+    def update_peripheral_state(self, peripheral:Peripherals)->FrontendNotifierData:
         return FrontendNotifierData(
-                home_id=home_id,
+                home_id=peripheral.device.home.id,
                 data=FrontendMessage(
                     action=FrontendMessageType.UPDATE_PERIPHERAL_STATE,
-                    data=state
+                    data={
+                        "peripheral_id":peripheral.pk,
+                        "device_id":peripheral.device.pk,
+                        "state":peripheral.state
+                    }
                 )
         )
 
