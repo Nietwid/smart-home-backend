@@ -6,9 +6,22 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from consumers.tasks import deactivate_all_device
 from device.models import Router
 from device.serializers.router import RouterSerializer
+from dispatcher.command_message.message import CommandMessage
+from dispatcher.device.messages.builder.action_event_intent import (
+    action_event_intent_builder,
+)
+from dispatcher.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.enum import (
+    MessageDirection,
+    MessageCommand,
+    MessageType,
+    Scope,
+)
 from dispatcher.tasks import handle_device_message_task
+from fixtures import command_message
 from notifier.frontend_notifier_factory import frontend_notifier_factory
 from notifier.notifier import notifier
+from notifier.router_notifier_factory import router_notifier_factory
 
 logger = logging.getLogger("base")
 
@@ -32,6 +45,7 @@ class RouterConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         await self.notify_frontend()
+        await self.send_get_connected_message()
 
     async def disconnect(self, code):
         if not self.router:
@@ -65,3 +79,22 @@ class RouterConsumer(AsyncWebsocketConsumer):
                 )
             ]
         )
+
+    @database_sync_to_async
+    def send_get_connected_message(self):
+        device_message = DeviceMessage(
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.GET_CONNECTED_DEVICES,
+            type=MessageType.ACTION,
+            scope=Scope.CPU,
+            device_id="00:00:00:00:00:00",
+            peripheral_id=0,
+            payload={},
+        )
+        notifications = [
+            router_notifier_factory.device_message(
+                router_mac=self.router.mac,
+                message=device_message,
+            ),
+        ]
+        notifier.notify(notifications)

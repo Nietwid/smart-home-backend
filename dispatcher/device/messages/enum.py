@@ -36,7 +36,6 @@ class CameraCommand(StrEnum):
 class MessageEvent(StrEnum):
     # Basic events
 
-    GET_CONNECTED_DEVICES = "get_connected_devices"
     SET_SETTINGS = "set_settings"
     GET_SETTINGS = "get_settings"
     STATE_CHANGE = "state_change"
@@ -56,6 +55,7 @@ class MessageCommand(StrEnum):
 
 
     # CPU action
+    GET_CONNECTED_DEVICES = "get_connected_devices"
     UPDATE_PERIPHERAL = "update_peripheral"
     UPDATE_RULE = "update_rule"
     SYNC_START = "sync_start"
