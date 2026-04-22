@@ -5,8 +5,11 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 
+from dispatcher.device.messages.enum import MessageCommand
+from notifier.frontend_notifier_factory import frontend_notifier_factory
 from rules.models import Rule
 from rules.serializers.rule import RuleSerializer
+from notifier.notifier import notifier
 
 
 class CreateRule(CreateAPIView):
@@ -31,3 +34,19 @@ class RetrieveUpdateDestroyRule(RetrieveUpdateDestroyAPIView):
         instance.enabled = enabled
         instance.save(update_fields=["enabled"])
         return Response({}, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        rule = self.get_object()
+        is_local = rule.is_local
+        device = rule.device
+        response = super().delete(request, *args, **kwargs)
+        if response.status_code == 204 and is_local:
+            if not MessageCommand.UPDATE_RULE in device.required_action:
+                device.required_action.append(MessageCommand.UPDATE_RULE)
+                device.save(update_fields=["required_action"])
+                message = frontend_notifier_factory.update_device_required_action(
+                    device.home.pk, device.required_action, device.pk
+                )
+                notifier.notify([message])
+
+        return response
