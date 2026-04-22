@@ -1,74 +1,66 @@
 import logging
 from datetime import datetime
-from django.db.models import QuerySet
-from django.utils import timezone
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async
 
-from device.models import Router, Device
-from device.serializers.device import DeviceSerializer
+from consumers.tasks import deactivate_all_device
+from device.models import Router
 from device.serializers.router import RouterSerializer
-from consumers.frontend.messages.types import (
-    FrontendMessageType,
+from dispatcher.command_message.message import CommandMessage
+from dispatcher.device.messages.builder.action_event_intent import (
+    action_event_intent_builder,
 )
-from consumers.frontend.messages.messenger import FrontendMessenger
+from dispatcher.device.messages.device_message import DeviceMessage
+from dispatcher.device.messages.enum import (
+    MessageDirection,
+    MessageCommand,
+    MessageType,
+    Scope,
+)
 from dispatcher.tasks import handle_device_message_task
+from fixtures import command_message
+from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.notifier import notifier
+from notifier.router_notifier_factory import router_notifier_factory
 
 logger = logging.getLogger("base")
 
 
 class RouterConsumer(AsyncWebsocketConsumer):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.queue = None
-        self.mac = None
-        self.router: Router = None
-        self.home = None
-        self.counter = 0
+    router: Router
 
     async def connect(self):
-        self.mac = self.scope["url_route"]["kwargs"]["mac_address"]
-        print(f"Router with MAC {self.mac} is trying to connect.")
-        self.router: Router = await self.get_router(self.mac)
+        mac = self.scope["url_route"]["kwargs"]["mac_address"]
+        print(f"Router with MAC {mac} is trying to connect.")
+        self.router = await Router.objects.select_related("home").aget(mac=mac)
         if not self.router:
             await self.close(code=4000)
             return
 
         self.router.last_seen = datetime.now()
         self.router.is_online = True
-        await sync_to_async(self.router.save)(update_fields=["last_seen", "is_online"])
-        self.queue = {}
-        await self.channel_layer.group_add(f"router_{self.mac}", self.channel_name)
+        await self.router.asave(update_fields=["last_seen", "is_online"])
+        await self.channel_layer.group_add(
+            f"router_{self.router.mac}", self.channel_name
+        )
         await self.accept()
-        await self.set_home()
-        # await FrontendMessenger().async_update_frontend(
-        #     self.home.id,
-        #     await self.get_router_serialized_data(),
-        #     action=FrontendMessageType.UPDATE_ROUTER,
-        # )
-        # connected_message = get_connected_devices_request()
-        # await self.send(text_data=connected_message.model_dump_json())
+        await self.notify_frontend()
+        await self.send_get_connected_message()
 
     async def disconnect(self, code):
         if not self.router:
             return
         self.router.last_seen = datetime.now()
         self.router.is_online = False
-        await sync_to_async(self.router.save)(update_fields=["last_seen", "is_online"])
-        # await FrontendMessenger().async_update_frontend(
-        #     self.home.id,
-        #     await self.get_router_serialized_data(),
-        #     action=FrontendMessageType.UPDATE_ROUTER,
-        # )
-        # router_devices = await self.get_router_devices()
-        # await self.deactivate_all_device(router_devices)
+        await self.router.asave(update_fields=["last_seen", "is_online"])
+        deactivate_all_device.delay(self.router.pk)
 
     async def receive(self, text_data=None, bytes_data=None):
         try:
             logger.debug(f"Received message: {text_data}")
-            handle_device_message_task.delay(text_data, self.home.pk, self.router.mac)
+            handle_device_message_task.delay(
+                text_data, self.router.home.pk, self.router.mac
+            )
         except Exception as e:
             logger.error(f"Could not push task to RabbitMQ: {e}")
 
@@ -78,57 +70,31 @@ class RouterConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=event)
 
     @database_sync_to_async
-    def get_router(self, mac: str) -> Router | None:
-        """
-        Retrieves a Router object by its MAC address.
-        Args:
-            mac (str): The MAC address of the router.
-        Returns:
-            Router | None: The Router object if found, otherwise None.
-        """
-        try:
-            return Router.objects.select_related("home").get(mac=mac)
-        except Router.DoesNotExist:
-            return None
-
-    @database_sync_to_async
-    def get_router_devices(self):
-        """
-        Retrieves all devices associated with the router.
-        Returns:
-            QuerySet: A queryset of Device objects related to the router.
-        """
-        return self.router.home.devices.all()
-
-    @database_sync_to_async
-    def deactivate_all_device(self, devices: QuerySet[Device, Device]):
-        online = devices.filter(is_online=True)
-        for device in online:
-            device.is_online = False
-            device.last_seen = timezone.now()
-            device.save(update_fields=["is_online", "last_seen"])
-            FrontendMessenger().update_frontend(
-                self.home.id, DeviceSerializer(device).data
-            )
-
-    ########################### utils ########################################
-
-    @sync_to_async
-    def get_router_serialized_data(self):
-        return RouterSerializer(self.router).data
-
-    async def send_to_frontend(
-        self, status: int, action: FrontendMessageType, data: dict
-    ):
-        await self.channel_layer.group_send(
-            f"home_{self.router.home.id}",
-            {
-                "type": "send_to_frontend",
-                "action": action.value,
-                "data": {"status": status, "data": data},
-            },
+    def notify_frontend(self):
+        data = RouterSerializer(self.router).data
+        notifier.notify(
+            [
+                frontend_notifier_factory.update_router(
+                    home_id=self.router.home.pk, data=data
+                )
+            ]
         )
 
     @database_sync_to_async
-    def set_home(self):
-        self.home = self.router.home
+    def send_get_connected_message(self):
+        device_message = DeviceMessage(
+            direction=MessageDirection.INTENT,
+            command=MessageCommand.GET_CONNECTED_DEVICES,
+            type=MessageType.ACTION,
+            scope=Scope.CPU,
+            device_id="00:00:00:00:00:00",
+            peripheral_id=0,
+            payload={},
+        )
+        notifications = [
+            router_notifier_factory.device_message(
+                router_mac=self.router.mac,
+                message=device_message,
+            ),
+        ]
+        notifier.notify(notifications)

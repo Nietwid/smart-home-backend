@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.builder.rfid import rfid_message_builder
 from dispatcher.device.messages.enum import (
@@ -37,6 +39,13 @@ class OnReadEventHandler(EventIntentBaseHandler):
     def _is_card_allowed(self, peripheral: Peripherals, payload: OnReadIntent) -> bool:
         uid = payload.uid
         peripheral = peripheral
-        return RfidCard.objects.filter(
+        card = RfidCard.objects.filter(
             allowed_peripherals=peripheral, uid=uid, is_active=True
-        ).exists()
+        )
+        if not card.exists():
+            return False
+
+        card = card.first()
+        card.last_used = datetime.now()
+
+        return True

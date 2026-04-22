@@ -13,6 +13,7 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.DEVICE_DISCONNECT: (DeviceDisconnectRequest, BasicResult),
 
     # CPU action
+    MessageCommand.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
     MessageCommand.UPDATE_PERIPHERAL: (SerializerDataResponse, BasicResult),
     MessageCommand.UPDATE_RULE: (SerializerDataResponse, BasicResult),
     MessageCommand.SYNC_START: (StartSyncPayload, BasicResult),
@@ -49,7 +50,6 @@ PAYLOAD_MAPPING: dict = {
     MessageCommand.HOLD: (SerializerDataResponse, BasicResult),
 
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
-    MessageEvent.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
     MessageEvent.SET_SETTINGS: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_SETTINGS: (EmptyRequest, SerializerDataResponse),
     # MessageEvent.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
