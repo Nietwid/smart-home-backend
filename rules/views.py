@@ -6,7 +6,7 @@ from rest_framework.generics import (
 from rest_framework.response import Response
 
 from dispatcher.device.messages.enum import MessageCommand
-from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 from rules.models import Rule
 from rules.serializers.rule import RuleSerializer
 from notifier.notifier import notifier

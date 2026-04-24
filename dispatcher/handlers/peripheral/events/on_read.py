@@ -11,9 +11,9 @@ from dispatcher.device.messages.enum import (
 from dispatcher.device.messages.payload.sensor import OnReadIntent
 from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
-from notifier.enum import MicroserviceQueueName
+from notifier.enum import RabbitExchange, RabbitRoutingKey
 from notifier.message import NotifierMessage
-from notifier.router_notifier_factory import router_notifier_factory
+from notifier.factory.router_notifier_factory import router_notifier_factory
 from peripherals.models import RfidCard, Peripherals
 
 
@@ -24,7 +24,8 @@ from peripherals.models import RfidCard, Peripherals
     handler_name=MessageCommand.ON_READ,
 )
 class OnReadEventHandler(EventIntentBaseHandler):
-    history_queue = MicroserviceQueueName.EVENTS
+    exchange = RabbitExchange.SENSOR_SERVICE
+    routing_key = RabbitRoutingKey.EVENTS
 
     def get_extra_notification(self, message: CommandMessage) -> list[NotifierMessage]:
         device = message.device

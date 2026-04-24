@@ -38,28 +38,12 @@ class RoomSerializer(serializers.ModelSerializer):
         rep["visibility"] = instance.get_visibility_display()
         return rep
 
-    def to_internal_value(self, data):
-        visibility_map = {
-            "public": Room.Visibility.PUBLIC,
-            "private": Room.Visibility.PRIVATE,
-        }
-        if "visibility" in data:
-            data["visibility"] = visibility_map.get(
-                data["visibility"].lower(), data["visibility"]
-            )
-        return super().to_internal_value(data)
-
     def validate_visibility(self, value) -> Room.Visibility:
         if value not in [Room.Visibility.PUBLIC, Room.Visibility.PRIVATE]:
             raise serializers.ValidationError("Invalid visibility value")
-        print(value)
         return value
 
     def validate_name(self, value):
-        view = self.context.get("view")
-        queryset = view.get_queryset()
         if len(value) < 3:
             raise serializers.ValidationError("Name must be at least 3 characters long")
-        if any(room.name == value for room in queryset):
-            raise serializers.ValidationError("Room with this name already exists")
         return value

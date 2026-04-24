@@ -3,9 +3,9 @@ from rest_framework import serializers
 from dispatcher.device.messages.enum import MessageCommand
 from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
-from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 from peripherals.models import Peripherals
-from pydantic import ValidationError
+from peripherals.utils.validate_pydantic_model import validate_pydantic_model
 
 from redis_cache import redis_cache
 from typing import Collection
@@ -60,28 +60,25 @@ class PeripheralSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"name": "Unknown device type"})
 
         if "config" in data:
-            try:
-                config_cls = hardware_cls.config_model(**data["config"])
-                hardware_cls.validate_config(config_cls, data["device"])
-            except ValidationError as e:
-                for err in e.errors():
-                    path = ".".join(str(x) for x in err["loc"])
-                    errors[f"config.{path}"] = err["msg"]
-            except HardwareValidationError as e:
-                errors.update(e.errors)
+            errs = validate_pydantic_model(
+                hardware_cls.config_model,
+                data["config"],
+                data["device"],
+                hardware_cls.validate_config,
+            )
+            errors.update({f"config.{k}": v for k, v in errs.items()})
 
         if "state" in data:
-            try:
-                state_cls = hardware_cls.state_model(**data["state"])
-                hardware_cls.validate_state(state_cls, data["device"])
-            except ValidationError as e:
-                for err in e.errors():
-                    path = ".".join(str(x) for x in err["loc"])
-                    errors[f"state.{path}"] = err["msg"]
-            except HardwareValidationError as e:
-                errors.update(e.errors)
-        elif self.instance is None:
+            errs = validate_pydantic_model(
+                hardware_cls.state_model,
+                data["state"],
+                data["device"],
+                hardware_cls.validate_state,
+            )
+            errors.update({f"state.{k}": v for k, v in errs.items()})
+        elif not self.instance:
             data["state"] = hardware_cls.state_model().model_dump()
+
         if errors:
             raise serializers.ValidationError(errors)
         return data
@@ -89,11 +86,14 @@ class PeripheralSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         peripheral: Peripherals = super().create(validated_data)
         device: Device = peripheral.device
-        if not MessageCommand.UPDATE_PERIPHERAL in device.required_action:
-            device.required_action.append(MessageCommand.UPDATE_PERIPHERAL)
-            device.save(update_fields=["required_action"])
-            message = frontend_notifier_factory.update_device_required_action(
-                device.home.pk, device.required_action, device.pk
-            )
-            notifier.notify([message])
+
+        if MessageCommand.UPDATE_PERIPHERAL in device.required_action:
+            return peripheral
+
+        device.required_action.append(MessageCommand.UPDATE_PERIPHERAL)
+        device.save(update_fields=["required_action"])
+        message = frontend_notifier_factory.update_device_required_action(
+            device.home.pk, device.required_action, device.pk
+        )
+        notifier.notify([message])
         return peripheral

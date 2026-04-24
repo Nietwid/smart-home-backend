@@ -1,12 +1,14 @@
+import logging
+
 from celery import shared_task
 from django.utils import timezone
-
-
 from device.models import Router, Device
 from device.serializers.device import DeviceSerializer
 from device.serializers.router import RouterSerializer
-from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 from notifier.notifier import notifier
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task

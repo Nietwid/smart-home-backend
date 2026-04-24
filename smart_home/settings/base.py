@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     "user",
     "device",
     "room",
-    "event",
     "firmware",
     "consumers",
     "peripherals",

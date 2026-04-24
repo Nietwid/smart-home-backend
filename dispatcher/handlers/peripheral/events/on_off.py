@@ -2,7 +2,7 @@ from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
-from notifier.enum import MicroserviceQueueName
+from notifier.enum import RabbitExchange, RabbitRoutingKey
 from peripherals.models import Peripherals
 
 
@@ -14,7 +14,8 @@ from peripherals.models import Peripherals
 )
 class OnOffEventHandler(EventIntentBaseHandler):
     update_frontend_peripheral_state = True
-    history_queue = MicroserviceQueueName.EVENTS
+    exchange = RabbitExchange.SENSOR_SERVICE
+    routing_key = RabbitRoutingKey.EVENTS
 
     def update_peripheral_state(self, peripheral: Peripherals, state: dict) -> None:
         peripheral.state.update({"is_on": False})
