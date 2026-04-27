@@ -11,9 +11,9 @@ from dispatcher.dispatch_result import DispatchResult
 from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.handlers.registry import register_action_event
 from dispatcher.tasks import check_command_timeout
-from notifier.frontend_notifier_factory import frontend_notifier_factory
-from notifier.frontend_notifier_payload import AddTagResultPayload
-from notifier.router_notifier_factory import router_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_payload import AddTagResultPayload
+from notifier.factory.router_notifier_factory import router_notifier_factory
 from redis_cache import redis_cache
 from dispatcher.device.messages.payload.sensor import AddTagResult, AddTagIntent
 

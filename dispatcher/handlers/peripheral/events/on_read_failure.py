@@ -6,7 +6,7 @@ from dispatcher.device.messages.enum import (
 )
 from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.handlers.registry import register_action_event
-from notifier.enum import MicroserviceQueueName
+from notifier.enum import RabbitExchange, RabbitRoutingKey
 
 
 @register_action_event(
@@ -16,4 +16,5 @@ from notifier.enum import MicroserviceQueueName
     handler_name=MessageCommand.ON_READ_FAILURE,
 )
 class OnReadFailureEvent(EventIntentBaseHandler):
-    history_queue = MicroserviceQueueName.EVENTS
+    exchange = RabbitExchange.SENSOR_SERVICE
+    routing_key = RabbitRoutingKey.EVENTS

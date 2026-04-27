@@ -8,6 +8,8 @@ from notifier.notifier import notifier
 
 def action_event_validator(message: CommandMessage) -> None:
     if message.scope == Scope.PERIPHERAL:
+        if not message.peripheral:
+            raise ValueError("Peripheral is required for peripheral scope")
         hardware_cls = HARDWARE_REGISTRY[message.peripheral.name]
     elif message.scope == Scope.CPU:
         hardware_cls = CpuHardware

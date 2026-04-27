@@ -6,10 +6,10 @@ urlpatterns = [
     path("api/", include("user.urls")),
     path("api/room/", include("room.urls")),
     path("api/device/", include("device.urls")),
-    path("api/event/", include("event.urls")),
     path("api/cameras/", include("camera.urls")),
     path("api/firmware/", include("firmware.urls")),
     path("api/peripherals/", include("peripherals.urls")),
     path("api/hardware/", include("hardware.urls")),
     path("api/rule/", include("rules.urls")),
+    path("", include("django_prometheus.urls")),
 ]

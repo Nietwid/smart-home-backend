@@ -9,7 +9,6 @@ from dispatcher.device.messages.payload.cpu import (
 )
 from dispatcher.device.messages.payload.enum import StartSyncType
 from peripherals.action_event_frontend_message import ActionEventFrontendMessage
-from peripherals.models import Peripherals
 from peripherals.repository import peripheral_repository
 from device.repository.device_repository import device_repository
 from device.models import Device

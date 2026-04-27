@@ -1,45 +1,67 @@
+from unittest.mock import MagicMock
 import pytest
 from django.utils import timezone
-from room.serializer import RoomSerializer
+from datetime import timedelta
+from model_bakery import baker
 from room.models import Room
-from device.models import Device
+from room.serializer import RoomSerializer
 
 
 @pytest.mark.django_db
-def test_device_counts(room, device):
-    serializer = RoomSerializer(room)
-    data = serializer.data
-    assert data["device_count"] == room.devices.count()
-    device.last_seen = timezone.now()
-    device.save()
-    serializer = RoomSerializer(room)
-    data = serializer.data
-    assert data["active_device_count"] == 1
+class TestRoomSerializer:
 
+    def test_serialization_fields(self):
+        # Given
+        room = baker.make(Room, name="Salon", visibility=Room.Visibility.PUBLIC)
+        baker.make("device.Device", room=room, _quantity=3, last_seen=timezone.now())
 
-@pytest.mark.django_db
-def test_to_representation_visibility(room):
-    room.visibility = Room.Visibility.PUBLIC
-    serializer = RoomSerializer(room)
-    data = serializer.data
-    assert data["visibility"] == room.get_visibility_display()
+        # When
+        serializer = RoomSerializer(instance=room)
+        data = serializer.data
 
+        # Then
+        assert data["name"] == "Salon"
+        assert data["visibility"] == "public"
+        assert data["device_count"] == 3
+        assert len(data["device"]) == 3
 
-@pytest.mark.django_db
-def test_validate_name_min_length(room):
-    serializer = RoomSerializer(
-        context={"view": type("view", (), {"get_queryset": lambda self: [room]})()}
-    )
-    with pytest.raises(Exception) as e:
-        serializer.validate_name("ab")
-    assert "at least 3 characters" in str(e.value)
+    def test_active_device_count_logic(self):
+        # Given
+        now = timezone.now()
+        room = baker.make(Room)
 
+        baker.make("device.Device", room=room, last_seen=now)
+        baker.make("device.Device", room=room, last_seen=now - timedelta(minutes=9))
+        baker.make("device.Device", room=room, last_seen=now - timedelta(minutes=11))
 
-@pytest.mark.django_db
-def test_validate_name_unique(room):
-    serializer = RoomSerializer(
-        context={"view": type("view", (), {"get_queryset": lambda self: [room]})()}
-    )
-    with pytest.raises(Exception) as e:
-        serializer.validate_name(room.name)
-    assert "already exists" in str(e.value)
+        # When
+        serializer = RoomSerializer(instance=room)
+        active_count = serializer.data["active_device_count"]
+
+        # Then
+        assert active_count == 2
+
+    def test_visibility_internal_value_mapping(self):
+        # Given
+        data = {"name": "Kitchen", "visibility": "PU"}
+
+        # When
+        serializer = RoomSerializer(data=data)
+
+        # Then
+        assert serializer.is_valid()
+        assert serializer.validated_data["visibility"] == Room.Visibility.PUBLIC
+
+    def test_validate_name_length(self):
+        # Given
+        data = {"name": "S", "visibility": "public"}
+        serializer = RoomSerializer(data=data)
+
+        # When
+        is_valid = serializer.is_valid()
+
+        # Then
+        assert is_valid is False
+        assert "Name must be at least 3 characters long" in str(
+            serializer.errors["name"]
+        )

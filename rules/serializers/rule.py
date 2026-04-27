@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from device.models import Device
 from dispatcher.device.messages.enum import MessageCommand
-from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 from rules.models import Rule, RuleAction, RuleCondition, RuleTrigger
 from rules.serializers.action import RuleActionSerializer, RuleActionFrontendSerializer
 from rules.serializers.condition import RuleConditionSerializer

@@ -2,7 +2,7 @@ import logging
 from abc import ABC, abstractmethod
 
 from notifier.enum import MicroserviceQueueName
-from notifier.microservice_notifier_factory import microservice_message_factory
+from notifier.factory.microservice_notifier_factory import microservice_message_factory
 from device.models import Device
 from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.builder.action_event_intent import (
@@ -14,11 +14,11 @@ from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.tasks import check_command_timeout
 from notifier.message import NotifierMessage
-from notifier.router_notifier_factory import router_notifier_factory
+from notifier.factory.router_notifier_factory import router_notifier_factory
 from peripherals.models import Peripherals
 from redis_cache import redis_cache
 
-from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +129,8 @@ class ActionResultBaseHandler(ActionEventBaseHandler):
 class EventIntentBaseHandler(ActionEventBaseHandler):
     send_command: bool = True
     update_frontend_peripheral_state: bool = False
+    exchange: str = None
+    routing_key: str = None
     history_queue: MicroserviceQueueName = None
 
     def __call__(self, message: CommandMessage) -> DispatchResult:
@@ -148,13 +150,14 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
         commands.extend(self.get_extra_commands(message))
 
         self.update_peripheral_state(peripheral, message.payload)
-        if self.history_queue is not None:
+        if self.exchange is not None and self.routing_key is not None:
             notifications.append(
                 microservice_message_factory.log_event(
                     peripheral=peripheral,
                     event_type=message.command,
                     payload=message.payload,
-                    queue_name=self.history_queue,
+                    exchange=self.exchange,
+                    routing_key=self.routing_key,
                 )
             )
         if self.update_frontend_peripheral_state:

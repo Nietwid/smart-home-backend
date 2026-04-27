@@ -1,4 +1,4 @@
--r base.txt
+-r prod.txt
 pytest
 pytest-django
 pytest-mock

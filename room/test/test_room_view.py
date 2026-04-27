@@ -1,60 +1,109 @@
 import pytest
 from django.urls import reverse
-from room.models import Room, Home
+from rest_framework import status
+from model_bakery import baker
+from room.models import Room
+
+
+@pytest.fixture
+def mock_home_repository(mocker):
+    return mocker.patch("user.repository.home_repository.HomeRepository")
 
 
 @pytest.mark.django_db
-def test_list_rooms(auth_client, room, home):
-    url = reverse("room-list-create")
-    response = auth_client.get(url)
-    assert response.status_code == 200
-    names = [r["name"] for r in response.data]
-    assert room.name in names
+class TestListCreateRoomView:
+    url = "room-list-create"
+
+    def test_list_rooms_returns_only_accessible(self, auth_client, user):
+        # Given
+        home = baker.make("user.Home")
+        home.users.add(user)
+
+        baker.make(Room, name="My Private", user=user, home=home, visibility="PR")
+        baker.make(Room, name="Public Room", home=home, visibility="PU")
+        baker.make(Room, name="Other Private", home=home, visibility="PR")
+
+        url = reverse(self.url)
+
+        # When
+        response = auth_client.get(url)
+
+        # Then
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data) == 2
+        names = [r["name"] for r in response.data]
+        assert "My Private" in names
+        assert "Public Room" in names
+        assert "Other Private" not in names
+
+    def test_create_room_assigns_home_and_user(
+        self, auth_client, user, mock_home_repository
+    ):
+        # Given
+        home = baker.make("user.Home")
+        home.users.add(user)
+        mock_home_repository.get_home_by_user.return_value = home
+
+        url = reverse(self.url)
+        payload = {"name": "New", "visibility": "PU"}
+
+        # When
+        response = auth_client.post(url, payload)
+
+        # Then
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["name"] == "New"
+
+        room = Room.objects.get(id=response.data["id"])
+        assert room.user == user
+        assert room.home == home
 
 
 @pytest.mark.django_db
-def test_create_room(auth_client, user, home):
-    url = reverse("room-list-create")
-    data = {"name": "NewRoom", "visibility": "private"}
-    response = auth_client.post(url, data, format="json")
-    assert response.status_code == 201
-    from room.models import Room
+class TestRetrieveUpdateDestroyRoomView:
+    url = "room-retrieve-update-destroy"
 
-    room = Room.objects.get(name="NewRoom")
-    assert room.user == user
-    assert room.home in user.home.all()
+    def test_retrieve_room_success(self, auth_client, user):
+        # Given
+        home = baker.make("user.Home")
+        home.users.add(user)
+        room = baker.make(Room, home=home, user=user)
 
+        url = reverse(self.url, kwargs={"pk": room.pk})
 
-@pytest.mark.django_db
-def test_retrieve_update_destroy_room(auth_client, room):
-    url = reverse("room-retrieve-update-destroy", args=[room.id])
+        # When
+        response = auth_client.get(url)
 
-    # Retrieve
-    res_get = auth_client.get(url)
-    assert res_get.status_code == 200
-    assert res_get.data["name"] == room.name
+        # Then
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["id"] == room.pk
 
-    # Update
-    res_patch = auth_client.patch(url, {"name": "UpdatedName"}, format="json")
-    assert res_patch.status_code == 200
-    room.refresh_from_db()
-    assert room.name == "UpdatedName"
+    def test_retrieve_room_forbidden_if_not_in_home(self, auth_client, user):
+        # Given
+        other_home = baker.make("user.Home")
+        room = baker.make(Room, home=other_home)
 
-    # Delete
-    res_del = auth_client.delete(url)
-    assert res_del.status_code in [200, 204]
-    from room.models import Room
+        url = reverse(self.url, kwargs={"pk": room.pk})
 
-    assert not Room.objects.filter(id=room.id).exists()
+        # When
+        response = auth_client.get(url)
 
+        # Then
+        assert response.status_code == status.HTTP_404_NOT_FOUND
 
-@pytest.mark.django_db
-def test_cannot_access_other_user_room(auth_client, user):
-    from user.models import User
+    def test_update_room_name(self, auth_client, user):
+        # Given
+        home = baker.make("user.Home")
+        home.users.add(user)
+        room = baker.make(Room, home=home, user=user, name="Old Name")
 
-    other_user = User.objects.create_user(username="other", password="pass")
-    home = Home.objects.create()
-    room_other = Room.objects.create(name="OtherRoom", user=other_user, home=home)
-    url = reverse("room-retrieve-update-destroy", args=[room_other.id])
-    res = auth_client.get(url)
-    assert res.status_code == 404
+        url = reverse(self.url, kwargs={"pk": room.pk})
+        payload = {"name": "New Awesome Name"}
+
+        # When
+        response = auth_client.patch(url, payload)
+
+        # Then
+        assert response.status_code == status.HTTP_200_OK
+        room.refresh_from_db()
+        assert room.name == "New Awesome Name"

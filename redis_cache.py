@@ -1,6 +1,5 @@
 import logging
 
-from dispatcher.command_message.message import CommandMessage
 from dispatcher.device.messages.device_message import DeviceMessage
 from django.core.cache import cache
 from cache_key import CacheKey

@@ -1,13 +1,16 @@
 import logging
+import time
+from django.utils import timezone
+from django.db import transaction
 from celery import shared_task
 from pydantic import ValidationError
-
+from consumers.models import RouterInbox, MessageStatus
 from dispatcher.device.messages.device_message import DeviceMessage
 from device.repository.device_repository import device_repository
 from dispatcher.device.messages.enum import Scope
 from dispatcher.processor.action_event_command import action_event_command_processor
 from dispatcher.command_message.factory import command_message_factory
-from notifier.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 from peripherals.repository import peripheral_repository
 from redis_cache import redis_cache
 from notifier.notifier import notifier
@@ -16,41 +19,36 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=3)
-def handle_device_message_task(
-    self, raw_json: str, home_id: int, router_mac: str
-) -> None:
-    """
-    Asynchronously processes incoming hardware events from the message broker.
-
-    This task acts as a bridge between the WebSocket consumer and the business
-    logic layer. It validates the raw JSON payload and dispatches it to the
-    appropriate hardware handler.
-
-    Args:
-        raw_json (str): The raw JSON string received from the device.
-        home_id (int):
-        router_mac (str):
-    Returns:
-        None
-
-    Raises:
-        ValidationError: If the raw_json does not match the DeviceMessage schema.
-        Exception: Re-raises exceptions to trigger Celery's auto retry mechanism.
-    """
-    try:
-        message = DeviceMessage.model_validate_json(raw_json)
-        print(f"TASK message: {message}")
-        command_message = command_message_factory.from_device_message(
-            message, home_id, router_mac
-        )
-    except ValidationError as e:
-        logger.error(f"Payload validation failed for message: {raw_json} : {e}")
-        return
-    except Exception as exc:
-        logger.error(f"Error processing message. exc: {exc}")
-        # Necessary to trigger the 'auto retry_for' logic
-        raise exc
-    action_event_command_processor(command_message)
+def process_device_message_task(self) -> None:
+    while True:
+        with transaction.atomic():
+            tasks = RouterInbox.objects.select_for_update(skip_locked=True).filter(
+                status=MessageStatus.PENDING
+            )[:50]
+            if not tasks:
+                return
+            for task in tasks:
+                if task.expired_at < timezone.now():
+                    task.status = MessageStatus.EXPIRED
+                    continue
+                try:
+                    message = DeviceMessage.model_validate_json(task.payload)
+                    command_message = command_message_factory.from_device_message(
+                        message, task.home_id, task.router_mac
+                    )
+                    action_event_command_processor(command_message)
+                    task.status = MessageStatus.PROCESSED
+                except ValidationError as e:
+                    logger.error(
+                        f"Payload validation failed for message: {task.payload} : {e}"
+                    )
+                    task.status = MessageStatus.FAILED
+                    continue
+                except Exception as exc:
+                    logger.error(f"Error processing message. exc: {exc}")
+                    raise exc
+        RouterInbox.objects.bulk_update(tasks, ["status"])
+        time.sleep(0.1)
 
 
 @shared_task(

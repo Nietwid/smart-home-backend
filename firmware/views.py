@@ -1,5 +1,5 @@
 from django.http import FileResponse
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
@@ -8,13 +8,6 @@ from rest_framework.generics import ListAPIView
 from firmware.models import FirmwareDevice
 from firmware.serializers import FirmwareDeviceSerializer
 from redis_cache import redis_cache
-
-
-class FirmwareView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        return Response("Hello World")
 
 
 class FirmwareDownload(APIView):

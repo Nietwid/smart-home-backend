@@ -5,7 +5,7 @@ from dispatcher.handlers.base import EventIntentBaseHandler
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
 from notifier.message import NotifierMessage
-from notifier.router_notifier_factory import router_notifier_factory
+from notifier.factory.router_notifier_factory import router_notifier_factory
 
 
 @register_action_event(

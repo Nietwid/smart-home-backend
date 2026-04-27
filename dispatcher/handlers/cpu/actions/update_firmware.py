@@ -1,10 +1,6 @@
 import logging
 from uuid import uuid4
 from device.models import Device
-from dispatcher.command_message.factory import command_message_factory
-from dispatcher.device.messages.builder.action_event_intent import (
-    action_event_intent_builder,
-)
 from dispatcher.device.messages.builder.cpu import cpu_message_builder
 from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.dispatch_result import DispatchResult
@@ -14,8 +10,8 @@ from dispatcher.handlers.base import ActionEventBaseHandler
 from dispatcher.device.messages.enum import Scope, MessageType, MessageDirection
 from dispatcher.handlers.registry import register_action_event
 from firmware.models import FirmwareDevice
-from notifier.frontend_notifier_factory import frontend_notifier_factory
-from notifier.router_notifier_factory import router_notifier_factory
+from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
+from notifier.factory.router_notifier_factory import router_notifier_factory
 from redis_cache import redis_cache
 
 logger = logging.getLogger("base")
