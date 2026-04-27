@@ -11,4 +11,5 @@ urlpatterns = [
     path("api/peripherals/", include("peripherals.urls")),
     path("api/hardware/", include("hardware.urls")),
     path("api/rule/", include("rules.urls")),
+    path("", include("django_prometheus.urls")),
 ]

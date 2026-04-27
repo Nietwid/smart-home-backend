@@ -1,16 +1,17 @@
+import logging
 import os
 import pika
 from django.db import transaction
 from celery import shared_task
 from django.utils import timezone
 from pika.exceptions import AMQPError
-from torch.distributed.elastic.utils import logging
 
 from consumers.models import RouterOutbox, MessageStatus, RabbitOutbox
 from consumers.router.message.message import DeviceRouterMessage
 from consumers.router.messenger import router_messenger
 from dispatcher.device.messages.device_message import DeviceMessage
-logger = logging.get_logger(__name__)
+
+logger = logging.getLogger(__name__)
 
 @shared_task(ignore_result=True)
 def process_router_outbox_task():
