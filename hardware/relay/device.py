@@ -19,10 +19,7 @@ class RelayHardware(BaseHardware):
         MessageCommand.ON: RelayExtraSettings,
         MessageCommand.OFF: RelayExtraSettings,
     }
-    events = (
-        MessageCommand.ON_ON,
-        MessageCommand.ON_OFF,
-    )
+    events = {MessageCommand.ON_ON: None, MessageCommand.ON_OFF: None}
 
     @classmethod
     def validate_config(cls, config: RelayConfig, device: Device) -> None:

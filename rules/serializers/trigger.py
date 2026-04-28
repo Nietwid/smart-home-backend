@@ -35,7 +35,7 @@ class RuleTriggerSerializer(serializers.ModelSerializer):
                 f"The selected peripheral ({peripheral.name}) is not supported."
             )
 
-        if not event in registry.events:
+        if not event in registry.get_available_events():
             raise serializers.ValidationError(
                 f"The selected event ({event}) is not supported for the selected peripheral."
             )

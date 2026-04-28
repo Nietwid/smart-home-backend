@@ -1,6 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 
+from dispatcher.device.messages import payload
 from notifier.enum import MicroserviceQueueName
 from notifier.factory.microservice_notifier_factory import microservice_message_factory
 from device.models import Device
@@ -139,16 +140,6 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
         device: Device = message.device
         peripheral: Peripherals = message.peripheral
 
-        if self.send_command:
-            commands.extend(
-                device.get_event_request(
-                    peripheral=message.peripheral, event_type=message.command
-                )
-            )
-
-        notifications.extend(self.get_extra_notification(message))
-        commands.extend(self.get_extra_commands(message))
-
         self.update_peripheral_state(peripheral, message.payload)
         if self.exchange is not None and self.routing_key is not None:
             notifications.append(
@@ -160,12 +151,25 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
                     routing_key=self.routing_key,
                 )
             )
+
         if self.update_frontend_peripheral_state:
             notifications.append(
                 frontend_notifier_factory.update_peripheral_state(
                     peripheral=peripheral
                 ),
             )
+
+        if self.send_command:
+            commands.extend(
+                device.get_event_request(
+                    peripheral=message.peripheral,
+                    event_type=message.command,
+                    payload=message.payload,
+                )
+            )
+
+        notifications.extend(self.get_extra_notification(message))
+        commands.extend(self.get_extra_commands(message))
 
         return DispatchResult(notifications=notifications, commands=commands)
 

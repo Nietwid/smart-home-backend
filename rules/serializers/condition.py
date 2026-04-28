@@ -1,6 +1,7 @@
 from pydantic import ValidationError
 from rest_framework import serializers
 
+from dispatcher.device.messages.enum import MessageEvent
 from hardware.registry import HARDWARE_REGISTRY
 from peripherals.models import Peripherals
 from rules.models import RuleCondition
@@ -13,24 +14,27 @@ class RuleConditionSerializer(serializers.ModelSerializer):
 
     def validate(self, data: dict) -> dict:
         peripheral: Peripherals = data.get("peripheral")
-        if not peripheral:
+        if peripheral is None:
             raise serializers.ValidationError("Peripheral is required")
 
+        condition: dict | None = data.get("condition")
+        if condition is None:
+            raise serializers.ValidationError("Condition is required")
+
         hardware_cls = HARDWARE_REGISTRY.get(peripheral.name)
-        if not hardware_cls:
+        if hardware_cls is None:
             raise serializers.ValidationError("Peripheral is not supported")
 
-        event = data.get("event")
-        if not event:
+        event: str | None = data.get("event")
+        if event is None:
             raise serializers.ValidationError("Event is required")
 
-        condition_cls = hardware_cls.event_conditions.get(event)
-        if not condition_cls:
+        condition_cls = hardware_cls.events.get(event)
+        if condition_cls is None:
             raise serializers.ValidationError("Event is not supported")
 
         try:
-            instance = condition_cls(operator=data["operator"], value=data["value"])
-            data["value"] = instance.value_to_db
+            condition_cls(**condition)
             return data
         except ValidationError as e:
             errors = {"condition": {}}

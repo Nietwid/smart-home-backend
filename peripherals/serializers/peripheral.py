@@ -38,9 +38,9 @@ class PeripheralSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["pending"]
 
-    def get_available_event(self, obj: Peripherals) -> tuple[str]:
+    def get_available_event(self, obj: Peripherals) -> list[MessageCommand]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
-        return hardware_cls.events
+        return hardware_cls.get_available_events()
 
     def get_available_action(self, obj: Peripherals) -> Collection[MessageCommand]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)

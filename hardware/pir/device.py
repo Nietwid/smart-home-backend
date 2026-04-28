@@ -5,6 +5,7 @@ from hardware.helpers.is_used import is_used
 from hardware.pir.schema import PirConfig, PirState
 from hardware.registry import hardware_registry
 from hardware.enums import HardwareTypes
+from rules.conditions.boolean import BooleanConditionSchema
 
 
 @hardware_registry(name="pir_sensor")
@@ -14,7 +15,10 @@ class PirHardware(BaseHardware):
     hardware_type = HardwareTypes.SENSOR
     chip_support = [name.value for name in ChipType]
     actions = {}
-    events = (MessageCommand.ON_MOTION,)
+    events = {MessageCommand.ON_MOTION: BooleanConditionSchema}
+    event_to_attr = {
+        MessageCommand.ON_MOTION: "is_on",
+    }
 
     @classmethod
     def validate_config(cls, config: PirConfig, device: Device) -> None:

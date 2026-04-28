@@ -15,7 +15,7 @@ class ActiveBuzzerHardware(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = {MessageCommand.PLAY_SEQUENCE: PlaySequenceExtraSettings}
-    events = ()
+    events = {}
 
     @classmethod
     def validate_config(cls, config: BuzzerConfig, device: Device) -> None:

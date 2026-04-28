@@ -20,3 +20,7 @@ class CpuHardware:
     @classmethod
     def get_available_actions(cls) -> Collection[MessageCommand]:
         return cls.actions
+
+    @classmethod
+    def get_available_events(cls) -> Collection[MessageCommand]:
+        return cls.events

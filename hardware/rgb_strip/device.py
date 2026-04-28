@@ -21,10 +21,7 @@ class RGBStripHardware(BaseHardware):
         MessageCommand.UPDATE_STATE: UpdateStateExtraSettings,
         MessageCommand.TOGGLE: None,
     }
-    events = (
-        MessageCommand.ON_ON,
-        MessageCommand.ON_OFF,
-    )
+    events = {MessageCommand.ON_ON: None, MessageCommand.ON_OFF: None}
 
     @classmethod
     def validate_config(cls, config: RGBStripConfig, device: Device) -> None:

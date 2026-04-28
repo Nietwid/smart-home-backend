@@ -5,6 +5,7 @@ from hardware.base import BaseHardware, HardwareValidationError
 from hardware.helpers.is_used import is_used
 from hardware.registry import hardware_registry
 from hardware.enums import HardwareTypes
+from rules.conditions.numeric import NumericConditionSchema
 
 
 @hardware_registry(name="aht10")
@@ -14,10 +15,14 @@ class Aht10(BaseHardware):
     hardware_type = HardwareTypes.SENSOR
     chip_support = [name.value for name in ChipType]
     actions = {}
-    events = (
-        MessageCommand.ON_MEASURE_TEMPERATURE,
-        MessageCommand.ON_MEASURE_HUMIDITY,
-    )
+    events = {
+        MessageCommand.ON_MEASURE_TEMPERATURE: NumericConditionSchema,
+        MessageCommand.ON_MEASURE_HUMIDITY: NumericConditionSchema,
+    }
+    event_to_attr = {
+        MessageCommand.ON_MEASURE_TEMPERATURE: "temperature",
+        MessageCommand.ON_MEASURE_HUMIDITY: "humidity",
+    }
 
     @classmethod
     def validate_config(cls, config: Aht10Config, device: Device) -> None:

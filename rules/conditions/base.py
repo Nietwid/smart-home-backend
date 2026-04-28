@@ -1,12 +1,6 @@
-from typing import Literal, Any
+from typing import Union
 
-from pydantic import BaseModel
+from rules.conditions.boolean import BooleanConditionSchema
+from rules.conditions.numeric import NumericConditionSchema
 
-
-class BaseCondition(BaseModel):
-    operator: Literal["==", ">", "<", ">=", "<="] = "=="
-    value: Any
-
-    @property
-    def value_to_db(self):
-        raise NotImplementedError
+ConditionConfig = Union[NumericConditionSchema, BooleanConditionSchema]

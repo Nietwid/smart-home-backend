@@ -19,7 +19,7 @@ def action_event_validator(message: CommandMessage) -> None:
     allowed_commands = (
         hardware_cls.get_available_actions()
         if message.type == MessageType.ACTION
-        else hardware_cls.events
+        else hardware_cls.get_available_events()
     )
     if message.command not in allowed_commands:
         raise ValueError(

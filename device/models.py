@@ -2,13 +2,14 @@ from typing import TYPE_CHECKING
 from django.db import models
 
 from dispatcher.device.messages.enum import MessageCommand
+from hardware.registry import HARDWARE_REGISTRY
 
 from room.models import Room
+from rules.models import RuleCondition
 
 from user.models import Home
 
 if TYPE_CHECKING:
-    from peripherals.models import Peripherals
     from dispatcher.command_message.message import CommandMessage
 
 
@@ -54,7 +55,7 @@ class Device(models.Model):
         return self.name
 
     def get_event_request(
-        self, peripheral, event_type: MessageCommand
+        self, peripheral, event_type: MessageCommand, payload
     ) -> "list[CommandMessage]":
         from dispatcher.command_message.factory import command_message_factory
         from rules.models import Rule
@@ -70,14 +71,13 @@ class Device(models.Model):
         router_mac = self.home.router.mac
         command_messages = []
         for rule in rules:
-            if self._check_conditions(rule.conditions.all()):
+            if self._check_conditions(rule.conditions.all(), payload):
                 for action in rule.actions.all().order_by("order"):
                     command_messages.append(
                         command_message_factory.get_commands_from_rule(
                             self, home_id, router_mac, action
                         )
                     )
-        print(command_messages)
         return command_messages
 
     def get_router(self):
@@ -94,20 +94,68 @@ class Device(models.Model):
     def make_intent(self, data: dict) -> None:
         return
 
-    def _check_conditions(self, conditions) -> bool:
+    def _check_conditions(self, conditions: list[RuleCondition], payload) -> bool:
+        if not conditions:
+            return True
+
+        for cond in conditions:
+            hw_class = HARDWARE_REGISTRY.get(cond.peripheral.name)
+            if not hw_class:
+                raise Exception(f"Unsupported device type: {cond.peripheral.name}")
+
+            attr_name = hw_class.event_to_attr.get(cond.event)
+            if not attr_name:
+                raise Exception(f"Unsupported event: {cond.event}")
+
+            current_value = getattr(payload, attr_name)
+            if current_value is None:
+                raise Exception(f"Attribute {attr_name} not found in payload")
+
+            cond_type = cond.condition.get("type")
+            if cond_type == "numeric":
+                is_met = self._evaluate_numeric(current_value, cond)
+            elif cond_type == "boolean":
+                is_met = self._evaluate_boolean(current_value, cond)
+            else:
+                raise Exception(f"Unknown condition type: {cond_type}")
+            if not is_met:
+                return False
         return True
-        # for cond in conditions:
-        #     current_value = self.get_peripheral_state(cond.peripheral)
-        #
-        #     operators = {
-        #         "==": lambda a, b: str(a) == str(b),
-        #         ">": lambda a, b: float(a) > float(b),
-        #         "<": lambda a, b: float(a) < float(b),
-        #         "!=": lambda a, b: str(a) != str(b),
-        #     }
-        #
-        #     op_func = operators.get(cond.operator)
-        #     if not op_func or not op_func(current_value, cond.value):
-        #         return False
-        #
-        # return True
+
+    def _evaluate_numeric(self, current_value: float, cond: RuleCondition) -> bool:
+        import operator
+
+        ops = {
+            ">": operator.gt,
+            "<": operator.lt,
+            ">=": operator.ge,
+            "<=": operator.le,
+        }
+
+        op_str = cond.condition.get("operator")
+        threshold = cond.condition.get("value")
+        hysteresis = cond.condition.get("hysteresis", 0.0)
+        last_triggered = cond.triggered
+
+        if hysteresis == 0.0 or not last_triggered:
+            is_currently_true = ops[op_str](current_value, threshold)
+        elif op_str in [">", ">="]:
+            is_currently_true = current_value > (threshold - hysteresis)
+        else:
+            is_currently_true = current_value < (threshold + hysteresis)
+
+        if is_currently_true != last_triggered:
+            cond.triggered = is_currently_true
+            cond.save(update_fields=["triggered"])
+            return is_currently_true
+        return False
+
+    def _evaluate_boolean(self, current_value: bool, cond: RuleCondition) -> bool:
+        expected = cond.condition.get("state")
+        is_currently_true = current_value == expected
+        if is_currently_true != cond.triggered:
+            cond.triggered = is_currently_true
+            cond.save(update_fields=["triggered"])
+            return is_currently_true
+
+        return False
