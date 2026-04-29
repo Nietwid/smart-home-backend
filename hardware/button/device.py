@@ -19,10 +19,7 @@ class ButtonBistableHardware(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = {MessageCommand.TOGGLE: None}
-    events = (
-        MessageCommand.ON_ON,
-        MessageCommand.ON_OFF,
-    )
+    events = {MessageCommand.ON_ON: None, MessageCommand.ON_OFF: None}
 
     @classmethod
     def validate_config(cls, config: ButtonBistableConfig, device: Device) -> None:
@@ -43,10 +40,7 @@ class ButtonMonostableHardware(BaseHardware):
     hardware_type = HardwareTypes.INPUT
     chip_support = [name.value for name in ChipType]
     actions = {MessageCommand.CLICK: None, MessageCommand.HOLD: None}
-    events = (
-        MessageCommand.ON_CLICK,
-        MessageCommand.ON_HOLD,
-    )
+    events = {MessageCommand.ON_CLICK: None, MessageCommand.ON_HOLD: None}
 
     @classmethod
     def validate_config(cls, config: ButtonMonostableConfig, device: Device) -> None:

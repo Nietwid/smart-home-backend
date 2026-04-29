@@ -1,22 +1,24 @@
 from abc import ABC, abstractmethod
 from typing import Type
 from pydantic import BaseModel, Field, ConfigDict
+from typing import TYPE_CHECKING
 
-from device.models import Device
-from dispatcher.device.messages.enum import MessageCommand
-from rules.conditions.base import BaseCondition
+from rules.conditions.base import ConditionConfig
+
+if TYPE_CHECKING:
+    from device.models import Device
 
 
 class BaseHardware(ABC):
-    config_model: Type[BaseModel] = None
-    state_model: Type[BaseModel] = None
+    config_model: Type[BaseModel]
+    state_model: Type[BaseModel]
 
     description: str = ""
     hardware_type: str = ""
     chip_support: tuple[str] = []
-    actions: dict[MessageCommand, Type[BaseModel]] = {}
-    events: tuple[str] = []
-    event_conditions: dict[str, Type[BaseCondition]] = {}
+    actions: dict[str, Type[BaseModel]] = {}
+    events: dict[str, Type[ConditionConfig]] = {}
+    event_to_attr: dict[str, str] = []
 
     @classmethod
     def parse_config(cls, data: dict) -> BaseModel:
@@ -31,17 +33,21 @@ class BaseHardware(ABC):
         return cls.state_model(**data)
 
     @classmethod
-    def get_available_actions(cls) -> list[MessageCommand]:
+    def get_available_actions(cls) -> list[str]:
         return list(cls.actions.keys())
 
     @classmethod
+    def get_available_events(cls) -> list[str]:
+        return list(cls.events.keys())
+
+    @classmethod
     @abstractmethod
-    def validate_config(cls, config: Type[BaseModel], device: Device) -> None:
+    def validate_config(cls, config: Type[BaseModel], device: "Device") -> None:
         raise NotImplementedError()
 
     @classmethod
     @abstractmethod
-    def validate_state(cls, state: Type[BaseModel], device: Device) -> None:
+    def validate_state(cls, state: Type[BaseModel], device: "Device") -> None:
         raise NotImplementedError()
 
 

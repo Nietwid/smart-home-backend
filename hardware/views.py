@@ -37,7 +37,7 @@ class EventCondition(APIView):
         if not cls:
             return Response({}, status=404)
         try:
-            cls_event_conditions = cls.event_conditions.get(event)
+            cls_event_conditions = cls.events.get(event)
             if not cls_event_conditions:
                 return Response(None, status=200)
         except Exception as e:

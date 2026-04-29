@@ -17,7 +17,7 @@ class PinOutputHardware(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = {}
-    events = ()
+    events = {}
 
     @classmethod
     def validate_config(cls, config: Pca9685Config, device: Device) -> None:

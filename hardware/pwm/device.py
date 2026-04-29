@@ -14,7 +14,7 @@ class PinPwm(BaseHardware):
     hardware_type = HardwareTypes.OUTPUT
     chip_support = [name.value for name in ChipType]
     actions = {MessageCommand.UPDATE_STATE: None}
-    events = ()
+    events = {}
 
     @classmethod
     def validate_config(cls, config: PwmConfig, device: Device) -> None:

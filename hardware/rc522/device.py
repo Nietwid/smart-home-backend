@@ -16,11 +16,11 @@ class Rc522(BaseHardware):
     actions = {
         MessageCommand.ADD_TAG: None,
     }
-    events = (
-        MessageCommand.ON_READ,
-        MessageCommand.ON_READ_SUCCESS,
-        MessageCommand.ON_READ_FAILURE,
-    )
+    events = {
+        MessageCommand.ON_READ: None,
+        MessageCommand.ON_READ_SUCCESS: None,
+        MessageCommand.ON_READ_FAILURE: None,
+    }
 
     @classmethod
     def validate_config(cls, config: Rc552Config, device: Device) -> None:

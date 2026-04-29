@@ -1,6 +1,8 @@
 import logging
 from abc import ABC, abstractmethod
 
+from dispatcher.device.messages import payload
+from dispatcher.service.rule_engine import RuleEngineService
 from notifier.enum import MicroserviceQueueName
 from notifier.factory.microservice_notifier_factory import microservice_message_factory
 from device.models import Device
@@ -13,7 +15,11 @@ from dispatcher.device.messages.enum import ActionResult
 from dispatcher.device.messages.payload.basic import BasicResult
 from dispatcher.dispatch_result import DispatchResult
 from dispatcher.tasks import check_command_timeout
-from notifier.message import NotifierMessage
+from notifier.message import (
+    NotifierMessage,
+    FrontendNotifierData,
+    MicroserviceNotifierData,
+)
 from notifier.factory.router_notifier_factory import router_notifier_factory
 from peripherals.models import Peripherals
 from redis_cache import redis_cache
@@ -136,36 +142,20 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
     def __call__(self, message: CommandMessage) -> DispatchResult:
         notifications = []
         commands = []
-        device: Device = message.device
         peripheral: Peripherals = message.peripheral
-
-        if self.send_command:
-            commands.extend(
-                device.get_event_request(
-                    peripheral=message.peripheral, event_type=message.command
-                )
-            )
-
-        notifications.extend(self.get_extra_notification(message))
-        commands.extend(self.get_extra_commands(message))
 
         self.update_peripheral_state(peripheral, message.payload)
         if self.exchange is not None and self.routing_key is not None:
-            notifications.append(
-                microservice_message_factory.log_event(
-                    peripheral=peripheral,
-                    event_type=message.command,
-                    payload=message.payload,
-                    exchange=self.exchange,
-                    routing_key=self.routing_key,
-                )
-            )
+            notifications.append(self._get_message_to_service(peripheral, message))
+
         if self.update_frontend_peripheral_state:
-            notifications.append(
-                frontend_notifier_factory.update_peripheral_state(
-                    peripheral=peripheral
-                ),
-            )
+            notifications.append(self._get_message_to_frontend(peripheral))
+
+        if self.send_command:
+            commands.extend(self._get_basic_command(peripheral, message))
+
+        notifications.extend(self.get_extra_notification(message))
+        commands.extend(self.get_extra_commands(message))
 
         return DispatchResult(notifications=notifications, commands=commands)
 
@@ -177,3 +167,22 @@ class EventIntentBaseHandler(ActionEventBaseHandler):
 
     def update_peripheral_state(self, peripheral: Peripherals, state: dict) -> None:
         pass
+
+    def _get_message_to_service(
+        self, peripheral: Peripherals, message: CommandMessage
+    ) -> MicroserviceNotifierData:
+        return microservice_message_factory.log_event(
+            peripheral=peripheral,
+            event_type=message.command,
+            payload=message.payload,
+            exchange=self.exchange,
+            routing_key=self.routing_key,
+        )
+
+    def _get_message_to_frontend(self, peripheral: Peripherals) -> FrontendNotifierData:
+        return frontend_notifier_factory.update_peripheral_state(peripheral=peripheral)
+
+    def _get_basic_command(
+        self, peripheral: Peripherals, message: CommandMessage
+    ) -> list[CommandMessage]:
+        return RuleEngineService.get_event_request(peripheral, message.command)

@@ -27,11 +27,11 @@ class SequentialLightHardware(BaseHardware):
         MessageCommand.BLINK: BlinkExtraSettings,
         MessageCommand.UPDATE_STATE: None,
     }
-    events = (
-        MessageCommand.ON_ON,
-        MessageCommand.ON_OFF,
-        MessageCommand.ON_UPDATE_STATE,
-    )
+    events = {
+        MessageCommand.ON_ON: None,
+        MessageCommand.ON_OFF: None,
+        MessageCommand.ON_UPDATE_STATE: None,
+    }
 
     @classmethod
     def validate_config(cls, config: SequentialLightConfig, device: Device) -> None:

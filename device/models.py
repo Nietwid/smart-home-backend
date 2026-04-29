@@ -1,15 +1,9 @@
 from typing import TYPE_CHECKING
 from django.db import models
 
-from dispatcher.device.messages.enum import MessageCommand
-
 from room.models import Room
 
 from user.models import Home
-
-if TYPE_CHECKING:
-    from peripherals.models import Peripherals
-    from dispatcher.command_message.message import CommandMessage
 
 
 class Router(models.Model):
@@ -53,61 +47,7 @@ class Device(models.Model):
     def __str__(self):
         return self.name
 
-    def get_event_request(
-        self, peripheral, event_type: MessageCommand
-    ) -> "list[CommandMessage]":
-        from dispatcher.command_message.factory import command_message_factory
-        from rules.models import Rule
-
-        rules = Rule.objects.filter(
-            device=self,
-            enabled=True,
-            is_local=False,
-            triggers__peripheral=peripheral,
-            triggers__event=event_type,
-        ).prefetch_related("conditions", "actions", "actions__peripheral")
-        home_id = self.home.id
-        router_mac = self.home.router.mac
-        command_messages = []
-        for rule in rules:
-            if self._check_conditions(rule.conditions.all()):
-                for action in rule.actions.all().order_by("order"):
-                    command_messages.append(
-                        command_message_factory.get_commands_from_rule(
-                            self, home_id, router_mac, action
-                        )
-                    )
-        print(command_messages)
-        return command_messages
-
-    def get_router(self):
-        return Router.objects.get(home=self.home)
-
     def get_router_mac(self):
         return (
             Router.objects.filter(home=self.home).values_list("mac", flat=True).first()
         )
-
-    def extra_settings(self):
-        return {}
-
-    def make_intent(self, data: dict) -> None:
-        return
-
-    def _check_conditions(self, conditions) -> bool:
-        return True
-        # for cond in conditions:
-        #     current_value = self.get_peripheral_state(cond.peripheral)
-        #
-        #     operators = {
-        #         "==": lambda a, b: str(a) == str(b),
-        #         ">": lambda a, b: float(a) > float(b),
-        #         "<": lambda a, b: float(a) < float(b),
-        #         "!=": lambda a, b: str(a) != str(b),
-        #     }
-        #
-        #     op_func = operators.get(cond.operator)
-        #     if not op_func or not op_func(current_value, cond.value):
-        #         return False
-        #
-        # return True
