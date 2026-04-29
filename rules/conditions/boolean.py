@@ -4,4 +4,4 @@ from pydantic import BaseModel
 
 class BooleanConditionSchema(BaseModel):
     type: Literal["boolean"] = "boolean"
-    state: bool
+    value: bool
