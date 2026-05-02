@@ -1,4 +1,8 @@
+import json
+import uuid
 from datetime import timedelta
+from uuid import uuid4
+
 from django.utils import timezone
 
 from consumers.models import RouterOutbox, MessageStatus, RouterInbox
@@ -18,6 +22,10 @@ from notifier.notifier import notifier
 from dispatcher.device.messages.device_message import DeviceMessage
 from notifier.factory.router_notifier_factory import router_notifier_factory
 from device.models import Router
+from pydantic import ValidationError
+import logging
+
+logger = logging.getLogger("base")
 
 
 class RouterService:
@@ -98,3 +106,40 @@ class RouterService:
             ),
         ]
         notifier.notify(notifications)
+
+    def handle_validation_error(self, packet: str):
+        try:
+            data = json.loads(packet)
+        except Exception as e:
+            logger.error(f"Failed to parse message:{packet}, {e}")
+            return
+
+        message_id = data.get("message_id", None)
+        if message_id is None:
+            logger.error(f"Parsed message without message id :{packet}")
+            return
+
+        try:
+            clean_uuid = uuid.UUID(str(message_id))
+        except (ValueError, TypeError, AttributeError):
+            logger.error(f"Invalid message id: {message_id} for packet: {packet}")
+            return
+
+        message, created = RouterInbox.objects.get_or_create(
+            router_mac=self.router.mac,
+            external_id=clean_uuid,
+            defaults={
+                "expired_at": timezone.now(),
+                "payload": data,
+                "home_id": self.router.home.pk,
+                "status": MessageStatus.FAILED,
+            },
+        )
+        notifier.notify(
+            [
+                RouterNotifierData(
+                    router_mac=self.router.mac,
+                    data=AckRouterMessage(message_id=message.external_id),
+                )
+            ]
+        )

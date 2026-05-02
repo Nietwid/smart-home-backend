@@ -4,6 +4,7 @@ from uuid import uuid4
 from consumers.router.service import RouterService
 from consumers.router.message.message import AckRouterMessage, DeviceRouterMessage
 from consumers.models import RouterOutbox, MessageStatus, RouterInbox
+import json
 
 
 @pytest.fixture
@@ -117,3 +118,77 @@ def test_handle_ack_received_ignores_missing_message(db, router, mocker):
 
     # Then
     pass
+
+
+def test_handle_validation_error_success_fallback(db, router, mock_notifier):
+    # Given
+    msg_id = uuid4()
+    bad_packet = json.dumps(
+        {
+            "message_id": str(msg_id),
+            "payload": {"some": "data"},
+        }
+    )
+    service = RouterService(router)
+
+    # When
+    service.handle_validation_error(bad_packet)
+
+    # Then
+    inbox = RouterInbox.objects.get(external_id=msg_id)
+    assert inbox.status == MessageStatus.FAILED
+    assert inbox.router_mac == router.mac
+
+    assert mock_notifier.called
+    args, _ = mock_notifier.call_args
+    sent_data_list = args[0]
+    assert sent_data_list[0].data.message_id == msg_id
+
+
+def test_handle_validation_error_invalid_uuid(db, router, mock_notifier):
+    # Given
+    bad_packet = json.dumps({"message_id": "not-a-uuid-123", "payload": {}})
+    service = RouterService(router)
+
+    # When
+    service.handle_validation_error(bad_packet)
+
+    # Then
+    assert not RouterInbox.objects.filter(router_mac=router.mac).exists()
+    assert not mock_notifier.called
+
+
+def test_handle_validation_error_malformed_json(db, router, mock_notifier):
+    # Given
+    bad_packet = "not-json{}"
+    service = RouterService(router)
+
+    # When
+    service.handle_validation_error(bad_packet)
+
+    # Then
+    assert not RouterInbox.objects.filter(router_mac=router.mac).exists()
+    assert not mock_notifier.called
+
+
+def test_handle_validation_error_duplicate_id(db, router, mock_notifier):
+    # Given
+    msg_id = uuid4()
+    RouterInbox.objects.create(
+        router_mac=router.mac,
+        external_id=msg_id,
+        home_id=router.home.pk,
+        payload={},
+        expired_at=timezone.now(),
+        status=MessageStatus.DELIVERED,
+    )
+
+    bad_packet = json.dumps({"message_id": str(msg_id)})
+    service = RouterService(router)
+
+    # When
+    service.handle_validation_error(bad_packet)
+
+    # Then
+    assert RouterInbox.objects.filter(external_id=msg_id).count() == 1
+    assert mock_notifier.called
