@@ -1,6 +1,7 @@
 import logging
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from pydantic import ValidationError
 
 from consumers.router.message.message import (
     RouterMessagePacket,
@@ -48,8 +49,16 @@ class RouterConsumer(AsyncWebsocketConsumer):
         if not text_data:
             return
         logger.debug(f"Received message: {text_data}")
-        packet = RouterMessagePacket.model_validate_json(text_data).root
-        if isinstance(packet, AckRouterMessage):
-            await database_sync_to_async(self.service.handle_ack_received)(packet)
-        elif isinstance(packet, DeviceRouterMessage):
-            await database_sync_to_async(self.service.handle_device_message)(packet)
+        try:
+            packet = RouterMessagePacket.model_validate_json(text_data).root
+            if isinstance(packet, AckRouterMessage):
+                await database_sync_to_async(self.service.handle_ack_received)(packet)
+            elif isinstance(packet, DeviceRouterMessage):
+                await database_sync_to_async(self.service.handle_device_message)(packet)
+        except ValidationError as e:
+            logger.error(f"Failed to validate message: {text_data} : {e}")
+            await database_sync_to_async(self.service.handle_validation_error)(
+                text_data
+            )
+        except Exception as e:
+            logger.error(f"Failed to parse message: {text_data} : {e}")
