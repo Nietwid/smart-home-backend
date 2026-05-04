@@ -11,6 +11,7 @@ PAYLOAD_MAPPING: dict = {
     # CPU events
     MessageCommand.DEVICE_CONNECT: (DeviceConnectRequest, BasicResult),
     MessageCommand.DEVICE_DISCONNECT: (DeviceDisconnectRequest, BasicResult),
+    MessageCommand.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
 
     # CPU action
     MessageCommand.GET_CONNECTED_DEVICES: (EmptyRequest, BasicResult),
@@ -52,11 +53,6 @@ PAYLOAD_MAPPING: dict = {
     MessageEvent.UPDATE_CONFIG: (SerializerDataResponse, BasicResult),
     MessageEvent.SET_SETTINGS: (SerializerDataResponse, BasicResult),
     MessageEvent.GET_SETTINGS: (EmptyRequest, SerializerDataResponse),
-    # MessageEvent.UPDATE_FIRMWARE_ERROR: (FirmwareUpdateErrorRequest, BasicResult),
-    # MessageEvent.ON_TEMPERATURE_ABOVE: (EmptyRequest, EmptyResponse),
-    # MessageEvent.ON_TEMPERATURE_BELOW: (EmptyRequest, EmptyResponse),
-    # MessageEvent.ON_HUMIDITY_BELOW: (EmptyRequest, EmptyResponse),
-    # MessageEvent.ON_HUMIDITY_ABOVE: (EmptyRequest, EmptyResponse),
     CameraCommand.CAMERA_OFFER: (CameraOfferRequest, BasicResult),
     CameraCommand.CAMERA_ANSWER: (EmptyRequest, CameraAnswerResponse),
     CameraCommand.CAMERA_DISCONNECT: (CameraDisconnectPayload, BasicResult),

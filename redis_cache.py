@@ -65,10 +65,16 @@ class RedisCache:
         return next_id
 
     def get_peripherals_pending(self, pk: int) -> list[str]:
-        return cache.get(CacheKey.peripheral_pending(pk))
+        pending = cache.get(CacheKey.peripheral_pending(pk))
+        if pending:
+            return pending
+        return []
 
     def get_device_pending(self, mac: str) -> list[str]:
-        return cache.get(CacheKey.device_pending(mac))
+        pending = cache.get(CacheKey.device_pending(mac))
+        if pending:
+            return pending
+        return []
 
     def get_and_delete_device_message(self, message_id: str) -> DeviceMessage | None:
         raw = cache.get(CacheKey.device_message(message_id))
@@ -98,6 +104,9 @@ class RedisCache:
         cache_key = CacheKey.peripheral_pending(pk)
         return self._delete_pending(pending, cache_key, command)
 
+    def clear_device_pending(self, mac: str):
+        cache.delete(CacheKey.device_pending(mac))
+
     def _add_pending(
         self,
         pending: list[str] | None,
@@ -105,7 +114,7 @@ class RedisCache:
         command: MessageCommand,
         timeout=DEFAULT_TIMEOUT,
     ) -> list[str]:
-        if not pending:
+        if pending is None:
             pending = []
         if not command in pending:
             pending.append(command)

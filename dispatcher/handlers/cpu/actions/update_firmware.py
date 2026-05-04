@@ -39,10 +39,16 @@ class SyncEndActionIntent(ActionEventBaseHandler):
         )
         redis_cache.add_device_message(device_message)
         redis_cache.add_update_firmware(token, firmware.pk)
+        redis_cache.add_device_pending(message.device.mac, message.command)
         notifications = [
             router_notifier_factory.device_message(
                 router_mac=message.device.get_router_mac(),
                 message=device_message,
+            ),
+            frontend_notifier_factory.update_device_pending(
+                home_id=message.device.home.id,
+                pending=redis_cache.get_device_pending(message.device.mac),
+                device_id=message.device.pk,
             ),
         ]
         return DispatchResult(notifications=notifications)
@@ -71,13 +77,4 @@ class SyncEndActionResult(ActionEventBaseHandler):
                     message="Error updating device. Please try again.",
                 )
             )
-        # TODO - update required action
-        # device.required_action.append(MessageCommand.UPDATE_FIRMWARE)
-        # device.save(update_fields=["required_action"])
-        # notifications = [
-        #     frontend_notifier_factory.update_device_required_action(
-        #         device.home.pk, device.required_action, device.pk
-        #     )
-        # ]
-        # return DispatchResult(notifications=notifications)
         return DispatchResult()
