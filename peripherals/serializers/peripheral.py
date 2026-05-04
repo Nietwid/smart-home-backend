@@ -47,10 +47,7 @@ class PeripheralSerializer(serializers.ModelSerializer):
         return hardware_cls.get_available_actions()
 
     def get_pending(self, obj: Peripherals) -> list[str]:
-        pending = redis_cache.get_peripherals_pending(obj.pk)
-        if not pending:
-            return []
-        return pending
+        return redis_cache.get_peripherals_pending(obj.pk)
 
     def validate(self, data):
         name = data.get("name")

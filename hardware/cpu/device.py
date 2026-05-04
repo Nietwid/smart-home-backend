@@ -15,6 +15,7 @@ class CpuHardware:
     events = (
         MessageCommand.DEVICE_CONNECT,
         MessageCommand.DEVICE_DISCONNECT,
+        MessageCommand.UPDATE_FIRMWARE_ERROR,
     )
 
     @classmethod

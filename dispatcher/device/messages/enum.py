@@ -62,6 +62,7 @@ class MessageCommand(StrEnum):
     SYNC_END = "sync_end"
     RESTART = "restart"
     UPDATE_FIRMWARE = "update_firmware"
+    UPDATE_FIRMWARE_ERROR = "update_firmware_error"
 
     # Peripheral events
     ON_UPDATE_STATE = "on_update_state"

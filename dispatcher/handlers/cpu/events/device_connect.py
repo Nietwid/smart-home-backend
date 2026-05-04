@@ -18,6 +18,7 @@ from notifier.factory.router_notifier_factory import router_notifier_factory
 from room.serializer import RoomSerializer
 
 from device.models import Device
+from redis_cache import redis_cache
 
 
 @register_action_event(
@@ -45,7 +46,7 @@ class DeviceConnectEvent(ActionEventBaseHandler):
                 "wifi_strength",
             ]
         )
-
+        redis_cache.clear_device_pending(device.mac)
         notifier_message = [
             router_notifier_factory.device_message(
                 router_mac=device.get_router_mac(),
