@@ -71,7 +71,7 @@ def send_microservice_notification():
                             exchange=message.exchange,
                             routing_key=message.routing_key,
                             body=message.payload,
-                            properties=pika.BasicProperties(delivery_mode=1)
+                            properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent)
                         )
                     except Exception as e:
                         logger.error(f"Failed to publish message {message.payload}: {e}")

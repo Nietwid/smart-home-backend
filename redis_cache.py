@@ -72,9 +72,9 @@ class RedisCache:
 
     def get_device_pending(self, mac: str) -> list[str]:
         pending = cache.get(CacheKey.device_pending(mac))
-        if pending:
-            return pending
-        return []
+        if pending is None:
+            return []
+        return pending
 
     def get_and_delete_device_message(self, message_id: str) -> DeviceMessage | None:
         raw = cache.get(CacheKey.device_message(message_id))
