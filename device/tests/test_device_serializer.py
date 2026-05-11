@@ -27,16 +27,16 @@ class TestDeviceSerializer:
         # # Then
         assert data["name"] == "Test 1"
         assert data["pending"] == pending_mock_data
-        mock_redis.assert_called_once_with(device.pk)
+        mock_redis.assert_called_once_with(device.mac)
 
     def test_serialize_model_with_empty_pending(self, mock_redis):
         # # Given
         device = baker.make("device.Device")
-        mock_redis.return_value = None
+        mock_redis.return_value = []
 
         # # When
         serializer = DeviceSerializer(instance=device)
-
+        print(serializer.data)
         # # Then
         assert serializer.data["pending"] == []
 

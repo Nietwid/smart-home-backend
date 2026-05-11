@@ -1,7 +1,8 @@
+import logging
+
 from rest_framework import serializers
 
 from dispatcher.device.messages.enum import MessageCommand
-from hardware.base import HardwareValidationError
 from hardware.registry import HARDWARE_REGISTRY
 from notifier.factory.frontend_notifier_factory import frontend_notifier_factory
 from peripherals.models import Peripherals
@@ -11,6 +12,8 @@ from redis_cache import redis_cache
 from typing import Collection
 from notifier.notifier import notifier
 from device.models import Device
+
+logger = logging.getLogger(__name__)
 
 
 class PeripheralSerializerDevice(serializers.ModelSerializer):
@@ -38,12 +41,18 @@ class PeripheralSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["pending"]
 
-    def get_available_event(self, obj: Peripherals) -> list[MessageCommand]:
+    def get_available_event(self, obj: Peripherals) -> list[str]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
+        if hardware_cls is None:
+            logger.error(f"Unknown device type: {obj.name}")
+            raise serializers.ValidationError({"name": "Unknown device type"})
         return hardware_cls.get_available_events()
 
-    def get_available_action(self, obj: Peripherals) -> Collection[MessageCommand]:
+    def get_available_action(self, obj: Peripherals) -> Collection[str]:
         hardware_cls = HARDWARE_REGISTRY.get(obj.name)
+        if hardware_cls is None:
+            logger.error(f"Unknown device type: {obj.name}")
+            raise serializers.ValidationError({"name": "Unknown device type"})
         return hardware_cls.get_available_actions()
 
     def get_pending(self, obj: Peripherals) -> list[str]:
@@ -63,7 +72,7 @@ class PeripheralSerializer(serializers.ModelSerializer):
                 data["device"],
                 hardware_cls.validate_config,
             )
-            errors.update({f"config.{k}": v for k, v in errs.items()})
+            errors.update({k: v for k, v in errs.items()})
 
         if "state" in data:
             errs = validate_pydantic_model(
@@ -72,7 +81,7 @@ class PeripheralSerializer(serializers.ModelSerializer):
                 data["device"],
                 hardware_cls.validate_state,
             )
-            errors.update({f"state.{k}": v for k, v in errs.items()})
+            errors.update({k: v for k, v in errs.items()})
         elif not self.instance:
             data["state"] = hardware_cls.state_model().model_dump()
 

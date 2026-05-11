@@ -18,7 +18,7 @@ class DeviceSerializer(ModelSerializer):
         read_only_fields = ["last_seen", "mac"]
 
     def get_pending(self, obj: Device):
-        return redis_cache.get_device_pending(obj.pk)
+        return redis_cache.get_device_pending(obj.mac)
 
     def validate_room(self, value):
         if not value:
