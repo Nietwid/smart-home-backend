@@ -1,3 +1,4 @@
+from datetime import datetime
 from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.payload.measurement import MeasurementIntent
 from dispatcher.handlers.base import EventIntentBaseHandler
@@ -21,5 +22,7 @@ class OnMeasureTemperatureHandler(EventIntentBaseHandler):
     def update_peripheral_state(
         self, peripheral: Peripherals, state: MeasurementIntent
     ) -> None:
-        peripheral.state.update({"temperature": state.value})
+        peripheral.state.update(
+            {"temperature": state.value, "last_read": datetime.now().isoformat()}
+        )
         peripheral.save(update_fields=["state"])
