@@ -48,5 +48,5 @@ class OnReadEventHandler(EventIntentBaseHandler):
 
         card = card.first()
         card.last_used = datetime.now()
-
+        card.save(update_fields=["last_used"])
         return True

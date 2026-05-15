@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from dispatcher.device.messages.enum import MessageCommand
 from dispatcher.device.messages.payload.measurement import MeasurementIntent
 from dispatcher.handlers.base import EventIntentBaseHandler
@@ -21,5 +23,7 @@ class OnMeasureHumidityHandler(EventIntentBaseHandler):
     def update_peripheral_state(
         self, peripheral: Peripherals, state: MeasurementIntent
     ) -> None:
-        peripheral.state.update({"humidity": state.value})
+        peripheral.state.update(
+            {"humidity": state.value, "last_read": datetime.now().isoformat()}
+        )
         peripheral.save(update_fields=["state"])
