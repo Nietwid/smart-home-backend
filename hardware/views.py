@@ -39,9 +39,9 @@ class EventCondition(APIView):
         try:
             cls_event_conditions = cls.events.get(event)
             if not cls_event_conditions:
-                return Response(None, status=200)
+                return Response({}, status=200)
         except Exception as e:
             print(e)
-            return Response(None, status=200)
+            return Response({}, status=200)
         event_conditions = cls_event_conditions.model_json_schema()
         return Response(event_conditions, status=200)
